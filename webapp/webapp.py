@@ -16,7 +16,8 @@ APP = Flask(__name__)
 def index():
     # this loads the homepage
     myoptvars = 2
-    return render_template('mywebsite.html', optvars=myoptvars)
+    x = {'date':[u'2012-06-28', u'2012-06-29', u'2012-06-30'], 'users': [405, 368, 119]}
+    return render_template('mywebsite.html', x=x)
 
 
 @APP.route('/api/flufluflu')
