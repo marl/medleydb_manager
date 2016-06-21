@@ -12,16 +12,18 @@
 <body>
 <h2>Hello World!</h2>
 
-<table>
+<table class="table">
   <thead>
-    <th>Date</th>
-    <th>Users</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Multitrack Name</th>
   </thead>
 
-{% for row_index in range(x['date']|count) %}
+{% for row_index in range(x['name']|count) %}
     <tr>
-      <td>{{ x['date'][row_index]|tojson|safe }}</td>
-      <td>{{ x['users'][row_index] }}</td>
+      <td>{{ x['name'][row_index] }}</td>
+      <td>{{ x['email'][row_index] }}</td>
+      <td>{{ x['multitrack_name'][row_index] }}</td>
     </tr>
 {% endfor %}
 
