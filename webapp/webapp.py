@@ -7,7 +7,7 @@ import tempfile
 import operator
 import sqlite3
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect
 
 
 APP = Flask(__name__)
@@ -16,30 +16,41 @@ APP.config.update(dict(
     DATABASE=os.path.join(APP.root_path, 'test.db')
 ))
 
+
 def connect_db():
     rv = sqlite3.connect(APP.config['DATABASE'])
     rv.row_factory = sqlite3.Row
     return rv
 
+
 @APP.route('/')
 def index():
     # this loads the homepage
-    myoptvars = 2
     rv = connect_db()
     c = rv.cursor()
 
-    tabledata = {'name': [], 'email': [], 'multitrack_name': []}
+    tickets = {'name': [], 'email': [], 'multitrack_name': []}
 
     for row in c.execute('SELECT * FROM tickets'):
-        tabledata['name'].append(row[0])
-        tabledata['email'].append(row[1])
-        tabledata['multitrack_name'].append(row[2])
+        tickets['name'].append(row[0])
+        tickets['email'].append(row[1])
+        tickets['multitrack_name'].append(row[2])
 
-    x = {
-        'date':[u'2012-06-28', u'2012-06-29', u'2012-06-30'],
-        'users': [405, 368, 119]
-    }
-    return render_template('mywebsite.html', x=tabledata)
+    return render_template('home.html', tickets=tickets)
+
+
+@APP.route('/newticket', methods=['POST'])
+def new_ticket():
+    return render_template('newticket.html', var1=None, var2=None)
+
+
+@APP.route('/viewtickets')
+def view_tickets():
+    return render_template('message.html', username=session['username'],
+                                           message=session['message'])
+
+
+# This is for internal functions, like adding things to the database
 
 
 @APP.route('/api/flufluflu')
