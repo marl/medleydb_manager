@@ -3,25 +3,18 @@
 
 <!-- Fills in everything below in the empty space -->
 {% block content %}
-      <h1 class="sub-header">Section title</h1>
-      <div class="table-responsive">
-
-        <table class="table">
-          <thead>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Multitrack Name</th>
-          </thead>
-          <tbody>
-            {% for row_index in range(tickets['name']|count) %}
-                <tr>
-                  <td>{{ tickets['name'][row_index] }}</td>
-                  <td>{{ tickets['email'][row_index] }}</td>
-                  <td>{{ tickets['multitrack_name'][row_index] }}</td>
-                </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-
-      </div>
+<body> 
+  <img src="24011_medleydb_logo.jpg" alt="MedleyDB" style="width:500px;height:150px;">
+  <h3>What is a ticket?</h3>
+  <p> A ticket is a tracking tag on an audio file as it starts from a dry multitrack stems from a recording studio and becomes a multitrack. The lifecycle of a multitrack is as follows:
+    <ol>
+        <li>Request to record a multitrack</li>
+        <li>Request is approved and recording session is scheduled</li>
+        <li>Recording session occurs</li>
+        <li>Track gets mixed</li>
+        <li>Track gets exported</li>
+        <li>Track gets run through multitrack app</li>
+        <li>Track is added to database</li>
+    </ol>
+  </p>
 {% endblock %}

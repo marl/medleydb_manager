@@ -1,0 +1,28 @@
+<!-- Starts with the template -->
+{% extends "template.html" %}
+
+<!-- Fills in everything below in the empty space -->
+{% block content %}
+<h1 class="sub-header">Section title</h1>
+      <div class="table-responsive">
+
+        <table class="table">
+          <thead>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Multitrack Name</th>
+          </thead>
+          <tbody>
+            {% for row_index in range(tickets['name']|count) %}
+                <tr>
+                  <td>{{ tickets['name'][row_index] }}</td>
+                  <td>{{ tickets['email'][row_index] }}</td>
+                  <td>{{ tickets['multitrack_name'][row_index] }}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+{% endblock %}
