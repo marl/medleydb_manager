@@ -1,11 +1,8 @@
 <!-- Starts with the template -->
-<html>
-  <body>
-      <div id="sidebar">
-        <iframe width="200" height="500" src="template.html"></iframe>
-      </div>
-<!-- Fills in everything below in the empty space -->
+{% extends "template.html" %}
 
+<!-- Fills in everything below in the empty space -->
+{% block content %}
       <h1 class="sub-header">Section title</h1>
       <div class="table-responsive">
 
@@ -16,7 +13,7 @@
             <th>Multitrack Name</th>
           </thead>
           <tbody>
-            for row_index in range(tickets['name']|count)
+            {% for row_index in range(tickets['name']|count) %}
                 <tr>
                   <td>{{ tickets['name'][row_index] }}</td>
                   <td>{{ tickets['email'][row_index] }}</td>
@@ -27,5 +24,4 @@
         </table>
 
       </div>
-  </body>
-</html>
+{% endblock %}

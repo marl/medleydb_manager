@@ -1,10 +1,8 @@
-<html>
-<body>
-	<div id="sidebar">
-		<iframe width="200" height="500" src="template.html"></iframe>
-    </div>
+<!-- Starts with the template -->
+{% extends "template.html" %}
 
-    <body>
+{% block content %}
+
     	<h1>Multitrack Processing Instructions</h1>
     	<h3>Forms and Junk</h3>
     		<ol>
@@ -27,3 +25,5 @@
 				<li>Bounce each of the stems to a stereo track with all plugins active. Save everything to the "stems" folder. Name each of them something that you'll remember (eg. volin1.wav, violin2.wav, cello.wav)</li>
 				<li>Bounce each of the "raw" tracks (only the ones actually used!) to a mono audio file and save them to the raw folder. If it was recorded as stereo, bounce to multiple mono. Name them based on what instrument they get used for (e.g. violin1-1.wav, violin1-2.wav etc). Make sure all plugins are inactive except any delays used for time alignment. </li>
 			</ol>
+
+{% endblock %}

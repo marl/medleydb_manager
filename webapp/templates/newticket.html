@@ -1,11 +1,8 @@
-<!doctype html>
-<html lang="en">
+<!-- Starts with the template -->
+{% extends "template.html" %}
 
-     <div id="sidebar">
-        <iframe width="200" height="500" src="template.html"></iframe>
-      </div>
+{% block content %}
 
-    <body topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
       <form topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
         <h1 class="sub-header">Request Form to Record a Multitrack</h1>
 
@@ -128,5 +125,5 @@
           <body><a href="url">For NYU Students</a> <br /> <a href="url">For non-students</a>
           </body>
       </form>
-    </body>
-</html>
+
+{% endblock %}

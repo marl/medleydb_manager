@@ -39,20 +39,21 @@ def index():
     return render_template('home.html', tickets=tickets)
 
 
-@APP.route('/newticket', methods=['POST'])
+@APP.route('/newticket')
 def new_ticket():
     return render_template('newticket.html', var1=None, var2=None)
 
 
 @APP.route('/viewtickets')
 def view_tickets():
-    return render_template('message.html', username=session['username'],
-                                           message=session['message'])
+    return render_template('viewtickets.html')
 
+
+@APP.route('/instructions')
+def instructions():
+    return render_template('instructions.html')
 
 # This is for internal functions, like adding things to the database
-
-
 @APP.route('/api/flufluflu')
 def api_flufluflu():
     """
