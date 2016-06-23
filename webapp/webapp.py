@@ -54,15 +54,14 @@ def instructions():
     return render_template('instructions.html')
 
 # This is for internal functions, like adding things to the database
-@APP.route('/api/flufluflu')
-def api_flufluflu():
+@APP.route('/api/ticket')
+def api_viewticket():
     """
-    do the flululu
+    view a single ticket
     """
     # code that does things
-    myvar = 'a'
-    tralala = 'asdf'
-    return jsonify(var1=myvar, var2=tralala)
+    ticket_id = request.args.get('id')
+    return render_template('ticket.html', id=ticket_id)
 
 
 if __name__ == '__main__':
