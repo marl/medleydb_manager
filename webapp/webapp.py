@@ -22,6 +22,24 @@ def connect_db():
     rv.row_factory = sqlite3.Row
     return rv
 
+def fill_table(headers, cursor):
+    table = {}
+    for name in headers:
+        table[name] = []
+
+    for row in cursor:
+        for name, item in zip(headers, row):
+            table[name].append(item)
+
+    return table
+
+def get_header(table_name):
+    rv = connect_db()
+    c = rv.cursor()
+    cursor = rv.execute('select * from {}'.format(table_name))
+    column_headers = list(map(lambda x: x[0], cursor.description))
+
+    return column_headers
 
 @APP.route('/')
 def index():
@@ -36,20 +54,17 @@ def new_ticket():
 
 @APP.route('/viewtickets')
 def view_tickets():
-    rv = connect_db()
-    c = rv.cursor()
-    cursor = rv.execute('select * from tickets')
-    names = list(map(lambda x: x[0], cursor.description))
+    column_headers = get_header('tickets')
 
     tickets = {}
-    for name in names:
+    for name in column_headers:
         tickets[name] = []
 
-    for row in c.execute('SELECT * FROM tickets'):
-        for name, item in zip(names, row):
+    for row in cursor:
+        for name, item in zip(column_headers, row):
             tickets[name].append(item)
 
-    return render_template('viewtickets.html', tickets=tickets, names=names)
+    return render_template('viewtickets.html', tickets=tickets, column_headers=column_headers)
 
 
 @APP.route('/instructions')
@@ -61,13 +76,27 @@ def band_names():
     return render_template('bandnames.html')
 
 # This is for internal functions, like adding things to the database
-@APP.route('/api/ticket')
-def api_viewticket():
+@APP.route('/ticket')
+def viewticket():
     """
     view a single ticket
     """
     # code that does things
     ticket_id = request.args.get('id')
+    rv = connect_db()
+    c = rv.cursor()
+    current_status = rv.execute('select * from tickets where ticket_id={}'.format(ticket_id))
+    ticket_history = rv.execute('select * from ticket_history where ticket_id={}'.format(ticket_id))
+    multitracks_in_ticket = rv.execute('select * from multitracks where ticket_id={}'.format(ticket_id))
+
+    column_headers = get_header('tickets')
+    ticket_history_headers = get_header('ticket_history')
+    multitrack_headers = get_header('multitracks')
+
+    tickets = fill_table(ticket_headers, current_status)
+    ticket_history = fill_table(ticket_history_headers, ticket_history)
+    multitracks_in_ticket = fill_table(multitrack_headers, multitracks_in_ticket)
+
     return render_template('ticket.html', id=ticket_id)
 
 
