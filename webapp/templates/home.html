@@ -4,7 +4,7 @@
 <!-- Fills in everything below in the empty space -->
 {% block content %}
 <body> 
-  <img src="24011_medleydb_logo.jpg" alt="MedleyDB" style="width:500px;height:150px;">
+  <img src="/static/medleydb.jpg" alt="MedleyDB" style="width:500px;height:150px;">
   <h3>What is a ticket?</h3>
   <p> A ticket is a tracking tag on an audio file as it starts from a dry multitrack stems from a recording studio and becomes a multitrack. The lifecycle of a multitrack is as follows:
     <ol>
@@ -16,5 +16,17 @@
         <li>Track gets run through multitrack app</li>
         <li>Track is added to database</li>
     </ol>
+    For each multitrack, this website creates a new “ticket” which will have a “status” from one of the states above. 
+    The possible statuses include:
+    <ul>
+        <li>requested</li>
+        <li>scheduled</li>
+        <li>recorded</li>
+        <li>mixed</li>
+        <li>exported</li>
+        <li>ran</li>
+        <li>added</li>
+    </ul>
+
   </p>
 {% endblock %}

@@ -3,21 +3,21 @@
 
 <!-- Fills in everything below in the empty space -->
 {% block content %}
-<h1 class="sub-header">Section title</h1>
+<h1 class="sub-header">All Tickets</h1>
       <div class="table-responsive">
 
         <table class="table">
           <thead>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Multitrack Name</th>
+            {% for col in range(names|count) %}
+                <th>{{ names[col] }}</th>
+            {% endfor %}
           </thead>
           <tbody>
-            {% for row_index in range(tickets['name']|count) %}
+            {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
-                  <td>{{ tickets['name'][row_index] }}</td>
-                  <td>{{ tickets['email'][row_index] }}</td>
-                  <td>{{ tickets['multitrack_name'][row_index] }}</td>
+                  {% for col in range(names|count) %}
+                    <td>{{ tickets[names[col]][row_index] }}</td>
+                  {% endfor %}
                 </tr>
             {% endfor %}
           </tbody>
