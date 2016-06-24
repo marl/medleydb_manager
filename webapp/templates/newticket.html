@@ -3,127 +3,103 @@
 
 {% block content %}
 
-      <form topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
-        <h1 class="sub-header">Request Form to Record a Multitrack</h1>
+  <form id='newticket' topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
+      <h1 class="sub-header">Sign Up for a New Ticket</h1>
+      <small class="text-muted">Only fill this out if your request to record has been approved. Fill in the parts of the form that apply.</small>
 
+      <h3 class="sub-header">Recording session</h3>
+      <fieldset class="form-group">
+        <label for="exampleInputDate1">Session date</label>
+        <input type="date" class="form-control" id="exampleInputDate1" placeholder="MM/DD/YY">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Engineer's Name</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Engineer's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Engineer's Email Address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Creator's</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Creator's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Creator's Email Address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Assignee's Name</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Assignee's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Assignee's Email Address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+      </fieldset>
 
-        <h3 class="sub-header">Your Information</h3>
-        <fieldset class="form-group">
-          <label for="exampleInputLastName1">Last Name</label>
-          <input type="lastname" class="form-control" id="exampleInputLastName1" placeholder="Last name">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleInputFirstName1">First Name</label>
-          <input type="First name" class="form-control" id="exampleInputFirstName1" placeholder="First name">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleInputEmail1">Your Email Address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleSelect1">Who are you?</label>
-          <select class="form-control" id="exampleSelect1">
-            <option>NYU Student</option>
-            <option>NYU Faculty</option>
-            <option>Affiliate</option>
-            <option>External</option>
-          </select>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleInputEmail1">Email address of person you are in contact with at NYU</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-          <small class="text-muted">Required for non-nyu people, optional for others.</small>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleInputName1">Full name of person you are in contact with at NYU</label>
-          <input type="name" class="form-control" id="exampleInputName1" placeholder="Full name">
-        </fieldset>
+<!-- THIS HAS TO BE DEPENDENT OF NUMBER OF MULTITRACKS -->
+      <h3 class="sub-header">Multitrack</h3>
+      <fieldset class="form-group">
+        <label for="exampleInputNames1">Names of Multitrack</label>
+        <input type="number" class="form-control" id="exampleInputNumber1" placeholder="Name of multitrack">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Track ID's</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Track ID">
+      </fieldset>
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputName1">Artist Name</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Artist name">
+      </fieldset>
+            <fieldset class="form-group">
+        <label for="exampleInputName1">Start time</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Start time">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputName1">End time</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="End time">
+      </fieldset>
 
-        <h3 class="sub-header">Your Recording Session</h3>
-        <fieldset class="form-group">
-          <label for="exampleInputDate1">Date availability</label>
-          <input type="date" class="form-control" id="exampleInputDate1" placeholder="MM/DD/YY">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleSelect1">Number of studio hours needed</label>
-          <select class="form-control" id="exampleSelect1">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-          </select>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleSelect1">Expected number of songs</label>
-          <select class="form-control" id="exampleSelect1">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-          </select>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="exampleSelect1">Genre of music</label>
-          <select class="form-control" id="exampleSelect1">
-            <option>Singer/Songwriter</option>
-            <option>Classical</option>
-            <option>Rock</option>
-            <option>World/Folk</option>
-            <option>Fusion</option>
-            <option>Jazz</option>
-            <option>Pop</option>
-            <option>Musical theatre</option>
-            <option>Rap</option>
-          </select>
-        </fieldset>
+      <h3 class="sub-header">Mixing and beyond</h3>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Full name of mixing engineer</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Engineer's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Mixing Engineer's Email Address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputDate1">Date tracks were mixed</label>
+        <input type="date" class="form-control" id="exampleInputDate1" placeholder="MM/DD/YY">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputName1">Location of track post-mixing</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Location">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputName1">Location of track post-exporting</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Location">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Name of person running multitrack through app</label>
+        <input type="name" class="form-control" id="exampleInputName1" placeholder="Name">
+      </fieldset>
+      <fieldset class="form-group">
+          <label for="exampleTextarea">Additional Comments</label>
+          <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+       </fieldset>
 
-        <h4>Instrumentation<br />
-          <small class="text-muted">Select all the instruments used in the songs.</small>
-        </h4>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Piano
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Guitar
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Drums
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Bass
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Vocals
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Violin
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Viola
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Cello
-          </label>
-        </div>
+     
+         
+      <a href="javascript: submitform()">Submit request for new ticket</a>
+  </form>
 
+  <script type="text/javascript">
+  function submitform()
+    {document.newticket.submit();}
+  </script>
 
-        <h3> Fill out and submit the create commons consent form:</h3>
-          <body><a href="/static/Description_Forms_NYU_student.pdf">For NYU Students</a> <br /> <a href="/static/Description_forms_general.pdf">For non-students</a>
-          </body>
-      </form>
 
 {% endblock %}

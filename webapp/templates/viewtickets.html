@@ -8,15 +8,17 @@
 
         <table class="table">
           <thead>
-            {% for col in range(names|count) %}
-                <th>{{ names[col] }}</th>
+                <th></th>
+            {% for col in range(column_headers|count) %}
+                <th>{{ column_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
             {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
-                  {% for col in range(names|count) %}
-                    <td>{{ tickets[names[col]][row_index] }}</td>
+                    <td><a href="{{ tickets["url"][row_index] }}" >View Ticket</a></td>
+                  {% for col in range(column_headers|count) %}
+                    <td>{{ tickets[column_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}
