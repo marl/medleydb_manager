@@ -15,12 +15,17 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+        <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+
         <!-- Custom styles for this template: to change things, edit style.css -->
         <link href="static/style.css" rel="stylesheet">
+        <script src="{{ url_for('static', filename='app.js') }}"></script>
     </head>
 
     <!-- Website content -->
-    <body>
+    <body data-spy="spyscroll" data-target=".navbar-default">
+
+
         <!-- This is the bar in black at the top -->
         <nav class="navbar navbar-inverse navbar-fixed-top">
           <div class="container-fluid">
@@ -40,20 +45,22 @@
           <div class="row">
 
             <!-- This is the sidebar -->
-            <div class="col-sm-3 col-md-2 sidebar">
-              <ul class="nav nav-sidebar">
-                <li class="active"><a href="/">Home</a></li>
-                <li><a href="/requestrecord">Request a Recording Session</a></li>
-                <li><a href="/newticket">New Ticket</a></li>
-                <li><a href="/viewtickets">View Tickets</a></li>
-                <li><a href="/instructions">Instructions</a></li>
-                <li><a href="/bandnames">Band Names</a></li>
+            <div class="col-sm-3 col-md-2 sidebar" >
+              <ul class="nav nav-sidebar" >
+                <li ><a href="/">Home</a></li>
+                <li ><a href="/requestrecord">Request a Recording Session</a></li>
+                <li ><a href="/newticket">New Ticket</a></li>
+                <li ><a href="/viewtickets">View Tickets</a></li>
+                <li ><a href="/instructions">Instructions</a></li>
+                <li ><a href="/bandnames">Band Names</a></li>
               </ul>
               <ul class="nav nav-sidebar">
                 <li><a href="http://medleydb.weebly.com">About MedleyDB</a></li>
               </ul>
-              
+
+
             </div>
+            <div ng-view></div>
 
             <!-- This is the main area -->
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
