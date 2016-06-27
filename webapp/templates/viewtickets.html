@@ -9,16 +9,16 @@
         <table class="table">
           <thead>
                 <th></th>
-            {% for col in range(column_headers|count) %}
-                <th>{{ column_headers[col] }}</th>
+            {% for col in range(formatted_headers|count) %}
+                <th>{{ formatted_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
             {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
                     <td><a href="{{ tickets["url"][row_index] }}" >View Ticket</a></td>
-                  {% for col in range(column_headers|count) %}
-                    <td>{{ tickets[column_headers[col]][row_index] }}</td>
+                  {% for col in range(db_column_headers|count) %}
+                    <td>{{ tickets[db_column_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}

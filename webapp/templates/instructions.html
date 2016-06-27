@@ -2,28 +2,68 @@
 {% extends "template.html" %}
 
 {% block content %}
-		<img src="/static/mixer.jpg" alt="mixer" style="width:700px;height:150px;">
-    	<h1>Multitrack Processing Instructions</h1>
-    	<h3>Forms and Junk</h3>
-    		<ol>
-			  <li>If appropriate, ask the folks you are recording if they are willing to let you use their track/s for Medley, and if they agree have them fill out the forms.</li>
-			  <li>Save a copy of their session to the folder MedleyDB/Unprocessed on the server SIXSERVE2/mtechxsan.</li>
-			  <li>Somewhere in that session, save a copy of the metadata form they filled out.</li>
-			</ol>
-		<h3>Mixing</h3>
+		
+    	<h1>NYU MARL Dataset Rendering Instructions for Pro Tools and Mac OSX</h1>
+    		<img src="/static/studio.jpg" alt="mixer" style="width:730px;height:240px;">
+    		<h3 class='text-muted'>Instructions by Mike Tierney</h3>
+    		
+		<h3>A) Selecting the Song's Region</h3>
 			<ol>
-				<li>Pick a session from the Unprocessed folder, mix it to your heart's content, and then bounce + process it. </li>
-				<li>Once you've done that, change the color of the session's folder to green.</li>
-			</ol>
-		<h3>Bouncing</h3>
-			<small class="text-muted">Bounce all audio to 44.1kHz, 16 bit .wav files. </small>
-			<ol>
-				<li>Make a new folder. Within that folder create a folder called "stems"and a folder called "raw".</li>
-				<li>Select the mix region (this never changes for the rest of the steps!). All bouncing below should be bouncing the same region.</li>
-				<li>Bounce the mix to a stereo track and save it to the folder.</li>
-				<li>Decide how to group the stems into the most logical groupings based on instrument.</li>
-				<li>Bounce each of the stems to a stereo track with all plugins active. Save everything to the "stems" folder. Name each of them something that you'll remember (eg. volin1.wav, violin2.wav, cello.wav)</li>
-				<li>Bounce each of the "raw" tracks (only the ones actually used!) to a mono audio file and save them to the raw folder. If it was recorded as stereo, bounce to multiple mono. Name them based on what instrument they get used for (e.g. violin1-1.wav, violin1-2.wav etc). Make sure all plugins are inactive except any delays used for time alignment. </li>
+				<li>In the edit window (the main one with all of the waveforms), select the grabber tool (the hand at the top bar). Click to highlight the clip that is furthest to the left of the session. Then, holding shift, click the clip that extends to the furthest position to the right of the session. This is the total length of the song, and will also be the length of all stems.</li>
 			</ol>
 
+
+		<h3>B) Rendering Raw Audio</h3>
+			<small class="text-muted">If possible, the following steps should be followed before mixing.</small>
+			<ol>
+				<li>If the song is not already mixed (if there are no inserts or sends), skip this step. Go to the mix window (command+= or Window>Mix). Bypass all inserts and all sends by holding command and clicking the little gray rectangle representing them or by opening the insert or send's window (click on the gray rectangle) and clicking bypass.</li>
+				<li>If the song is not already mixed (if all of the faders are at 0 dB), skip this step. Bring all faders to 0 dB by holding command and clicking the faders. Take note of the fader settings so you can restore them to their correct values after this first set of steps.</li>
+				<li> Locate all stereo audio tracks. In the mix window, these will have two pan pots and two meters. If there are no stereo audio tracks, skip to step 5.</li>
+				<li>Solo the first stereo audio track (click the little "s" square). Then, taking care that the song's region is selected (see "A"), bounce to disk (command+option+B or File>Bounce to>Disk…) In the dialogue box under "Bounce Source", click output>Analog out 1 (it may also be called "Main out" or some variation. In any case, make sure only 1 is selected, NOT 1 and 2!!!!! Very important!!!!) Under File Type, click WAV. Under format, click Mono (summed). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Finally, click "Bounce…" titling the file appropriately.</li>
+					<ol type="a">
+						<li> Repeat step 4 with the same track soloed and with all of the same settings EXCEPT in the bounce to disk dialogue box, select Analog out 2 as your source.</li>
+						<li> Repeat steps 4 and 4a) for all stereo audio tracks, soloing a new corresponding track each time.</li>
+					</ol>
+				<li>Locate all mono audio tracks (they only have one pan pot in the mix window). If there are no mono audio tracks, skip step 6.</li>
+				<li>Solo the first mono audio track (click the little "s" square). Then, taking care that the song's region is selected (see "A"), bounce to disk (command+option+B or File>Bounce to>Disk…) In the dialogue box under "Bounce Source", click output>Analog out 1+2 (it may also be called "Main out" or some variation. In any case, make sure both 1 and 2 are selected!!!!! Very important!!!!) Under File Type, click WAV. Under format, click Mono (summed). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Finally, click "Bounce…" titling the file appropriately.</li>
+					<ol type="a">
+						<li>Repeat step 6 for all mono audio tracks, soloing a new corresponding track each time.</li>
+					</ol>
+
+			</ol>
+
+
+		<h3>C) Rendering Stems</h3>
+			<ol>
+				<li>Locate all stereo audio tracks. In the mix window, these will have two pan pots and two meters. If there are no stereo audio tracks, skip to step 3.</li>
+				<li>Solo the first stereo audio track (click the little "s" square) and all aux tracks that it may be sending to. Then, taking care that the song's region is selected (see "A"), bounce to disk (command+option+B or File>Bounce to>Disk…) In the dialogue box under "Bounce Source", click output>Analog out 1+2 (it may also be called "Main out" or some variation. In any case, make sure both 1 and 2 are selected!!!!! Very important!!!!) Under File Type, click WAV. Under format, click Stereo (Interleaved). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Finally, click "Bounce…" titling the file appropriately.</li>
+					<ol type="a">
+						<li>Repeat step 2 for all stereo audio tracks, soloing a new corresponding track each time.</li>
+					</ol>
+				<li>Locate all mono audio tracks (they only have one pan pot in the mix window). If there are no mono audio tracks, skip step 4.</li>
+				<li>Solo the first stereo audio track (click the little "s" square). Then, taking care that the song's region is selected (see "A"), bounce to disk (command+option+B or File>Bounce to>Disk…) In the dialogue box under "Bounce Source", click output>Analog out 1 (it may also be called "Main out" or some variation. In any case, make sure only 1 is selected, NOT 1 and 2!!!!! Very important!!!!) Under File Type, click WAV. Under format, click Mono (summed). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Finally, click "Bounce…" titling the file appropriately.</li>
+					<ol type="a">
+						<li>Repeat step 4 with the same track soloed and with all of the same settings EXCEPT in the bounce to disk dialogue box, select Analog out 2 as your source.</li>
+						<li>Repeat steps 4 and 4a) for all stereo audio tracks, soloing a new corresponding track each time.</li>
+					</ol>
+				<li>Locate all mono audio tracks (they only have one pan pot in the mix window). If there are no mono audio tracks, skip step 6.</li>
+				<li>Solo the first mono audio track (click the little "s" square) and all aux tracks it may be sending to. Then, taking care that the song's region is selected (see "A"), bounce to disk (command+option+B or File>Bounce to>Disk…) In the dialogue box under "Bounce Source", click output>Analog out 1+2 (it may also be called "Main out" or some variation. In any case, make sure both 1 and 2 are selected!!!!! Very important!!!!) Under File Type, click WAV. Under format, click Stereo (interleaved). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Finally, click "Bounce…" titling the file appropriately.</li>
+					<ol type="a">
+						<li>Repeat step 6 for all mono audio tracks, soloing a new corresponding track each time.</li>
+					</ol>
+
+			</ol>
+
+
+			<h3>D) Rendering Mix</h3>
+			<ol>
+				<li>Make sure nothing is soloed or muted and that the song's region is selected (see "A')</li>
+				<li>Bounce to disk (command+option+B or File>Bounce to>Disk…) In the dialogue box under "Bounce Source", click output>Analog out 1+2 (it may also be called "Main out" or some variation. In any case, make sure both 1 and 2 are selected!!!!! Very important!!!!) Under File Type, click WAV. Under format, click Stereo (Interleaved). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Finally, click "Bounce…" titling the file appropriately.</li>
+
+			</ol>
+
+			<h4>If you have any questions, feel free to contact me directly via email at: m.tierney413@gmail.com</h4>
+
+
 {% endblock %}
+

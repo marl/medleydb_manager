@@ -3,21 +3,21 @@
 
 <!-- Fills in everything below in the empty space -->
 {% block content %}
-<h1 class="sub-header">More information about ticket {{ ticket_id }} </h1>
+<h1 class="sub-header">More Information About Ticket {{ ticket_id }} </h1>
       <div class="table-responsive">
         <h3>Current status of ticket</h3>
 
         <table class="table">
           <thead>
-            {% for col in range(current_status_headers|count) %}
-                <th>{{ current_status_headers[col] }}</th>
+            {% for col in range(formatted_headers1|count) %}
+                <th>{{ formatted_headers1[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
             {% for row_index in range(current_status['ticket_number']|count) %}
                 <tr>
-                  {% for col in range(current_status_headers|count) %}
-                    <td>{{ current_status[current_status_headers[col]][row_index] }}</td>
+                  {% for col in range(db_current_status_headers|count) %}
+                    <td>{{ current_status[db_current_status_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}
@@ -30,15 +30,15 @@
         <h3>Ticket History</h3>
         <table class="table">
           <thead>
-            {% for col in range(ticket_history_headers|count) %}
-                <th>{{ ticket_history_headers[col] }}</th>
+            {% for col in range(formatted_headers2|count) %}
+                <th>{{ formatted_headers2[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
             {% for row_index in range(ticket_history['ticket_number']|count) %}
                 <tr>
-                  {% for col in range(ticket_history_headers|count) %}
-                    <td>{{ ticket_history[ticket_history_headers[col]][row_index] }}</td>
+                  {% for col in range(db_ticket_history_headers|count) %}
+                    <td>{{ ticket_history[db_ticket_history_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}
@@ -52,16 +52,16 @@
         <table class="table">
           <thead>
                 <th></th>
-            {% for col in range(multitracks_in_ticket_headers|count) %}
-                <th>{{ multitracks_in_ticket_headers[col] }}</th>
+            {% for col in range(formatted_headers3|count) %}
+                <th>{{ formatted_headers3[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
             {% for row_index in range(multitracks_in_ticket['ticket_number']|count) %}
                 <tr>
-                    <td><a href="/multitrack&id=2">View Multitrack</a></td>
-                  {% for col in range(multitracks_in_ticket_headers|count) %}
-                    <td>{{ multitracks_in_ticket[multitracks_in_ticket_headers[col]][row_index] }}</td>
+                    <td><a href="{{ multitracks_in_ticket["url"][row_index] }}">View Multitrack</a></td>
+                  {% for col in range(db_multitracks_in_ticket_headers|count) %}
+                    <td>{{ multitracks_in_ticket[db_multitracks_in_ticket_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}

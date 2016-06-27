@@ -1,0 +1,58 @@
+<!-- Starts with the template -->
+{% extends "template.html" %}
+
+<!-- Fills in everything below in the empty space -->
+{% block content %}
+
+<h1 class="sub-header">More Information About Multitrack {{ multitrack_id }} </h1>
+
+      <div class="table-responsive">
+        <h3>Multitrack Current Status</h3>
+
+        <table class="table">
+          <thead>
+            {% for col in range(formatted_headers3|count) %}
+                <th>{{ formatted_headers3[col] }}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for row_index in range(multitrack['multitrack_id']|count) %}
+                <tr>
+                  {% for col in range(current_status_multitrack_headers |count) %}
+                    <td>{{ multitrack[current_status_multitrack_headers[col]][row_index] }}</td>
+                  {% endfor %}
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+      <div class="table-responsive">
+        <h3>Multitrack History</h3>
+
+        <table class="table">
+          <thead>
+            {% for col in range(formatted_headers4|count) %}
+                <th>{{ formatted_headers4[col] }}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for row_index in range(multitrack_history_headers['multitrack_id']|count) %}
+                <tr>
+                  {% for col in range(multitrack_history_headers|count) %}
+                    <td>{{ multitrack_history[multitrack_history_headers[col]][row_index] }}</td>
+                  {% endfor %}
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+
+
+
+
+
+{% endblock %}

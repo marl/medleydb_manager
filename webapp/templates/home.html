@@ -3,30 +3,21 @@
 
 <!-- Fills in everything below in the empty space -->
 {% block content %}
-<body> 
-  <img src="/static/medleydb.jpg" alt="MedleyDB" style="width:500px;height:150px;">
-  <h3>What is a ticket?</h3>
-  <p> A ticket is a tracking tag on an audio file as it starts from a dry multitrack stems from a recording studio and becomes a multitrack. The lifecycle of a multitrack is as follows:
-    <ol>
-        <li>Request to record a multitrack</li>
-        <li>Request is approved and recording session is scheduled</li>
-        <li>Recording session occurs</li>
-        <li>Track gets mixed</li>
-        <li>Track gets exported</li>
-        <li>Track gets run through multitrack app</li>
-        <li>Track is added to database</li>
-    </ol>
-    For each multitrack, this website creates a new “ticket” which will have a “status” from one of the states above. 
-    The possible statuses include:
-    <ul>
-        <li>requested</li>
-        <li>scheduled</li>
-        <li>recorded</li>
-        <li>mixed</li>
-        <li>exported</li>
-        <li>ran</li>
-        <li>added</li>
-    </ul>
+<body>
+    <h1>MedleyDB Manager</h1> 
+    <img src="/static/home.jpg" alt="MedleyDB" style="width:860px;height:500px;">
+    
+    <h2>What do we do?</h2>
+        <p>This website enables you to request a recording session, create a new "ticket" for a multitrack, and view all active tickets. A ticket is a tracking tag on a multitrack as it starts from dry multitrack stems from a recording studio and becomes a multitrack. The lifecycle of a multitrack is as follows:
+        <ol>
+            <li>Request to record a multitrack</li>
+            <li>Request is approved and recording session is scheduled</li>
+            <li>Recording session occurs</li>
+            <li>Track gets mixed</li>
+            <li>Track gets exported</li>
+            <li>Track gets run through multitrack app</li>
+            <li>Track is added to database</li>
+        </ol>
 
-  </p>
+        </p>
 {% endblock %}
