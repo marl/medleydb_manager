@@ -6,24 +6,42 @@ function getRequestRecordInput(){
 
 	// do for all id's requestrecord.html
 
-
-	$.get("/thankyou?name=" + name + "&email=" + email, function(response){
-		// "hello"
+	// Call api to record information to database and send email
+	$.get("/api/requestrecord?name=" + name + "&email=" + email, function(response){
+		console.log($.parseJSON(response)) //for debugging - will print the returned info
 	} );
 
+	// Redirect to thank you page
+	window.location = "/thankyou";
 }
 
-function getNewTicketInpuxt(){
+function getNewTicketInput(){
 	// do for all id's in newticket.html
-	$.get("/multitrack_info?name=" + name + "&email=" + email, function(response){
-	// "hello"
+	num = $("#num_multitracks").val();
+
+	// Call api to record information to database
+	$.get("/api/newticket?name=" + name + "&email=" + email, function(response){
+		console.log($.parseJSON(response)) //for debugging - will print the returned info
 	} );
+
+	// Redirect to new multitrack page
+	window.location = "/newmultitrack?num=" + num;
 }
 
-$(document).ready(function() { 
+
+function getNewMultitrackInput(){
+	// same as above
+
+	// Redirect to thank you page
+	window.location = "/thankyou";
+}
+
+
+$(document).ready(function() {
 	console.log("javascript working");
 	// add class="active" to certain url path that is clicked
 	var pathname = window.location.pathname;
 	$('.nav > li > a[href="'+pathname+'"]').parent().addClass('active');
-	$("#submit").click(getforminput);
+	$("#submitRequest").click(getRequestRecordInput);
+	$("#submitNewTicket").click(getNewTicketInput);
 });

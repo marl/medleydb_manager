@@ -57,7 +57,7 @@ def fill_table(headers, cursor):
 def get_header(table_name):
     """
     Retrieves headers from a table on the database
-    
+
     Parameters
     ---------
     table_name: string
@@ -154,8 +154,8 @@ def view_tickets():
 
     formatted_tickets_headers = [format_headers(h) for h in tickets_headers]
 
-    return render_template('viewtickets.html', tickets=tickets, 
-        db_tickets_headers=tickets_headers, 
+    return render_template('viewtickets.html', tickets=tickets,
+        db_tickets_headers=tickets_headers,
         formatted_tickets_headers=formatted_tickets_headers)
 
 
@@ -185,7 +185,7 @@ def band_names():
 @APP.route('/ticket')
 def ticket():
     """
-    Views more information about a single ticket given a ticket ID. 
+    Views more information about a single ticket given a ticket ID.
     Gives info on status of ticket, its history, and multitracks in the ticket.
 
     Return
@@ -200,15 +200,15 @@ def ticket():
     db_ticket_history_headers: list
         headers of ticket history table
     formatted_ticket_history_headers: list
-        formatted headers of ticket history table 
+        formatted headers of ticket history table
     db_multitracks_in_ticket_headers: list
-        headers of multitracks in ticket table 
+        headers of multitracks in ticket table
     formatted_multitracks_in_ticket_headers: list
         formatted headers of multitracks in ticket tabls
     tickets: dictionary
         content in tickets table
     ticket_history: dictionary
-        contents in ticket history table 
+        contents in ticket history table
     multitracks_in_ticket: dictionary
         contents in multitracks in ticket table
 
@@ -222,11 +222,11 @@ def ticket():
     formatted_ticket_status_headers = [format_headers(h) for h in ticket_status_headers]
     formatted_ticket_history_headers = [format_headers(h) for h in ticket_history_headers]
     formatted_multitracks_in_ticket_headers = [format_headers(h) for h in multitracks_in_ticket_headers]
-    
+
     ticket_status_cursor = rv.execute('select * from tickets where ticket_number="{}"'.format(ticket_id))
     ticket_history_cursor = rv.execute('select * from ticket_history where ticket_number="{}"'.format(ticket_id))
     multitracks_cursor = rv.execute('select * from multitracks where ticket_number="{}"'.format(ticket_id))
-    
+
     tickets = fill_table(ticket_status_headers, ticket_status_cursor)
     ticket_history = fill_table(ticket_history_headers, ticket_history_cursor)
     multitracks_in_ticket = fill_table(multitracks_in_ticket_headers, multitracks_cursor)
@@ -236,21 +236,21 @@ def ticket():
     for row in multitracks_cursor:
         multitracks_in_ticket['url'].append('/multitrack?id={}'.format(row[2]))
 
-    return render_template('ticket.html', ticket_id=ticket_id, 
-            db_ticket_status_headers=ticket_status_headers, 
-            formatted_ticket_status_headers=formatted_ticket_status_headers, 
-            db_ticket_history_headers=ticket_history_headers, 
-            formatted_ticket_history_headers=formatted_ticket_history_headers, 
-            db_multitracks_in_ticket_headers=multitracks_in_ticket_headers, 
+    return render_template('ticket.html', ticket_id=ticket_id,
+            db_ticket_status_headers=ticket_status_headers,
+            formatted_ticket_status_headers=formatted_ticket_status_headers,
+            db_ticket_history_headers=ticket_history_headers,
+            formatted_ticket_history_headers=formatted_ticket_history_headers,
+            db_multitracks_in_ticket_headers=multitracks_in_ticket_headers,
             formatted_multitracks_in_ticket_headers=formatted_multitracks_in_ticket_headers,
-            tickets=tickets, 
-            ticket_history=ticket_history, 
+            tickets=tickets,
+            ticket_history=ticket_history,
             multitracks_in_ticket=multitracks_in_ticket)
 
 @APP.route('/multitrack')
 def multitrack():
     """
-    Views more information about a single multitrack within a ticket given a multitrack ID. 
+    Views more information about a single multitrack within a ticket given a multitrack ID.
     Gives info on status of multitrack and its history.
 
     Return
@@ -267,18 +267,18 @@ def multitrack():
     formatted_multitrack_history_headers: list
         formatted headers of multitrack history table
     multitrack_history: dictionary
-        contents in multitrack history table 
+        contents in multitrack history table
     multitrack_status: dictionary
         contents in multitrack status table
 
     """
-   
+
     multitrack_id = request.args.get('id')
     rv = connect_db()
-    
+
     multitrack_status_headers = get_header('multitracks')
     multitrack_history_headers = get_header('multitrack_history')
-    
+
     formatted_multitrack_status_headers = [format_headers(h) for h in multitrack_status_headers]
     formatted_multitrack_history_headers = [format_headers(h) for h in multitrack_history_headers]
 
@@ -289,14 +289,26 @@ def multitrack():
     multitrack_history = fill_table(multitrack_history_headers, multitrack_history_cursor)
 
     return render_template('multitrack.html', multitrack_id=multitrack_id,
-        db_multitrack_status_headers=multitrack_status_headers, 
+        db_multitrack_status_headers=multitrack_status_headers,
         formatted_multitrack_status_headers=formatted_multitrack_status_headers,
         db_multitrack_history_headers=multitrack_history_headers,
         formatted_multitrack_history_headers=formatted_multitrack_history_headers,
-        multitrack_history=multitrack_history, 
+        multitrack_history=multitrack_history,
         multitrack_status=multitrack)
 
+
+@APP.route('/newmultitrack')
+def new_multitrack():
+    num_multitracks = request.args.get('num')
+    return render_template('newticket_multitracks.html', num_multitracks=int(num_multitracks))
+
+
 @APP.route('/thankyou')
+def thankyou():
+    return render_template('thankyou.html')
+
+
+@APP.route('/api/requestrecord')
 def requestrecord_api():
     name = request.args.get('name')
     email = request.args.get('email')
@@ -308,12 +320,10 @@ def requestrecord_api():
     send email to right people
     redirect to "thank you for submitting form, html file that says thank you"
     """
-
-    # return jsonify(name=name, email=email)
-    return render_template('thankyou.html')
+    return jsonify(name=name, email=email)
 
 
-@APP.route('/multitrack_info')
+@APP.route('/api/newticket')
 def newticket_api():
     """
     DO FOR EVERYTHING
@@ -322,7 +332,7 @@ def newticket_api():
     redirect to newticket_multitrack"
     """
     num_multitracks = request.args.get('num')
-    return render_template('newticket_multitracks.html', num_multitracks=int(num_multitracks))
+    return jsonify(num_multitracks=num_multitracks)
 
 
 if __name__ == '__main__':
