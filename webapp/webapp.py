@@ -34,6 +34,11 @@ def fill_table(headers, cursor):
     """
     Fills a table with given headers.
 
+    Parameters
+    ----------
+    headers: list of column names
+    cursor: database object
+
     Returns
     -------
     table: dictionary of headers
@@ -51,7 +56,11 @@ def fill_table(headers, cursor):
 
 def get_header(table_name):
     """
-    retrieves headers from a table on the database
+    Retrieves headers from a table on the database
+    
+    Parameters
+    ---------
+    table_name: string
 
     Returns
     -------
@@ -66,10 +75,14 @@ def get_header(table_name):
 def format_headers(column_name):
     """
     Formats headers of tables so underscores are replaced with spaces, and makes first letter of each word uppercase.
+
+    Parameters
+    ----------
+    column_name: string
+
     Returns
     -------
-    list of formatted headers
-
+    list of strings
     """
     return column_name.replace("_", " ").title()
 
@@ -82,7 +95,6 @@ def index():
     Returns
     -------
     'home.html': template
-
     """
     return render_template('home.html')
 
@@ -94,8 +106,7 @@ def request_record():
 
     Returns
     -------
-    'newticket.html': template
-
+    'requestrecord.html': template
     """
     return render_template('requestrecord.html', var1=None, var2=None)
 
@@ -107,10 +118,21 @@ def new_ticket():
 
     Returns
     -------
-    'home.html': template
-
+    'newticket.html': template
     """
     return render_template('newticket.html', var1=None, var2=None)
+
+@APP.route('/newticket_multitracks')
+def newticket_multitracks():
+    """
+    Renders  newticket_multitracks.html template
+
+    Returns
+    -------
+    'newticket_multitracks.html': template
+    """
+    num_multitracks = request.args.get('num')
+    return render_template('newticket_multitracks.html', num_multitracks=int(num_multitracks))
 
 
 @APP.route('/viewtickets')
@@ -121,10 +143,12 @@ def view_tickets():
     Returns
     -------
     'viewtickets.html': renders to a template
-    tickets: dictionary of empty entrys in the tickets table
-    db_ticket_headers: list of headers from the tickets table
-    formatted_tickets_headers: list of formatted headers
-
+    tickets: dictionary
+        empty entrys in the tickets table
+    db_tickets_headers: list
+        headers from the tickets table
+    formatted_tickets_headers: list
+        formatted headers from tickets table
     """
     rv = connect_db()
     cursor = rv.execute('select * from tickets')
@@ -155,7 +179,6 @@ def instructions():
     Returns
     -------
     'instructions.html': template
-
     """
     return render_template('instructions.html')
 
@@ -167,7 +190,6 @@ def band_names():
     Returns
     -------
     'bandnames.html': template
-
     """
     return render_template('bandnames.html')
 
@@ -176,21 +198,31 @@ def band_names():
 def ticket():
     """
     Views more information about a single ticket given a ticket ID. 
-    Gives info on status of ticket, its history, and multitracks int he ticket.
+    Gives info on status of ticket, its history, and multitracks in the ticket.
 
     Return
     ------
     'ticket.html': rendered template
-    ticket_id: argument that can be requested by the user
-    db_ticket_status_headers: headers of ticket status table
-    formatted_ticket_status_headers: formattedheaders of ticket status table
-    db_ticket_history_headers= headers of ticket history table
-    formatted_ticket_history_headers= formatted headers of ticket history table 
-    db_multitracks_in_ticket_headers= headers of multitracks in ticket table 
-    formatted_multitracks_in_ticket_headers= formatted headers of multitracks in ticket tabls
-    tickets: content in tickets table
-    ticket_history: contents in ticket history table 
-    multitracks_in_ticket: contents in multitracks in ticket table
+    ticket_id: int
+        requested by the user
+    db_ticket_status_headers: list
+        headers of ticket status table
+    formatted_ticket_status_headers: list
+        formatted headers of ticket status table
+    db_ticket_history_headers: list
+        headers of ticket history table
+    formatted_ticket_history_headers: list
+        formatted headers of ticket history table 
+    db_multitracks_in_ticket_headers: list
+        headers of multitracks in ticket table 
+    formatted_multitracks_in_ticket_headers: list
+        formatted headers of multitracks in ticket tabls
+    tickets: dictionary
+        content in tickets table
+    ticket_history: dictionary
+        contents in ticket history table 
+    multitracks_in_ticket: dictionary
+        contents in multitracks in ticket table
 
     """
     ticket_id = request.args.get('id')
@@ -236,13 +268,20 @@ def multitrack():
     Return
     ------
     'multitrack.html': rendered template
-    multitrack_id: argument that can be requested by the user
-    db_ticket_status_headers: headers of ticket status table
-    formatted_ticket_status_headers: formatted headers of ticket status table
-    db_multitrack_history_headers: headers of multitrack history table
-    formatted_multitrack_history_headers=formatted headers of multitrack history table
-    multitrack_history: contents in multitrack history table 
-    multitrack_status: contents in multitrack status table
+    multitrack_id: int
+        requested by the user
+    db_ticket_status_headers: list
+        headers of ticket status table
+    formatted_ticket_status_headers: list
+        formatted headers of ticket status table
+    db_multitrack_history_headers: list
+        headers of multitrack history table
+    formatted_multitrack_history_headers: list
+        formatted headers of multitrack history table
+    multitrack_history: dictionary
+        contents in multitrack history table 
+    multitrack_status: dictionary
+        contents in multitrack status table
 
     """
    
