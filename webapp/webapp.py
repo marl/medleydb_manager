@@ -18,12 +18,26 @@ APP.config.update(dict(
 
 
 def connect_db():
+    """
+    Creates and connects to an sqlite3 database that will hold the data of tickets and multitracks.
+
+    Returns
+    -------
+    rv: database
+    """
     rv = sqlite3.connect(APP.config['DATABASE'])
     rv.row_factory = sqlite3.Row
     return rv
 
 
 def fill_table(headers, cursor):
+    """
+    Fills a table with given headers.
+
+    Returns
+    -------
+    table: dictionary of headers
+    """
     table = {}
     for name in headers:
         table[name] = []
@@ -36,6 +50,13 @@ def fill_table(headers, cursor):
 
 
 def get_header(table_name):
+    """
+    retrieves headers from a table on the database
+
+    Returns
+    -------
+    column_headers: list
+    """
     rv = connect_db()
     cursor = rv.execute('select * from {}'.format(table_name))
     column_headers = list(map(lambda x: x[0], cursor.description))
@@ -43,27 +64,68 @@ def get_header(table_name):
     return column_headers
 
 def format_headers(column_name):
+    """
+    Formats headers of tables so underscores are replaced with spaces, and makes first letter of each word uppercase.
+    Returns
+    -------
+    list of formatted headers
+
+    """
     return column_name.replace("_", " ").title()
 
 # TEMPLATE NAVIGATION----------------------
 @APP.route('/')
 def index():
-    # this loads the homepage
+    """
+    Renders home.html template
+
+    Returns
+    -------
+    'home.html': template
+
+    """
     return render_template('home.html')
 
 
 @APP.route('/requestrecord')
 def request_record():
+    """
+    Renders requestrecord.html template
+
+    Returns
+    -------
+    'newticket.html': template
+
+    """
     return render_template('requestrecord.html', var1=None, var2=None)
 
 
 @APP.route('/newticket')
 def new_ticket():
+    """
+    Renders  newticket.html template
+
+    Returns
+    -------
+    'home.html': template
+
+    """
     return render_template('newticket.html', var1=None, var2=None)
 
 
 @APP.route('/viewtickets')
 def view_tickets():
+    """
+    Renders viewtickets.html template
+
+    Returns
+    -------
+    'viewtickets.html': renders to a template
+    tickets: dictionary of empty entrys in the tickets table
+    db_ticket_headers: list of headers from the tickets table
+    formatted_tickets_headers: list of formatted headers
+
+    """
     rv = connect_db()
     cursor = rv.execute('select * from tickets')
     tickets_headers = get_header('tickets')
@@ -87,17 +149,49 @@ def view_tickets():
 
 @APP.route('/instructions')
 def instructions():
+    """
+    Renders  instructions.html template
+
+    Returns
+    -------
+    'instructions.html': template
+
+    """
     return render_template('instructions.html')
 
 @APP.route('/bandnames')
 def band_names():
+    """
+    Renders  bandnames.html template
+
+    Returns
+    -------
+    'bandnames.html': template
+
+    """
     return render_template('bandnames.html')
 
 # This is for internal functions, like adding things to the database---------------
 @APP.route('/ticket')
 def ticket():
     """
-    view a single ticket
+    Views more information about a single ticket given a ticket ID. 
+    Gives info on status of ticket, its history, and multitracks int he ticket.
+
+    Return
+    ------
+    'ticket.html': rendered template
+    ticket_id: argument that can be requested by the user
+    db_ticket_status_headers: headers of ticket status table
+    formatted_ticket_status_headers: formattedheaders of ticket status table
+    db_ticket_history_headers= headers of ticket history table
+    formatted_ticket_history_headers= formatted headers of ticket history table 
+    db_multitracks_in_ticket_headers= headers of multitracks in ticket table 
+    formatted_multitracks_in_ticket_headers= formatted headers of multitracks in ticket tabls
+    tickets: content in tickets table
+    ticket_history: contents in ticket history table 
+    multitracks_in_ticket: contents in multitracks in ticket table
+
     """
     ticket_id = request.args.get('id')
     rv = connect_db()
@@ -135,9 +229,23 @@ def ticket():
 
 @APP.route('/multitrack')
 def multitrack():
-    '''
-    view a single multitrack
-    '''
+    """
+    Views more information about a single multitrack within a ticket given a multitrack ID. 
+    Gives info on status of multitrack and its history.
+
+    Return
+    ------
+    'multitrack.html': rendered template
+    multitrack_id: argument that can be requested by the user
+    db_ticket_status_headers: headers of ticket status table
+    formatted_ticket_status_headers: formatted headers of ticket status table
+    db_multitrack_history_headers: headers of multitrack history table
+    formatted_multitrack_history_headers=formatted headers of multitrack history table
+    multitrack_history: contents in multitrack history table 
+    multitrack_status: contents in multitrack status table
+
+    """
+   
     multitrack_id = request.args.get('id')
     rv = connect_db()
     
