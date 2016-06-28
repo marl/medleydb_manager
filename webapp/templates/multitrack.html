@@ -11,15 +11,15 @@
 
         <table class="table">
           <thead>
-            {% for col in range(formatted_headers3|count) %}
-                <th>{{ formatted_headers3[col] }}</th>
+            {% for col in range(formatted_multitrack_status_headers|count) %}
+                <th>{{ formatted_multitrack_status_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
-            {% for row_index in range(multitrack['multitrack_id']|count) %}
+            {% for row_index in range(multitrack_status['multitrack_id']|count) %}
                 <tr>
-                  {% for col in range(current_status_multitrack_headers |count) %}
-                    <td>{{ multitrack[current_status_multitrack_headers[col]][row_index] }}</td>
+                  {% for col in range(db_multitrack_status_headers |count) %}
+                    <td>{{ multitrack_status[db_multitrack_status_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}
@@ -33,15 +33,15 @@
 
         <table class="table">
           <thead>
-            {% for col in range(formatted_headers4|count) %}
-                <th>{{ formatted_headers4[col] }}</th>
+            {% for col in range(formatted_multitrack_history_headers|count) %}
+                <th>{{ formatted_multitrack_history_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
-            {% for row_index in range(multitrack_history_headers['multitrack_id']|count) %}
+            {% for row_index in range(db_multitrack_history_headers['multitrack_id']|count) %}
                 <tr>
-                  {% for col in range(multitrack_history_headers|count) %}
-                    <td>{{ multitrack_history[multitrack_history_headers[col]][row_index] }}</td>
+                  {% for col in range(db_multitrack_history_headers|count) %}
+                    <td>{{ multitrack_history[db_multitrack_history_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}

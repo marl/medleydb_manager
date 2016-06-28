@@ -9,15 +9,15 @@
 
         <table class="table">
           <thead>
-            {% for col in range(formatted_headers1|count) %}
-                <th>{{ formatted_headers1[col] }}</th>
+            {% for col in range(formatted_ticket_status_headers|count) %}
+                <th>{{ formatted_ticket_status_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
-            {% for row_index in range(current_status['ticket_number']|count) %}
+            {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
-                  {% for col in range(db_current_status_headers|count) %}
-                    <td>{{ current_status[db_current_status_headers[col]][row_index] }}</td>
+                  {% for col in range(db_ticket_status_headers|count) %}
+                    <td>{{ tickets[db_ticket_status_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}
@@ -30,8 +30,8 @@
         <h3>Ticket History</h3>
         <table class="table">
           <thead>
-            {% for col in range(formatted_headers2|count) %}
-                <th>{{ formatted_headers2[col] }}</th>
+            {% for col in range(formatted_ticket_history_headers|count) %}
+                <th>{{ formatted_ticket_history_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
@@ -52,8 +52,8 @@
         <table class="table">
           <thead>
                 <th></th>
-            {% for col in range(formatted_headers3|count) %}
-                <th>{{ formatted_headers3[col] }}</th>
+            {% for col in range(formatted_multitrack_status_headers|count) %}
+                <th>{{ formatted_multitracks_status_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
