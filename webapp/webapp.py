@@ -122,18 +122,6 @@ def new_ticket():
     """
     return render_template('newticket.html', var1=None, var2=None)
 
-@APP.route('/newticket_multitracks')
-def newticket_multitracks():
-    """
-    Renders  newticket_multitracks.html template
-
-    Returns
-    -------
-    'newticket_multitracks.html': template
-    """
-    num_multitracks = request.args.get('num')
-    return render_template('newticket_multitracks.html', num_multitracks=int(num_multitracks))
-
 
 @APP.route('/viewtickets')
 def view_tickets():
@@ -307,6 +295,34 @@ def multitrack():
         formatted_multitrack_history_headers=formatted_multitrack_history_headers,
         multitrack_history=multitrack_history, 
         multitrack_status=multitrack)
+
+@APP.route('/thankyou')
+def requestrecord_api():
+    name = request.args.get('name')
+    email = request.args.get('email')
+
+    """
+    DO FOR EVERYTHING
+    collect form information
+    create new ticket in database using info
+    send email to right people
+    redirect to "thank you for submitting form, html file that says thank you"
+    """
+
+    # return jsonify(name=name, email=email)
+    return render_template('thankyou.html')
+
+
+@APP.route('/multitrack_info')
+def newticket_api():
+    """
+    DO FOR EVERYTHING
+    collect form information
+    create new ticket in database using info
+    redirect to newticket_multitrack"
+    """
+    num_multitracks = request.args.get('num')
+    return render_template('newticket_multitracks.html', num_multitracks=int(num_multitracks))
 
 
 if __name__ == '__main__':
