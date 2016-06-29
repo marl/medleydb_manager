@@ -299,8 +299,9 @@ def multitrack():
 
 @APP.route('/newmultitrack')
 def new_multitrack():
+    # current_multitrack = 
     num_multitracks = request.args.get('num')
-    return render_template('newticket_multitracks.html', num_multitracks=int(num_multitracks))
+    return render_template('newticket_multitracks.html', current_multitrack=current_multitrack, num_multitracks=int(num_multitracks))
 
 
 @APP.route('/thankyou')
@@ -310,30 +311,105 @@ def thankyou():
 
 @APP.route('/api/requestrecord')
 def requestrecord_api():
-    name = request.args.get('name')
-    email = request.args.get('email')
+    your_name = request.args.get('your_name')
+    your_email = request.args.get('your_email')
+    you = request.args.get('you')
+    contact_name = request.args.get('contact_name')
+    contact_email = request.args.get('contact_email')
+    record_date1 = request.args.get('record_date1')
+    record_date2 = request.args.get('record_date2')
+    record_date3 = request.args.get('record_date3')
+    hours_needed = request.args.get('hours_needed')
+    expected_num = request.args.get('expected_num')
+    genre = request.args.get('genre')
+    piano = request.args.get('piano')
+    guitar = request.args.get('guitar')
+    drums = request.args.get('drums')
+    bass = request.args.get('bass')
+    vocals = request.args.get('vocals')
+    violin = request.args.get('violin')
+    viola = request.args.get('viola')
+    cello = request.args.get('cello')
 
-    """
-    DO FOR EVERYTHING
-    collect form information
-    create new ticket in database using info
-    send email to right people
-    redirect to "thank you for submitting form, html file that says thank you"
-    """
-    return jsonify(name=name, email=email)
+    # add code to add row to tickets and ticket_history tables
+    # send an email to someone with information from form
+    return jsonify(
+        your_name=your_name,
+        your_email=your_email,
+        you=you,
+        contact_name=contact_name,
+        contact_email=contact_email,
+        record_date1=record_date1,
+        record_date2=record_date2,
+        record_date3=record_date3,
+        hours_needed=hours_needed,
+        expected_num=expected_num,
+        genre=genre,
+        piano=piano,
+        guitar=guitar,
+        drums=drums,
+        bass=bass,
+        vocals=vocals,
+        violin=violin,
+        viola=viola,
+        cello=cello
+        )
 
 
 @APP.route('/api/newticket')
 def newticket_api():
-    """
-    DO FOR EVERYTHING
-    collect form information
-    create new ticket in database using info
-    redirect to newticket_multitrack"
-    """
+    session_date = request.args.get('session_date')
+    engineer_name = request.args.get('engineer_name')
+    engineer_email = request.args.get('engineer_email')
+    creator_name = request.args.get('creator_name')
+    creator_email = request.args.get('creator_email')
+    assignee_name = request.args.get('assignee_name')
+    assignee_email = request.args.get('assignee_email')
+    mixer_name = request.args.get('mixer_name')
+    mixer_email = request.args.get('mixer_email')
+    mixed_date = request.args.get('mixed_date')
+    location_mixed = request.args.get('location_mixed')
+    location_exported = request.args.get('location_exported')
+    comments = request.args.get('comments')
     num_multitracks = request.args.get('num')
-    return jsonify(num_multitracks=num_multitracks)
 
+    # code to add row to tickets and ticket_history tables in database
+
+    return jsonify(
+        session_date=session_date,
+        engineer_name=engineer_name,
+        engineer_email=engineer_email,
+        creator_name=creator_name,
+        creator_email=creator_email,
+        assignee_name=assignee_name,
+        assignee_email=assignee_email,
+        mixer_name=mixer_name,
+        mixer_email=mixer_email,
+        mixed_date=mixed_date,
+        location_mixed=location_mixed,
+        location_exported=location_exported,
+        comments=comments,
+        num_multitracks=num_multitracks
+        )
+
+
+@APP.route('/api/newmultitrack')
+def newmultitrack_api():
+    multitrack_name = request.args.get('multitrack_name')
+    multitrack_id = request.args.get('multitrack_id')
+    artist_name = request.args.get('artist_name')
+    start_time = request.args.get('start_time')
+    end_time = request.args.get('end_time')
+
+    # code to add row to multitracks and multitrack_history tables in database
+
+    return jsonify(
+        multitrack_name=multitrack_name,
+        multitrack_id=multitrack_id,
+        artist_name=artist_name,
+        start_time=start_time,
+        end_time=end_time,
+        
 
 if __name__ == '__main__':
     APP.run(port=5080, host='0.0.0.0', debug='--debug' in sys.argv)

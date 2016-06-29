@@ -8,35 +8,27 @@
 {% for i in range(num_multitracks) %}
 <h3 class="sub-header">Multitrack {{ i+1 }}</h3>
       <fieldset class="form-group">
-        <label for="exampleInputNames1">Names of Multitrack</label>
-        <input type="number" class="form-control" id="exampleInputNumber1" placeholder="Name of multitrack">
+        <label for="exampleInputNames1">Name of Multitrack</label>
+        <input type="number" class="form-control" id="multitrack_name" placeholder="Name of multitrack">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputFirstName1">Track ID</label>
-        <input type="name" class="form-control" id="exampleInputName1" placeholder="Track ID">
-      </fieldset>
+        <input type="name" class="form-control" id="multitrack_id" placeholder="Track ID">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputName1">Artist Name</label>
-        <input type="name" class="form-control" id="exampleInputName1" placeholder="Artist name">
+        <input type="name" class="form-control" id="artist_name" placeholder="Artist name">
       </fieldset>
-            <fieldset class="form-group">
+      <fieldset class="form-group">
         <label for="exampleInputName1">Start time</label>
-        <input type="name" class="form-control" id="exampleInputName1" placeholder="Start time">
+        <input type="name" class="form-control" id="start_time" placeholder="Start time">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputName1">End time</label>
-        <input type="name" class="form-control" id="exampleInputName1" placeholder="End time">
+        <input type="name" class="form-control" id="end_time" placeholder="End time">
       </fieldset>
 {% endfor %}
 
-
-<a href="javascript: submitform()">Submit Request for New Ticket</a>
-<script type="text/javascript">
-  function submitform()
-    {document.newticket.submit();}
-
-</script>
-
+<button type="button" onclick="getNewMultitrackInput()">Submit Request for a New Ticket</button>
 
 {% endblock %}
