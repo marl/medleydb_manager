@@ -5,11 +5,10 @@
 <form>
 <h1> Multitrack Information </h1>
 
-{% for i in range(num_multitracks) %}
-<h3 class="sub-header">Multitrack {{ i+1 }}</h3>
+<h3 class="sub-header">Multitrack {{ multitrack_number }}</h3>
       <fieldset class="form-group">
         <label for="exampleInputNames1">Name of Multitrack</label>
-        <input type="number" class="form-control" id="multitrack_name" placeholder="Name of multitrack">
+        <input type="name" class="form-control" id="multitrack_name" placeholder="Name of multitrack">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputFirstName1">Track ID</label>
@@ -27,8 +26,19 @@
         <label for="exampleInputName1">End time</label>
         <input type="name" class="form-control" id="end_time" placeholder="End time">
       </fieldset>
-{% endfor %}
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Genre</label>
+        <input type="email" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz">
+      </fieldset>
 
-<button type="button" onclick="getNewMultitrackInput()">Submit Request for a New Ticket</button>
+
+{% if multitrack_number != total_multitracks %}
+    <button id="nextMultitrack" type="button">Next Multitrack</button>
+
+{% else %}
+    <button id="submitNewMultitrack" type="button">Submit Request for a New Ticket</button>
+{% endif %}
+
+
 
 {% endblock %}

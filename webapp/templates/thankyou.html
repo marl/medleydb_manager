@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+<h1> Thank you for signing up for a new ticket!</h1>
+
+<img src="/static/check.jpg" alt="check" style="width:300px;height:300px;">
+
+<form action="/viewtickets">
+    <input type="submit" value="See Your Ticket">
+</form>
+
+
+
+  {% endblock %}

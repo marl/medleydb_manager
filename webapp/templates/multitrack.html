@@ -38,7 +38,7 @@
             {% endfor %}
           </thead>
           <tbody>
-            {% for row_index in range(db_multitrack_history_headers['multitrack_id']|count) %}
+            {% for row_index in range(multitrack_history['multitrack_id']|count) %}
                 <tr>
                   {% for col in range(db_multitrack_history_headers|count) %}
                     <td>{{ multitrack_history[db_multitrack_history_headers[col]][row_index] }}</td>

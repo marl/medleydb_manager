@@ -6,7 +6,7 @@ import logging
 import tempfile
 import operator
 import sqlite3
-
+import time
 from flask import Flask, jsonify, render_template, request, redirect
 
 
@@ -285,7 +285,7 @@ def multitrack():
     multitrack_status_cursor = rv.execute('select * from multitracks where multitrack_id="{}"'.format(multitrack_id))
     multitrack_history_cursor = rv.execute('select * from multitrack_history where multitrack_id="{}"'.format(multitrack_id))
 
-    multitrack = fill_table(multitrack_status_headers, multitrack_status_cursor)
+    multitrack_status = fill_table(multitrack_status_headers, multitrack_status_cursor)
     multitrack_history = fill_table(multitrack_history_headers, multitrack_history_cursor)
 
     return render_template('multitrack.html', multitrack_id=multitrack_id,
@@ -294,15 +294,16 @@ def multitrack():
         db_multitrack_history_headers=multitrack_history_headers,
         formatted_multitrack_history_headers=formatted_multitrack_history_headers,
         multitrack_history=multitrack_history,
-        multitrack_status=multitrack)
+        multitrack_status=multitrack_status)
 
 
-@APP.route('/newmultitrack')
+@APP.route('/newticket_multitracks')
 def new_multitrack():
-    # current_multitrack = 
-    num_multitracks = request.args.get('num')
-    return render_template('newticket_multitracks.html', current_multitrack=current_multitrack, num_multitracks=int(num_multitracks))
-
+    multitrack_number = request.args.get('multitrack_number')
+    total_multitracks = request.args.get('total_multitracks')
+    return render_template('newticket_multitracks.html', 
+        multitrack_number=multitrack_number, 
+        total_multitracks=total_multitracks)
 
 @APP.route('/thankyou')
 def thankyou():
@@ -311,6 +312,8 @@ def thankyou():
 
 @APP.route('/api/requestrecord')
 def requestrecord_api():
+    date_opened=time.strftime("%x")
+    date_updated=time.strftime("%x")
     your_name = request.args.get('your_name')
     your_email = request.args.get('your_email')
     you = request.args.get('you')
@@ -322,17 +325,22 @@ def requestrecord_api():
     hours_needed = request.args.get('hours_needed')
     expected_num = request.args.get('expected_num')
     genre = request.args.get('genre')
-    piano = request.args.get('piano')
-    guitar = request.args.get('guitar')
-    drums = request.args.get('drums')
-    bass = request.args.get('bass')
-    vocals = request.args.get('vocals')
-    violin = request.args.get('violin')
-    viola = request.args.get('viola')
-    cello = request.args.get('cello')
+    
 
     # add code to add row to tickets and ticket_history tables
+    rv = connect_db()
+
+    rv.execute('insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, "Requested", date_opened, date_updated, None, None, None, 
+        your_name, your_email, "Julia Caruso", "julia.caruso@nyu.edu", genre, expected_num, None))
+
+    rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, "Requested", ticket_history_key, date_opened, date_updated, None, None, None, 
+        your_name, your_email, "Julia Caruso", "julia.caruso@nyu.edu", genre, expected_num, None))
+
     # send an email to someone with information from form
+
+
     return jsonify(
         your_name=your_name,
         your_email=your_email,
@@ -344,20 +352,14 @@ def requestrecord_api():
         record_date3=record_date3,
         hours_needed=hours_needed,
         expected_num=expected_num,
-        genre=genre,
-        piano=piano,
-        guitar=guitar,
-        drums=drums,
-        bass=bass,
-        vocals=vocals,
-        violin=violin,
-        viola=viola,
-        cello=cello
+        genre=genre
         )
 
 
 @APP.route('/api/newticket')
 def newticket_api():
+    date_opened=time.strftime("%x")
+    date_updated=time.strftime("%x")
     session_date = request.args.get('session_date')
     engineer_name = request.args.get('engineer_name')
     engineer_email = request.args.get('engineer_email')
@@ -370,10 +372,22 @@ def newticket_api():
     mixed_date = request.args.get('mixed_date')
     location_mixed = request.args.get('location_mixed')
     location_exported = request.args.get('location_exported')
+    genre = request.args.get('genre')
     comments = request.args.get('comments')
-    num_multitracks = request.args.get('num')
+    num_multitracks = request.args.get('num_multitracks')
 
     # code to add row to tickets and ticket_history tables in database
+    rv = connect_db()
+
+    rv.execute('insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, date_opened, date_updated, session_date, 
+        engineer_name, engineer_email, creator_name, creator_email, 
+        assignee_name, assignee_email, genre, num_multitracks, comments))
+
+    rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, ticket_history_key, date_opened, date_updated, session_date, engineer_name, engineer_email, 
+        creator_name, creator_email, assignee_name, assignee_email, genre, num_multitracks, comments))
+
 
     return jsonify(
         session_date=session_date,
@@ -392,23 +406,34 @@ def newticket_api():
         num_multitracks=num_multitracks
         )
 
-
 @APP.route('/api/newmultitrack')
 def newmultitrack_api():
+    date_opened=time.strftime("%x")
+    date_updated=time.strftime("%x")
     multitrack_name = request.args.get('multitrack_name')
     multitrack_id = request.args.get('multitrack_id')
     artist_name = request.args.get('artist_name')
     start_time = request.args.get('start_time')
     end_time = request.args.get('end_time')
+    genre = request.args.get('genre')
 
     # code to add row to multitracks and multitrack_history tables in database
+    rv.execute('insert into multitracks_in_ticket values("{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
+        ticket_number, status, multitrack_id, date_opened, date_updated, artist_name, multitrack_name, genre, number_of_instruments, 
+        creator_name, creator_email, engineer_name, engineer_email, mixer_name, mixer_email, bouncer_name, bouncer_email, comments))
+
+    rv.execute('insert into multitrack_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, multitrack_id, multitrack_history_key, 
+        date_opened, date_updated, artist_name, multitrack_name, genre, number_of_instruments, creator_name, creator_email, 
+        engineer_name, engineer_email, mixer_name, mixer_email, bouncer_name, bouncer_email, comments))
+
 
     return jsonify(
         multitrack_name=multitrack_name,
         multitrack_id=multitrack_id,
         artist_name=artist_name,
         start_time=start_time,
-        end_time=end_time,
+        end_time=end_time)
         
 
 if __name__ == '__main__':

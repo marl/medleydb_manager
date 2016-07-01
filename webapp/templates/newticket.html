@@ -62,11 +62,12 @@
         <label for="exampleInputFirstName1">Name of person running multitrack through app</label>
         <input type="name" class="form-control" id="running_name" placeholder="Name">
       </fieldset>
+      
       <fieldset class="form-group">
-          <label for="exampleTextarea">Additional Comments</label>
-          <textarea class="form-control" id="comments" rows="3"></textarea>
-       </fieldset>
-           <fieldset class="form-group">
+        <label for="exampleInputEmail1">Description of music</label>
+        <input type="email" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz">
+      </fieldset>
+      <fieldset class="form-group">
         <label for="exampleSelect1">Number of songs recorded to turn into multitracks</label>
         <select class="form-control" id="num_multitracks">
           <option value="1" selected="selected">1</option>
@@ -80,13 +81,16 @@
           <option value="9">9</option>
           <option value="10">10</option>
         </select>
-    </fieldset>
-
+      </fieldset>
+      <fieldset class="form-group">
+          <label for="exampleTextarea">Additional Comments</label>
+          <textarea class="form-control" id="comments" rows="3"></textarea>
+      </fieldset>
          
-  </form>
+</form>
 
   <body>
-  <a href="/newticket_multitracks?num=5">Fill out Multitrack Information</a>
+    <button id="submitNewTicket" type="button">Next</button>
   </body>
 
 {% endblock %}
