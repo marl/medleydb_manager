@@ -23,7 +23,7 @@ function getRequestRecordInput(){
 	expected_num=$("#expected_num").val();
 	genre=$("#genre").val();
 	
-	// Call api to record information to database and send email
+	// Call api to record information to database
 	$.get("/api/requestrecord?your_name=" + your_name +
 		"&your_email=" + your_email +
 		"&you=" + you +
@@ -41,6 +41,8 @@ function getRequestRecordInput(){
 		} 
 	);
 
+	// Send email to your_email, MedleyD.taea5mqvehv6g5ij@u.box.com , and studio manager
+
 	// Redirect to thank you page
 	window.location = "/thankyou";
 }
@@ -48,6 +50,8 @@ function getRequestRecordInput(){
 
 function getNewTicketInput(){
 	// do for all id's in newticket.html
+	ticket_name = $("#ticket_name").val();
+	status = $("#status").val();
 	session_date = $("#session_date").val();
 	engineer_name = $("#engineer_name").val();
 	engineer_email = $("#engineer_email").val();
@@ -99,6 +103,7 @@ function getNewMultitrackInput(){
 	start_time = $("#start_time").val();
 	end_time = $("#end_time").val();
 	genre = $("#genre").val();
+	num_instruments = $("#genre").val();
 
 	$.get("/api/newmultitrack?multitrack_name=" + multitrack_name + 
 		"&multitrack_id=" + multitrack_id +
@@ -119,6 +124,9 @@ function getNewMultitrackInput(){
 		window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+"&total_multitracks="+total_multitracks;
 	}
 	else {
+
+		// Send email to your_email, MedleyD.taea5mqvehv6g5ij@u.box.com , and studio manager
+
 		window.location = "/thankyou";
 	}
 

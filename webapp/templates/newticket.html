@@ -6,7 +6,22 @@
   <form id='newticket' topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
       <h1 class="sub-header">Sign Up for a New Ticket</h1>
       <p class="text-muted">Only fill this out if your request to record has been approved. Fill in the parts of the form that apply.</p>
-
+      <fieldset class="form-group">
+        <label for="exampleInputDate1">Ticket Name</label>
+        <input type="date" class="form-control" id="ticket_name" placeholder="MM/DD/YY">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleSelect1">Status of ticket</label>
+        <select class="form-control" id="status">
+          <option selected="selected">Requested</option>
+          <option>Scheduled</option>
+          <option>Recorded</option>
+          <option>Mixed</option>
+          <option>Bounced</option>
+          <option>Processed</option>
+          <option>Complete</option>
+        </select>
+      </fieldset>
       <h3 class="sub-header">Recording session</h3>
       <fieldset class="form-group">
         <label for="exampleInputDate1">Session date</label>
