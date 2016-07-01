@@ -7,6 +7,7 @@ import tempfile
 import operator
 import sqlite3
 import time
+import numpy
 from flask import Flask, jsonify, render_template, request, redirect
 
 
@@ -352,16 +353,19 @@ def requestrecord_api():
     # add code to add row to tickets and ticket_history tables
     rv = connect_db()
 
-    rv.execute('insert into tickets values({}, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+    ticket_number_cursor = rv.execute("select ticket_number from tickets")
+    ticket_numbers = [int(t[0]) for t in ticket_number_cursor]
+    ticket_number = numpy.max(ticket_numbers) + 1
+
+    rv.execute('insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
         ticket_number, "Requested", None, date_opened, date_updated, None, None, None, 
         your_name, your_email, "Julia Caruso", "julia.caruso@nyu.edu", genre, expected_num, None))
 
-    rv.execute('insert into ticket_history values({}, "{}", {}, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-        ticket_number, "Requested", ticket_history_key, None, date_opened, date_updated, None, None, None, 
+    rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, "Requested", None, date_opened, date_updated, None, None, None, 
         your_name, your_email, "Julia Caruso", "julia.caruso@nyu.edu", genre, expected_num, None))
 
-    # send an email to someone with information from form
-
+    rv.commit()
 
     return jsonify(
         date_opened=date_opened,
@@ -387,8 +391,10 @@ def newticket_api():
     """
     date_opened = time.strftime("%x")
     date_updated = time.strftime("%x")
-    ticket_name = request.arts.get('ticket_name')
+    ticket_name = request.args.get('ticket_name')
     status = request.args.get('status')
+    your_name = request.args.get('your_name')
+    your_email = request.args.get('your_email')
     session_date = request.args.get('session_date')
     engineer_name = request.args.get('engineer_name')
     engineer_email = request.args.get('engineer_email')
@@ -408,23 +414,32 @@ def newticket_api():
     # code to add row to tickets and ticket_history tables in database
     rv = connect_db()
 
-    rv.execute('insert into tickets values({}, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", {}, "{}")'.format(
-        ticket_number, status, ticket_name, date_opened, date_updated, session_date,
-        engineer_name, engineer_email, creator_name, creator_email,
-        assignee_name, assignee_email, genre, num_multitracks, comments))
+    ticket_number_cursor = rv.execute("select ticket_number from tickets")
+    ticket_numbers = [int(t[0]) for t in ticket_number_cursor]
+    ticket_number = numpy.max(ticket_numbers) + 1
 
-    rv.execute('insert into ticket_history values({}, "{}", {}, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", {}, "{}")'.format(
-        ticket_number, status, ticket_history_key, ticket_name, 
+    query='insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, ticket_name, date_opened, date_updated, session_date,
+        engineer_name, engineer_email, your_name, your_email,
+        assignee_name, assignee_email, genre, num_multitracks, comments)
+    print query
+    rv.execute(query)
+
+    rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, ticket_name, 
         date_opened, date_updated, session_date, engineer_name,
         engineer_email, creator_name, creator_email, assignee_name,
         assignee_email, genre, num_multitracks, comments))
 
+    rv.commit()
 
     return jsonify(
         date_opened=date_opened,
         date_updated=date_updated,
         ticket_name=ticket_name,
         status=status,
+        your_name=your_name,
+        your_email=your_email,
         session_date=session_date,
         engineer_name=engineer_name,
         engineer_email=engineer_email,
@@ -447,6 +462,18 @@ def newmultitrack_api():
     """
     API for newticket_multitrack.html
     """
+    ticket_number = request.args.get('ticket_number')
+
+    your_name = request.args.get('your_name')
+    your_email = request.args.get('your_email')
+    status = request.args.get('status')
+    engineer_name = request.args.get('engineer_name')
+    engineer_email = request.args.get('engineer_email')
+    mixer_name = request.args.get('mixer_name')
+    mixer_email = request.args.get('mixer_email')
+    bouncer_name = request.args.get('bouncer_name')
+    bouncer_email = request.args.get('bouncer_email')
+    comments = request.args.get('comments')
 
     date_opened = time.strftime("%x")
     date_updated = time.strftime("%x")
@@ -459,20 +486,32 @@ def newmultitrack_api():
     num_instruments = request.args.get('num_instruments')
 
     # code to add row to multitracks and multitrack_history tables in database
-    rv.execute('insert into multitracks_in_ticket values({},"{}",{},"{}","{}","{}","{}","{}",{},"{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
+    rv.execute('insert into multitracks_in_ticket values("{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
         ticket_number, status, multitrack_id, date_opened, date_updated, 
         artist_name, multitrack_name, genre, num_instruments,
-        creator_name, creator_email, engineer_name, engineer_email, 
+        your_name, your_email, engineer_name, engineer_email, 
         mixer_name, mixer_email, bouncer_name, bouncer_email, comments))
 
-    rv.execute('insert into multitrack_history values({}, "{}", {}, {}, "{}", "{}", "{}", "{}", {}, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-        ticket_number, status, multitrack_id, multitrack_history_key, 
+    rv.execute('insert into multitrack_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, multitrack_id,
         date_opened, date_updated, artist_name, multitrack_name, genre,
-        num_instruments, creator_name, creator_email, engineer_name, engineer_email, 
+        num_instruments, your_name, your_email, engineer_name, engineer_email, 
         mixer_name, mixer_email, bouncer_name, bouncer_email, comments))
 
+    rv.commit()
 
     return jsonify(
+        ticket_number=ticket_number,
+        your_name=your_name,
+        your_email=your_email,
+        status=status,
+        engineer_name=engineer_name,
+        engineer_email=engineer_email,
+        mixer_name=mixer_name,
+        mixer_email=mixer_email,
+        bouncer_name=bouncer_name,
+        bouncer_email=bouncer_email,
+        comments=comments,
         date_opened=date_opened,
         date_updated=date_updated,
         multitrack_name=multitrack_name,

@@ -6,9 +6,10 @@
   <form id='newticket' topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
       <h1 class="sub-header">Sign Up for a New Ticket</h1>
       <p class="text-muted">Only fill this out if your request to record has been approved. Fill in the parts of the form that apply.</p>
+
       <fieldset class="form-group">
         <label for="exampleInputDate1">Ticket Name</label>
-        <input type="date" class="form-control" id="ticket_name" placeholder="MM/DD/YY">
+        <input type="text" class="form-control" id="ticket_name" placeholder="Ticket Name">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleSelect1">Status of ticket</label>
@@ -22,6 +23,35 @@
           <option>Complete</option>
         </select>
       </fieldset>
+
+      <h3 class="sub-header">Your Information</h3>
+      <fieldset class="form-group">
+        <label for="exampleInputName1">Full Name</label>
+        <input type="name" class="form-control" id="your_name" placeholder="Full name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Your Email Address</label>
+        <input type="email" class="form-control" id="your_email" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleSelect1">Who are you?</label>
+        <select class="form-control" id="you">
+          <option>NYU Student</option>
+          <option>NYU Faculty</option>
+          <option>Affiliate</option>
+          <option>External</option>
+        </select>
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputName1">Full name of person you are in contact with at NYU</label>
+        <input type="name" class="form-control" id="contact_name" placeholder="Full name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Email address of person you are in contact with at NYU</label>
+        <input type="email" class="form-control" id="contact_email" placeholder="Enter email">
+        <small class="text-muted">Required for non-NYU people, optional for others.</small>
+      </fieldset>
+
       <h3 class="sub-header">Recording session</h3>
       <fieldset class="form-group">
         <label for="exampleInputDate1">Session date</label>
@@ -54,12 +84,20 @@
 
       <h3 class="sub-header">Mixing and beyond</h3>
       <fieldset class="form-group">
-        <label for="exampleInputFirstName1">Full name of mixing engineer</label>
+        <label for="exampleInputFirstName1">Mixing Engineer's Name</label>
         <input type="name" class="form-control" id="mixer_name" placeholder="Engineer's name">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputEmail1">Mixing Engineer's Email Address</label>
         <input type="email" class="form-control" id="mixer_email" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Bouncing's Name</label>
+        <input type="name" class="form-control" id="bouncer_name" placeholder="Bouncer's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Bouncer's Email Address</label>
+        <input type="email" class="form-control" id="bouncer_email" placeholder="Enter email">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputDate1">Date tracks were mixed</label>
@@ -80,7 +118,7 @@
       
       <fieldset class="form-group">
         <label for="exampleInputEmail1">Description of music</label>
-        <input type="email" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz">
+        <input type="text" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz">
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleSelect1">Number of songs recorded to turn into multitracks</label>
