@@ -88,7 +88,6 @@ function getNewTicketInput(){
 		"&comments=" + comments +
 		"&num_multitracks=" + num_multitracks, 
 		function(response){
-			console.log("asdf");
 			console.log($.parseJSON(response)); //for debugging - will print the returned info
 		} 
 	);
@@ -100,7 +99,6 @@ function getNewTicketInput(){
 
 
 function getNewMultitrackInput(){
-	console.log('hi')
 	// same as above
 	ticket_number = $("#ticket_number").val();
 	your_name = $("#your_name").val();
@@ -151,12 +149,37 @@ function getNewMultitrackInput(){
 		window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+"&total_multitracks="+total_multitracks;
 	}
 	else {
-
-		// Send email to your_email, MedleyD.taea5mqvehv6g5ij@u.box.com , and studio manager
-
 		window.location = "/thankyou";
 	}
 
+}
+
+
+function getUpdatedTicketInput(){
+	var ticket_number = getParameterByName('id');
+	status = $("#status").val();
+	session_date = $("#session_date").val();
+	engineer_name = $("#engineer_name").val();
+	engineer_email = $("#engineer_email").val();
+	assignee_name = $("#assignee_name").val();
+	assignee_email = $("#assignee_email").val();
+	comments = $("#comments").val();
+
+	// Call api to record information to database
+	$.get("/api/updateticket?status=" + status + 
+		"&ticket_number=" + ticket_number +
+		"&session_date=" + session_date + 
+		"&engineer_name=" + engineer_name +
+		"&engineer_email=" + engineer_email +
+		"&assignee_name=" + assignee_name +
+		"&assignee_email=" + assignee_email +
+		"&comments=" + comments,
+		function(response){
+			console.log($.parseJSON(response)); //for debugging - will print the returned info
+		} 
+	);
+
+	window.location = "/viewtickets";
 }
 
 
@@ -179,5 +202,6 @@ $(document).ready(function() {
 	$("#submitNewTicket").click(getNewTicketInput);
 	$("#nextMultitrack").click(getNewMultitrackInput);
 	$("#submitNewMultitrack").click(getNewMultitrackInput);
+	$("#updateTicket").click(getUpdatedTicketInput);
 
 });

@@ -203,10 +203,13 @@ def view_tickets():
         tickets[name] = []
 
     tickets['url'] = []
+    tickets['delete'] = []
+
     for row in cursor:
         for name, item in zip(tickets_headers, row):
             tickets[name].append(item)
         tickets['url'].append('/ticket?id={}'.format(row[0]))
+        tickets['delete'].append('/api/deleteticket?ticket_number={}'.format(row[0]))
 
     formatted_tickets_headers = [format_headers(h) for h in tickets_headers]
 
@@ -288,9 +291,12 @@ def ticket():
     multitracks_in_ticket = fill_table(multitracks_in_ticket_headers, multitracks_cursor)
 
     multitracks_in_ticket['url'] = []
+    multitracks_in_ticket['delete'] = []
+
     multitracks_cursor = rv.execute('select * from multitracks where ticket_number="{}"'.format(ticket_id))
     for row in multitracks_cursor:
         multitracks_in_ticket['url'].append('/multitrack?id={}'.format(row[2]))
+        multitracks_in_ticket['delete'].append('/api/deletemultitrack?ticket_number={}'.format(row[2]))
 
     return render_template('ticket.html', ticket_id=ticket_id,
             db_ticket_status_headers=ticket_status_headers,
@@ -498,7 +504,6 @@ def newticket_api():
         ticket_number, status, ticket_name, date_opened, date_updated, session_date,
         engineer_name, engineer_email, your_name, your_email,
         assignee_name, assignee_email, genre, num_multitracks, comments)
-    print query
     rv.execute(query)
 
     rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
@@ -533,6 +538,86 @@ def newticket_api():
         comments=comments,
         num_multitracks=num_multitracks
         )
+
+@APP.route('/api/deleteticket')
+def deleteticket_api():
+    ticket_number = request.args.get('ticket_number')
+    rv = connect_db()
+
+    rv.execute('delete from tickets where ticket_number={}'.format(ticket_number))
+    rv.execute('delete from ticket_history where ticket_number={}'.format(ticket_number))
+    rv.execute('delete from multitracks where ticket_number={}'.format(ticket_number))
+    rv.execute('delete from multitrack_history where ticket_number={}'.format(ticket_number))
+    rv.commit()
+
+    return redirect(url_for("view_tickets"))
+
+@APP.route('/api/updateticket')
+def updateticket_api():
+
+    status = request.args.get('status')
+    session_date = request.args.get('session_date')
+    engineer_name = request.args.get('engineer_name')
+    engineer_email = request.args.get('engineer_email')
+    assignee_name = request.args.get('assignee_name')
+    assignee_email = request.args.get('assignee_email')
+    comments = request.args.get('comments')
+
+    # code to UPDATE row
+    ticket_number = request.args.get('ticket_number')
+    rv = connect_db()
+
+    if status is not None:
+        print status
+        print ticket_number
+        rv.execute('update tickets set status = "{}" where ticket_number = {}'.format(status, ticket_number))
+        rv.execute('update ticket_history set status = "{}" where ticket_number = {}'.format(status, ticket_number))
+        rv.execute('update multitracks set status = "{}" where ticket_number = {}'.format(status, ticket_number))
+        rv.execute('update multitrack_history set status = "{}" where ticket_number = {}'.format(status, ticket_number))
+
+    if session_date is not None:
+        rv.execute('update tickets set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
+        rv.execute('update ticket_history set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
+
+    if engineer_name is not None:
+        rv.execute('update tickets set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
+        rv.execute('update ticket_history set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
+        rv.execute('update multitracks set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
+        rv.execute('update multitrack_history set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
+    if engineer_email is not None:
+        rv.execute('update tickets set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
+        rv.execute('update ticket_history set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
+        rv.execute('update multitracks set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
+        rv.execute('update multitrack_history set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
+    if assignee_name is not None:
+        rv.execute('update tickets set assignee_name = "{}" where ticket_number = {}'.format(assignee_name, ticket_number))
+        rv.execute('update ticket_history set assignee_name = "{}" where ticket_number = {}'.format(assignee_name, ticket_number))
+        
+    if assignee_email is not None:
+        rv.execute('update tickets set assignee_email = "{}" where ticket_number = {}'.format(assignee_email, ticket_number))
+        rv.execute('update ticket_history set assignee_email = "{}" where ticket_number = {}'.format(assignee_email, ticket_number))
+        
+    if comments is not None:
+        rv.execute('update tickets set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
+        rv.execute('update ticket_history set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
+        rv.execute('update multitracks set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
+        rv.execute('update multitrack_history set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
+    
+    rv.commit()
+
+ 
+
+    return jsonify(
+        status=status,
+        session_date=session_date,
+        engineer_name=engineer_name,
+        engineer_email=engineer_email,
+        assignee_name=assignee_name,
+        assignee_email=assignee_email,
+        comments=comments
+        )
+
+
 
 @APP.route('/api/newmultitrack')
 def newmultitrack_api():
@@ -598,6 +683,23 @@ def newmultitrack_api():
         end_time=end_time,
         genre=genre,
         num_instruments=num_instruments)
+
+
+@APP.route('/api/deletemultitrack')
+def deletemultitrack_api():
+    ticket_number = request.args.get('ticket_number')
+    rv = connect_db()
+
+    rv.execute('delete from multitracks where ticket_number={}'.format(ticket_number))
+    rv.execute('delete from multitrack_history where ticket_number={}'.format(ticket_number))
+    rv.commit()
+
+    return redirect(url_for("viewtickets"))
+
+
+
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
