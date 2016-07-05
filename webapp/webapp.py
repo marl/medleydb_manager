@@ -3,12 +3,11 @@ Main webapp.py function
 """
 #!/usr/bin/env python
 import os
-import sys
 import sqlite3
 import time
 import argparse
 import numpy
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, flash, redirect, url_for, send_from_directory
 from flask_mail import Message, Mail
 from request_record_email import BODY as request_record_body
 
@@ -22,21 +21,53 @@ APP.config.update(dict(
 ))
 
 APP.config.update(dict(
-    DATABASE=os.path.join(APP.root_path, 'static', 'ticketmanager.db')
+    DATABASE=os.path.join(APP.root_path, 'static', 'ticketmanager.db'),
+    UPLOAD_FOLDER="uploads"
 ))
 
-def send_mail(recipients, body, attachment=None):
+def allowed_file(filename):
+    allowed= '.' in filename and filename.rsplit('.', 1)[1] in ["pdf","jpg","jpeg","png"]
+    return allowed
+
+
+@APP.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+    # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        uploaded_file = request.files['file']
+        if uploaded_file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if uploaded_file and allowed_file(uploaded_file.filename):
+            uploaded_file.save(os.path.join(APP.config['UPLOAD_FOLDER'], uploaded_file.filename))
+            return redirect(url_for('uploaded_file',filename=uploaded_file.filename))
+
+
+@APP.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(APP.config['UPLOAD_FOLDER'], filename)
+
+
+def send_mail(recipients, subject, body, attachment=None):
     print APP.config
     if not isinstance(recipients, list):
         recipients = [recipients]
     msg = Message(
-      'Hello',
-       sender='medleydbaccess@gmail.com',
-       recipients=recipients)
+        recipients=recipients,
+        subject=subject,
+        sender='medleydbaccess@gmail.com'
+       )
+
     msg.body = body
+
     if attachment is not None:
-        with APP.open_resource(attachment) as fp: msg.attach(attachment, "image/pdf", fp.read())
+        with APP.open_resource(attachment) as fp:
+            msg.attach(attachment, "image/pdf", fp.read())
     MAIL.send(msg)
+
     return True
 
 
@@ -393,18 +424,24 @@ def requestrecord_api():
     # code to send automated email
     send_mail(
         "hmyip1@gmail.com", 
-        "Thank you for submitting your request for a new ticket. We will contact you shortly about your recording session time and date.",
+        # your_email
+        "Confirming your Recording Session Request | MedleyDB Manager",
+        "Thank you for submitting your request for a recording session in Dolan. We will contact you shortly about your recording session time and date.",
         attachment=None)
 
     send_mail(
         "hmyip1@gmail.com",
+        #julia.caruso@nyu.edu
+        "Request to Record | MedleyDB Manger",
         request_record_body.format(your_name, your_email, contact_name, contact_email, record_date1, record_date2, record_date3, hours_needed, expected_num),
         attachment=None)
 
     send_mail(
-        "MedleyD.taea5mqvehv6g5ij@u.box.com",
-        "",
-        attachment=None)
+        "hmyip1@gmail.com",
+        # MedleyD.taea5mqvehv6g5ij@u.box.com
+        "Create Commons Consent Form | MedleyDB Manager",
+        " ",
+        attachment="consentform")
 
     return jsonify(
         date_opened=date_opened,

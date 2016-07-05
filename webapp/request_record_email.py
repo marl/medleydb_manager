@@ -1,5 +1,5 @@
 BODY = """{} ({}) has requested a recording session.
-\n He/She is in contact with {} ({}) from NYU.
-\n The three recording session dates requested are: {}, {}, and {}.
-\n It is expected to take {} hours for the {} multitracks.
+\nHe/She is in contact with {} ({}) from NYU.
+\nThe three recording session dates requested are: {}, {}, and {}.
+\nIt is expected to take {} hours for the {} multitracks he/she wants to record in Dolan.
 """

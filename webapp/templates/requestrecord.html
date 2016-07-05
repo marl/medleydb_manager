@@ -82,15 +82,19 @@
       
 
       <h4> Create Commons Consent Form:</h4>
-        <body><a href="/static/Description_Forms_NYU_student.pdf">For NYU Students</a> <br /> <a href="/static/Description_forms_general.pdf">For non-NYU students</a>
+        <body> <a href="/static/Description_Forms_NYU_student.pdf">For NYU Students</a> 
+        <br/> <a href="/static/Description_forms_general.pdf">For Non-NYU students</a>
         </body>
 
-      <!-- send automated email with form attached to... -->
 
       </br></br>
       <p>
       Upload your signed form here:<br>
-      <input type="file" name="datafile" size="50">
+      <form action="upload" method="post" enctype="multipart/form-data">
+      <p><input type="file" name="file">
+         <input type="submit" value="Upload">
+         
+      </form>
       </p>
       </br>
 
