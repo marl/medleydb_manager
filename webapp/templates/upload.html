@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+    <h1 class="sub-header">Request a Recording Session</h1>
+
+    <h4> Please fill out the Creative Commons Consent Form:</h4>
+      <body> <a href="/static/Description_Forms_NYU_student.pdf">Download Form: NYU Students</a> 
+      <br/> <a href="/static/Description_forms_general.pdf">Download Form: Non-NYU students</a>
+      </body>
+
+
+    </br></br>
+
+    Upload your signed form here:<br>
+    <form action={{ upload_url }} method="POST" enctype = "multipart/form-data" id={{ ticketnumber }}>
+         <input type="file" name="file" accept="image/*" id={{ ticketnumber }}>
+         <br>
+         <input type="submit" id="thisisatest" value="Submit" class="btn btn-primary">
+    </form>
+    </br>
+
+{% endblock %}
