@@ -55,6 +55,7 @@
             {% for col in range(formatted_multitracks_in_ticket_headers|count) %}
                 <th>{{ formatted_multitracks_in_ticket_headers[col] }}</th>
             {% endfor %}
+                <th></th>
           </thead>
           <tbody>
             {% for row_index in range(multitracks_in_ticket['ticket_number']|count) %}
@@ -63,11 +64,61 @@
                   {% for col in range(db_multitracks_in_ticket_headers|count) %}
                     <td>{{ multitracks_in_ticket[db_multitracks_in_ticket_headers[col]][row_index] }}</td>
                   {% endfor %}
+                    <td><a href="{{ multitracks_in_ticket["delete"][row_index] }}">Delete Multitrack</a></td>
                 </tr>
             {% endfor %}
           </tbody>
         </table>
 
       </div>
+
+<br/><br/>
+ <form id='updateticket' topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
+      <h1 class="sub-header">Update Ticket {{ ticket_id }} </h1>
+
+      <fieldset class="form-group">
+        <label for="exampleSelect1">Status of ticket</label>
+        <select class="form-control" id="status">
+          <option selected="selected">Requested</option>
+          <option>Scheduled</option>
+          <option>Recorded</option>
+          <option>Mixed</option>
+          <option>Bounced</option>
+          <option>Processed</option>
+          <option>Complete</option>
+        </select>
+      </fieldset>
+      <fieldset>
+        <label for="exampleInputDate1">Session date</label>
+        <input type="date" class="form-control" id="session_date" placeholder="MM/DD/YY">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Engineer's Name</label>
+        <input type="name" class="form-control" id="engineer_name" placeholder="Engineer's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Engineer's Email Address</label>
+        <input type="email" class="form-control" id="engineer_email" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Assignee's Name</label>
+        <input type="name" class="form-control" id="assignee_name" placeholder="Assignee's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Assignee's Email Address</label>
+        <input type="email" class="form-control" id="assignee_email" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+          <label for="exampleTextarea">Additional Comments</label>
+          <textarea class="form-control" id="comments" rows="3"></textarea>
+      </fieldset>
+      
+  <body>
+    <button id="updateTicket" type="button">Update</button>
+  </body>
+
+</form>
+
+
 
 {% endblock %}

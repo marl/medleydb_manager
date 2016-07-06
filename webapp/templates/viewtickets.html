@@ -12,14 +12,16 @@
             {% for col in range(formatted_tickets_headers|count) %}
                 <th>{{ formatted_tickets_headers[col] }}</th>
             {% endfor %}
+                <th></th>
           </thead>
           <tbody>
             {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
-                    <td><a href="{{ tickets["url"][row_index] }}" >View Ticket</a></td>
+                    <td><a href="{{ tickets["url"][row_index] }}">View Ticket</a></td>
                   {% for col in range(db_tickets_headers|count) %}
                     <td>{{ tickets[db_tickets_headers[col]][row_index] }}</td>
                   {% endfor %}
+                    <td><a href="{{ tickets["delete"][row_index] }}">Delete Ticket</a></td>
                 </tr>
             {% endfor %}
           </tbody>
