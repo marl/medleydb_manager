@@ -3,12 +3,15 @@ Main webapp.py function
 """
 #!/usr/bin/env python
 import os
-import sqlite3
 import time
 import argparse
 import numpy
-from flask import Flask, jsonify, render_template, request, flash, redirect, url_for, send_from_directory
-from flask_mail import Message, Mail
+from flask import Flask, jsonify, render_template, request, flash, redirect
+from flask import url_for
+from flask_mail import Mail
+
+from utils import connect_db, get_header, send_mail
+from utils import fill_table, format_headers, allowed_file
 from request_record_email import BODY as request_record_body
 
 APP = Flask(__name__)
@@ -25,122 +28,6 @@ APP.config.update(dict(
     UPLOAD_FOLDER="uploads"
 ))
 
-def allowed_file(filename):
-    allowed= '.' in filename and filename.rsplit('.', 1)[1] in ["pdf","jpg","jpeg","png"]
-    return allowed
-
-
-@APP.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST':
-    # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        uploaded_file = request.files['file']
-        if uploaded_file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if uploaded_file and allowed_file(uploaded_file.filename):
-            uploaded_file.save(os.path.join(APP.config['UPLOAD_FOLDER'], uploaded_file.filename))
-            return redirect(url_for('uploaded_file',filename=uploaded_file.filename))
-
-
-@APP.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(APP.config['UPLOAD_FOLDER'], filename)
-
-
-def send_mail(recipients, subject, body, attachment=None):
-    print APP.config
-    if not isinstance(recipients, list):
-        recipients = [recipients]
-    msg = Message(
-        recipients=recipients,
-        subject=subject,
-        sender='medleydbaccess@gmail.com'
-       )
-
-    msg.body = body
-
-    if attachment is not None:
-        with APP.open_resource(attachment) as fp:
-            msg.attach(attachment, "image/pdf", fp.read())
-    MAIL.send(msg)
-
-    return True
-
-
-def connect_db():
-    """
-    Creates and connects to an sqlite3 database that will hold the
-    data of tickets and multitracks.
-
-    Returns
-    -------
-    rv: database
-    """
-    rv = sqlite3.connect(APP.config['DATABASE'])
-    rv.row_factory = sqlite3.Row
-    return rv
-
-
-def fill_table(headers, cursor):
-    """
-    Fills a table with given headers.
-
-    Parameters
-    ----------
-    headers: list of column names
-    cursor: database object
-
-    Returns
-    -------
-    table: dictionary of headers
-    """
-    table = {}
-    for name in headers:
-        table[name] = []
-
-    for row in cursor:
-        for name, item in zip(headers, row):
-            table[name].append(item)
-
-    return table
-
-
-def get_header(table_name):
-    """
-    Retrieves headers from a table on the database
-
-    Parameters
-    ---------
-    table_name: string
-
-    Returns
-    -------
-    column_headers: list
-    """
-    rv = connect_db()
-    cursor = rv.execute('select * from {}'.format(table_name))
-    column_headers = list(map(lambda x: x[0], cursor.description))
-
-    return column_headers
-
-def format_headers(column_name):
-    """
-    Formats headers of tables so underscores are replaced with spaces,
-    and makes first letter of each word uppercase.
-
-    Parameters
-    ----------
-    column_name: string
-
-    Returns
-    -------
-    list of strings
-    """
-    return column_name.replace("_", " ").title()
 
 # TEMPLATE NAVIGATION----------------------
 @APP.route('/')
@@ -194,9 +81,9 @@ def view_tickets():
     formatted_tickets_headers: list
         formatted headers from tickets table
     """
-    rv = connect_db()
-    cursor = rv.execute('select * from tickets')
-    tickets_headers = get_header('tickets')
+    db_connection = connect_db(APP)
+    cursor = db_connection.execute('select * from tickets')
+    tickets_headers = get_header(APP, 'tickets')
 
     tickets = {}
     for name in tickets_headers:
@@ -210,9 +97,11 @@ def view_tickets():
 
     formatted_tickets_headers = [format_headers(h) for h in tickets_headers]
 
-    return render_template('viewtickets.html', tickets=tickets,
+    return render_template(
+        'viewtickets.html', tickets=tickets,
         db_tickets_headers=tickets_headers,
-        formatted_tickets_headers=formatted_tickets_headers)
+        formatted_tickets_headers=formatted_tickets_headers
+    )
 
 
 @APP.route('/instructions')
@@ -270,38 +159,58 @@ def ticket():
 
     """
     ticket_id = request.args.get('id')
-    rv = connect_db()
-    ticket_status_headers = get_header('tickets')
-    ticket_history_headers = get_header('ticket_history')
-    multitracks_in_ticket_headers = get_header('multitracks')
+    db_connection = connect_db(APP)
+    ticket_status_headers = get_header(APP, 'tickets')
+    ticket_history_headers = get_header(APP, 'ticket_history')
+    multitracks_in_ticket_headers = get_header(APP, 'multitracks')
 
-    formatted_ticket_status_headers = [format_headers(h) for h in ticket_status_headers]
-    formatted_ticket_history_headers = [format_headers(h) for h in ticket_history_headers]
-    formatted_multitracks_in_ticket_headers = [format_headers(h) for h in multitracks_in_ticket_headers]
+    formatted_ticket_status_headers = [
+        format_headers(h) for h in ticket_status_headers
+    ]
+    formatted_ticket_history_headers = [
+        format_headers(h) for h in ticket_history_headers
+    ]
+    formatted_multitracks_in_ticket_headers = [
+        format_headers(h) for h in multitracks_in_ticket_headers
+    ]
 
-    ticket_status_cursor = rv.execute('select * from tickets where ticket_number="{}"'.format(ticket_id))
-    ticket_history_cursor = rv.execute('select * from ticket_history where ticket_number="{}"'.format(ticket_id))
-    multitracks_cursor = rv.execute('select * from multitracks where ticket_number="{}"'.format(ticket_id))
+    ticket_status_cursor = db_connection.execute(
+        'select * from tickets where ticket_number="{}"'.format(ticket_id)
+    )
+    ticket_history_cursor = db_connection.execute(
+        'select * from ticket_history where ticket_number="{}"'.format(
+            ticket_id
+        )
+    )
+    multitracks_cursor = db_connection.execute(
+        'select * from multitracks where ticket_number="{}"'.format(ticket_id)
+    )
 
     tickets = fill_table(ticket_status_headers, ticket_status_cursor)
     ticket_history = fill_table(ticket_history_headers, ticket_history_cursor)
-    multitracks_in_ticket = fill_table(multitracks_in_ticket_headers, multitracks_cursor)
+    multitracks_in_ticket = fill_table(
+        multitracks_in_ticket_headers, multitracks_cursor
+    )
 
     multitracks_in_ticket['url'] = []
-    multitracks_cursor = rv.execute('select * from multitracks where ticket_number="{}"'.format(ticket_id))
+    multitracks_cursor = db_connection.execute(
+        'select * from multitracks where ticket_number="{}"'.format(ticket_id)
+    )
     for row in multitracks_cursor:
         multitracks_in_ticket['url'].append('/multitrack?id={}'.format(row[2]))
 
-    return render_template('ticket.html', ticket_id=ticket_id,
-            db_ticket_status_headers=ticket_status_headers,
-            formatted_ticket_status_headers=formatted_ticket_status_headers,
-            db_ticket_history_headers=ticket_history_headers,
-            formatted_ticket_history_headers=formatted_ticket_history_headers,
-            db_multitracks_in_ticket_headers=multitracks_in_ticket_headers,
-            formatted_multitracks_in_ticket_headers=formatted_multitracks_in_ticket_headers,
-            tickets=tickets,
-            ticket_history=ticket_history,
-            multitracks_in_ticket=multitracks_in_ticket)
+    return render_template(
+        'ticket.html', ticket_id=ticket_id,
+        db_ticket_status_headers=ticket_status_headers,
+        formatted_ticket_status_headers=formatted_ticket_status_headers,
+        db_ticket_history_headers=ticket_history_headers,
+        formatted_ticket_history_headers=formatted_ticket_history_headers,
+        db_multitracks_in_ticket_headers=multitracks_in_ticket_headers,
+        formatted_multitracks_in_ticket_headers=formatted_multitracks_in_ticket_headers,
+        tickets=tickets,
+        ticket_history=ticket_history,
+        multitracks_in_ticket=multitracks_in_ticket
+    )
 
 @APP.route('/multitrack')
 def multitrack():
@@ -321,7 +230,7 @@ def multitrack():
         formatted headers of ticket status table
     db_multitrack_history_headers: list
         headers of multitrack history table
-    formatted_multitrack_history_headers: list
+    formatted_mtrack_history_headers: list
         formatted headers of multitrack history table
     multitrack_history: dictionary
         contents in multitrack history table
@@ -331,27 +240,45 @@ def multitrack():
     """
 
     multitrack_id = request.args.get('id')
-    rv = connect_db()
+    db_connection = connect_db(APP)
 
-    multitrack_status_headers = get_header('multitracks')
-    multitrack_history_headers = get_header('multitrack_history')
+    multitrack_status_headers = get_header(APP, 'multitracks')
+    multitrack_history_headers = get_header(APP, 'multitrack_history')
 
-    formatted_multitrack_status_headers = [format_headers(h) for h in multitrack_status_headers]
-    formatted_multitrack_history_headers = [format_headers(h) for h in multitrack_history_headers]
+    formatted_multitrack_status_headers = [
+        format_headers(h) for h in multitrack_status_headers
+    ]
+    formatted_mtrack_history_headers = [
+        format_headers(h) for h in multitrack_history_headers
+    ]
 
-    multitrack_status_cursor = rv.execute('select * from multitracks where multitrack_id="{}"'.format(multitrack_id))
-    multitrack_history_cursor = rv.execute('select * from multitrack_history where multitrack_id="{}"'.format(multitrack_id))
+    multitrack_status_cursor = db_connection.execute(
+        'select * from multitracks where multitrack_id="{}"'.format(
+            multitrack_id
+        )
+    )
+    multitrack_history_cursor = db_connection.execute(
+        'select * from multitrack_history where multitrack_id="{}"'.format(
+            multitrack_id
+        )
+    )
 
-    multitrack_status = fill_table(multitrack_status_headers, multitrack_status_cursor)
-    multitrack_history = fill_table(multitrack_history_headers, multitrack_history_cursor)
+    multitrack_status = fill_table(
+        multitrack_status_headers, multitrack_status_cursor
+    )
+    multitrack_history = fill_table(
+        multitrack_history_headers, multitrack_history_cursor
+    )
 
-    return render_template('multitrack.html', multitrack_id=multitrack_id,
+    return render_template(
+        'multitrack.html', multitrack_id=multitrack_id,
         db_multitrack_status_headers=multitrack_status_headers,
         formatted_multitrack_status_headers=formatted_multitrack_status_headers,
         db_multitrack_history_headers=multitrack_history_headers,
-        formatted_multitrack_history_headers=formatted_multitrack_history_headers,
+        formatted_mtrack_history_headers=formatted_mtrack_history_headers,
         multitrack_history=multitrack_history,
-        multitrack_status=multitrack_status)
+        multitrack_status=multitrack_status
+    )
 
 
 @APP.route('/newticket_multitracks')
@@ -367,9 +294,11 @@ def new_multitrack():
     """
     multitrack_number = request.args.get('multitrack_number')
     total_multitracks = request.args.get('total_multitracks')
-    return render_template('newticket_multitracks.html', 
+    return render_template(
+        'newticket_multitracks.html', 
         multitrack_number=multitrack_number, 
-        total_multitracks=total_multitracks)
+        total_multitracks=total_multitracks
+    )
 
 @APP.route('/thankyou')
 def thankyou():
@@ -393,7 +322,6 @@ def requestrecord_api():
     date_updated = time.strftime("%x")
     your_name = request.args.get('your_name')
     your_email = request.args.get('your_email')
-    you = request.args.get('you')
     contact_name = request.args.get('contact_name')
     contact_email = request.args.get('contact_email')
     record_date1 = request.args.get('record_date1')
@@ -404,60 +332,54 @@ def requestrecord_api():
     genre = request.args.get('genre')
 
     # add code to add row to tickets and ticket_history tables
-    rv = connect_db()
+    db_connection = connect_db(APP)
 
-    ticket_number_cursor = rv.execute("select ticket_number from tickets")
+    ticket_number_cursor = db_connection.execute(
+        "select ticket_number from tickets"
+    )
     ticket_numbers = [int(t[0]) for t in ticket_number_cursor]
     ticket_number = numpy.max(ticket_numbers) + 1
 
-    rv.execute('insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-        ticket_number, "Requested", None, date_opened, date_updated, None, None, None, 
-        your_name, your_email, "Julia Caruso", "julia.caruso@nyu.edu", genre, expected_num, None))
+    db_connection.execute(
+        'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+            ticket_number, "Requested", None, date_opened, date_updated, None,
+            None, None, your_name, your_email, "Julia Caruso",
+            "julia.caruso@nyu.edu", genre, expected_num, None)
+    )
 
-    rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-        ticket_number, "Requested", None, date_opened, date_updated, None, None, None, 
-        your_name, your_email, "Julia Caruso", "julia.caruso@nyu.edu", genre, expected_num, None))
+    db_connection.execute(
+        'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+            ticket_number, "Requested", None, date_opened, date_updated, None,
+            None, None, your_name, your_email, "Julia Caruso",
+            "julia.caruso@nyu.edu", genre, expected_num, None)
+    )
 
-    rv.commit()
+    db_connection.commit()
 
 
     # code to send automated email
     send_mail(
+        APP, MAIL, 
         "hmyip1@gmail.com", 
         # your_email
         "Confirming your Recording Session Request | MedleyDB Manager",
         "Thank you for submitting your request for a recording session in Dolan. We will contact you shortly about your recording session time and date.",
-        attachment=None)
+        attachment=None
+    )
 
     send_mail(
+        APP, MAIL, 
         "hmyip1@gmail.com",
         #julia.caruso@nyu.edu
         "Request to Record | MedleyDB Manger",
-        request_record_body.format(your_name, your_email, contact_name, contact_email, record_date1, record_date2, record_date3, hours_needed, expected_num),
-        attachment=None)
+        request_record_body.format(
+            your_name, your_email, contact_name, contact_email, record_date1,
+            record_date2, record_date3, hours_needed, expected_num
+        ),
+        attachment=None
+    )
 
-    send_mail(
-        "hmyip1@gmail.com",
-        # MedleyD.taea5mqvehv6g5ij@u.box.com
-        "Create Commons Consent Form | MedleyDB Manager",
-        " ",
-        attachment="consentform")
-
-    return jsonify(
-        date_opened=date_opened,
-        date_updated=date_updated,
-        your_name=your_name,
-        your_email=your_email,
-        you=you,
-        contact_name=contact_name,
-        contact_email=contact_email,
-        record_date1=record_date1,
-        record_date2=record_date2,
-        record_date3=record_date3,
-        hours_needed=hours_needed,
-        expected_num=expected_num,
-        genre=genre
-        )
+    return str(ticket_number)
 
 
 @APP.route('/api/newticket')
@@ -488,26 +410,29 @@ def newticket_api():
     num_multitracks = request.args.get('num_multitracks')
 
     # code to add row to tickets and ticket_history tables in database
-    rv = connect_db()
+    db_connection = connect_db(APP)
 
-    ticket_number_cursor = rv.execute("select ticket_number from tickets")
+    ticket_number_cursor = db_connection.execute(
+        "select ticket_number from tickets"
+    )
     ticket_numbers = [int(t[0]) for t in ticket_number_cursor]
     ticket_number = numpy.max(ticket_numbers) + 1
 
-    query='insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-        ticket_number, status, ticket_name, date_opened, date_updated, session_date,
-        engineer_name, engineer_email, your_name, your_email,
+    db_connection.execute(
+        'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+        ticket_number, status, ticket_name, date_opened, date_updated,
+        session_date, engineer_name, engineer_email, your_name, your_email,
         assignee_name, assignee_email, genre, num_multitracks, comments)
-    print query
-    rv.execute(query)
+    )
 
-    rv.execute('insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+    db_connection.execute(
+        'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
         ticket_number, status, ticket_name, 
         date_opened, date_updated, session_date, engineer_name,
         engineer_email, creator_name, creator_email, assignee_name,
         assignee_email, genre, num_multitracks, comments))
 
-    rv.commit()
+    db_connection.commit()
 
 
     return jsonify(
@@ -532,7 +457,7 @@ def newticket_api():
         genre=genre,
         comments=comments,
         num_multitracks=num_multitracks
-        )
+    )
 
 @APP.route('/api/newmultitrack')
 def newmultitrack_api():
@@ -562,20 +487,22 @@ def newmultitrack_api():
     genre = request.args.get('genre')
     num_instruments = request.args.get('num_instruments')
 
+    db_connection = connect_db(APP)
+
     # code to add row to multitracks and multitrack_history tables in database
-    rv.execute('insert into multitracks_in_ticket values("{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
+    db_connection.execute('insert into multitracks_in_ticket values("{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
         ticket_number, status, multitrack_id, date_opened, date_updated, 
         artist_name, multitrack_name, genre, num_instruments,
         your_name, your_email, engineer_name, engineer_email, 
         mixer_name, mixer_email, bouncer_name, bouncer_email, comments))
 
-    rv.execute('insert into multitrack_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+    db_connection.execute('insert into multitrack_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
         ticket_number, status, multitrack_id,
         date_opened, date_updated, artist_name, multitrack_name, genre,
         num_instruments, your_name, your_email, engineer_name, engineer_email, 
         mixer_name, mixer_email, bouncer_name, bouncer_email, comments))
 
-    rv.commit()
+    db_connection.commit()
 
     return jsonify(
         ticket_number=ticket_number,
@@ -599,17 +526,59 @@ def newmultitrack_api():
         genre=genre,
         num_instruments=num_instruments)
 
+
+@APP.route('/uploadform')
+def upload_form():
+    ticketnumber = request.args.get('ticketnumber')
+    return render_template(
+        'upload.html', upload_url='upload?ticketnumber={}'.format(ticketnumber))
+
+
+@APP.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        ticket_number = request.args.get('ticketnumber')
+        print ticket_number
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+
+        requested_file = request.files['file']
+        if requested_file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if requested_file and allowed_file(requested_file.filename):
+            file_ext = requested_file.filename.rsplit('.', 1)[1]
+            file_save_name = 'signedform_ticket_{}.{}'.format(
+                ticket_number, file_ext
+            )
+            file_save_path = os.path.join(
+                APP.config['UPLOAD_FOLDER'], file_save_name
+            )
+            requested_file.save(file_save_path)
+
+            send_mail(
+                APP, MAIL, "MedleyD.taea5mqvehv6g5ij@u.box.com",
+                " ", " ", attachment=file_save_path
+            )
+
+        return redirect(url_for('thankyou'))
+
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+    PARSER = argparse.ArgumentParser(
         description="medleydb_webapp"
         )
-    parser.add_argument("password", type=str, help="medleydb gmail password")
-    parser.add_argument("--debug", action="store_const", const=True, default=False)
-    args = parser.parse_args()
-    APP.config.update(dict(MAIL_PASSWORD = args.password))
+    PARSER.add_argument("password", type=str, help="medleydb gmail password")
+    PARSER.add_argument(
+        "--debug", action="store_const", const=True, default=False
+    )
+    ARGS = PARSER.parse_args()
+    APP.config.update(dict(MAIL_PASSWORD=ARGS.password))
 
     MAIL = Mail(APP)
 
-    APP.run(port=5080, host='0.0.0.0', debug=args.debug)
+    APP.run(port=5080, host='0.0.0.0', debug=ARGS.debug)
 
 
