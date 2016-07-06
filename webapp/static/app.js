@@ -11,6 +11,7 @@ function getParameterByName(name, url) {
 
 
 function getRequestRecordInput(){
+	
 	your_name=$("#your_name").val();
 	your_email=$("#your_email").val();
 	you=$("#you").val();
@@ -22,7 +23,7 @@ function getRequestRecordInput(){
 	hours_needed=$("#hours_needed").val();
 	expected_num=$("#expected_num").val();
 	genre=$("#genre").val();
-	
+
 	// Call api to record information to database
 	$.get("/api/requestrecord?your_name=" + your_name +
 		"&your_email=" + your_email +
@@ -36,12 +37,10 @@ function getRequestRecordInput(){
 		"&expected_num=" + expected_num +
 		"&genre=" + genre,
 		function(response){
-			console.log($.parseJSON(response)); //for debugging - will print the returned info
+			window.location = "/uploadform?ticketnumber=" + response;
 		} 
 	);
 
-	// Redirect to thank you page
-	window.location = "/thankyou";
 }
 
 
@@ -160,18 +159,7 @@ function getNewMultitrackInput(){
 }
 
 
-
-function validateRequestRecordForm() {
-    var x = document.forms["requestrecord"]["your_name"].value;
-    if (x == null || x == "") {
-        alert("Name must be filled out");
-        return false;
-    }
-}
-
-
 $(document).ready(function() {
-	console.log("javascript working");
 	// add class="active" to certain url path that is clicked
 	var pathname = window.location.pathname;
 	$('.nav > li > a[href="'+pathname+'"]').parent().addClass('active');
