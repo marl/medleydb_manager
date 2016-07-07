@@ -2,47 +2,49 @@
 
 {% block content %}
 
-<form>
+<form data-toggle="validator" role="form" id='nextMultitrack'>
 <h1> Multitrack Information </h1>
 
 <h3 class="sub-header">Multitrack {{ multitrack_number }}</h3>
       <fieldset class="form-group">
         <label for="exampleInputNames1">Name of Multitrack</label>
-        <input type="name" class="form-control" id="multitrack_name" placeholder="Name of multitrack">
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputFirstName1">Track ID</label>
-        <input type="name" class="form-control" id="multitrack_id" placeholder="Track ID">
+        <input type="text" class="form-control" id="multitrack_name" placeholder="Name of multitrack" required>
+        <div class="help-block with-errors"></div>
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputName1">Artist Name</label>
-        <input type="name" class="form-control" id="artist_name" placeholder="Artist name">
+        <input type="text" class="form-control" id="artist_name" placeholder="Artist name" required>
+        <div class="help-block with-errors"></div>
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputName1">Start time</label>
-        <input type="name" class="form-control" id="start_time" placeholder="Start time">
+        <input type="text" class="form-control" id="start_time" placeholder="Start time" required>
+        <div class="help-block with-errors"></div>
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputName1">End time</label>
-        <input type="name" class="form-control" id="end_time" placeholder="End time">
+        <input type="text" class="form-control" id="end_time" placeholder="End time" required>
+        <div class="help-block with-errors"></div>
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputEmail1">Genre</label>
-        <input type="email" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz">
+        <input type="text" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz" required>
+        <div class="help-block with-errors"></div>
       </fieldset>
       <fieldset class="form-group">
         <label for="exampleInputEmail1">Number of Instruments</label>
-        <input type="email" class="form-control" id="num_instruments" placeholder="Number of Instruments">
+        <input type="text" class="form-control" id="num_instruments" placeholder="Number of Instruments" required>
+        <div class="help-block with-errors"></div>
       </fieldset>
 
 
 {% if multitrack_number != total_multitracks %}
-    <button id="nextMultitrack" type="button">Next Multitrack</button>
+    <button id="nextMultitrack" type="submit" class="btn btn-primary">Next Multitrack</button>
 
 {% else %}
-    <button id="submitNewMultitrack" type="button">Submit Request for a New Ticket</button>
+    <button id="submitNewMultitrack" type="submit" class="btn btn-primary">Submit Request for a New Ticket</button>
 {% endif %}
 
-
+</form>
 
 {% endblock %}

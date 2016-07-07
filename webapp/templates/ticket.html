@@ -3,7 +3,7 @@
 
 <!-- Fills in everything below in the empty space -->
 {% block content %}
-<h1 class="sub-header">More Information About Ticket {{ ticket_id }} </h1>
+<h1 class="sub-header">More Information About Ticket {{ ticket_number }} </h1>
       <div class="table-responsive">
         <h3>Current status of ticket</h3>
 
@@ -52,19 +52,19 @@
         <table class="table">
           <thead>
                 <th></th>
-            {% for col in range(formatted_multitracks_in_ticket_headers|count) %}
-                <th>{{ formatted_multitracks_in_ticket_headers[col] }}</th>
+            {% for col in range(formatted_multitracks_headers|count) %}
+                <th>{{ formatted_multitracks_headers[col] }}</th>
             {% endfor %}
                 <th></th>
           </thead>
           <tbody>
-            {% for row_index in range(multitracks_in_ticket['ticket_number']|count) %}
+            {% for row_index in range(multitracks['ticket_number']|count) %}
                 <tr>
-                    <td><a href="{{ multitracks_in_ticket["url"][row_index] }}">View Multitrack</a></td>
-                  {% for col in range(db_multitracks_in_ticket_headers|count) %}
-                    <td>{{ multitracks_in_ticket[db_multitracks_in_ticket_headers[col]][row_index] }}</td>
+                    <td><a href="{{ multitracks["url"][row_index] }}">View Multitrack</a></td>
+                  {% for col in range(db_multitracks_headers|count) %}
+                    <td>{{ multitracks[db_multitracks_headers[col]][row_index] }}</td>
                   {% endfor %}
-                    <td><a href="{{ multitracks_in_ticket["delete"][row_index] }}">Delete Multitrack</a></td>
+                    <td><a href="{{ multitracks["delete"][row_index] }}">Delete Multitrack</a></td>
                 </tr>
             {% endfor %}
           </tbody>
@@ -74,7 +74,7 @@
 
 <br/><br/>
  <form id='updateticket' topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
-      <h1 class="sub-header">Update Ticket {{ ticket_id }} </h1>
+      <h1 class="sub-header">Update Ticket {{ ticket_number }} </h1>
 
       <fieldset class="form-group">
         <label for="exampleSelect1">Status of ticket</label>
@@ -87,6 +87,10 @@
           <option>Processed</option>
           <option>Complete</option>
         </select>
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputDate1">Ticket Name</label>
+        <input type="text" class="form-control" id="ticket_name" placeholder="Ticket Name">
       </fieldset>
       <fieldset>
         <label for="exampleInputDate1">Session date</label>

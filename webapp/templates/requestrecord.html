@@ -5,32 +5,38 @@
   <h1 class="sub-header">Request a Recording Session</h1>
 
   <!-- YOUR INFORMATION -->
-  <form data-toggle="validator" role="form">
+  <form data-toggle="validator" role="form" id="requestrecord">
     
     <fieldset class="form-group">
       <label for="exampleInputName1">Full Name</label>
-      <input type="name" class="form-control" id="your_name" placeholder="Full name" required>
+      <input type="text" class="form-control" id="your_name" placeholder="Full name" data-error="Please fill out this field" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleInputEmail1">Your Email Address</label>
-      <input type="email" class="form-control" id="your_email" placeholder="Enter email" required>
+      <input type="email" class="form-control" id="your_email" placeholder="Enter email" data-error="Please fill out this field" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleSelect1">Who are you?</label>
-      <select class="form-control" id="you">
+      <select class="form-control" id="you" required>
+        <option value="" disabled selected>Select your option</option>
         <option>NYU Student</option>
         <option>NYU Faculty</option>
         <option>Affiliate</option>
         <option>External</option>
       </select>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleInputName1">Full name of person you are in contact with at NYU</label>
-      <input type="name" class="form-control" id="contact_name" placeholder="Full name">
+      <input type="text" class="form-control" id="contact_name" placeholder="Full name" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleInputEmail1">Email address of person you are in contact with at NYU</label>
-      <input type="email" class="form-control" id="contact_email" placeholder="Enter email">
+      <input type="email" class="form-control" id="contact_email" placeholder="Enter email" required>
+      <div class="help-block with-errors"></div>
       <small class="text-muted">Required for non-NYU people, optional for others.</small>
     </fieldset>
 
@@ -39,29 +45,35 @@
     <iframe src="https://calendar.google.com/calendar/embed?showPrint=0&amp;showTabs=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=u6qidgtaac2eitnkgp34hblevo%40group.calendar.google.com&amp;color=%2342104A&amp;ctz=America%2FNew_York" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     <fieldset class="form-group">
       <label for="exampleInputDate1">Date and time availability: first choice</label>
-      <input type="date" class="form-control" id="record_date1" placeholder="MM/DD/YY">
+      <input type="date" class="form-control" id="record_date1" placeholder="MM/DD/YY" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleInputDate1">Date and time availability: second choice</label>
-      <input type="date" class="form-control" id="record_date2" placeholder="MM/DD/YY">
+      <input type="date" class="form-control" id="record_date2" placeholder="MM/DD/YY" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleInputDate1">Date and time availability: third choice</label>
-      <input type="date" class="form-control" id="record_date3" placeholder="MM/DD/YY">
+      <input type="date" class="form-control" id="record_date3" placeholder="MM/DD/YY" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleSelect1">Number of studio hours needed</label>
-      <select class="form-control" id="hours_needed">
+      <select class="form-control" id="hours_needed" required="">
+        <option value="" disabled selected>Select your option</option>
         <option>2</option>
         <option>4</option>
         <option>6</option>
         <option>8</option>
         <option>10</option>
       </select>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleSelect1">Expected number of songs</label>
-      <select class="form-control" id="expected_num">
+      <select class="form-control" id="expected_num" required>
+        <option value="" disabled selected>Select your option</option>
         <option>1</option>
         <option>2</option>
         <option>3</option>
@@ -74,12 +86,14 @@
         <option>10</option>
         <option>10+</option>
       </select>
+      <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
       <label for="exampleInputEmail1">List the genres of music you will record</label>
-      <input type="text" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz">
+      <input type="text" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz" required>
+      <div class="help-block with-errors"></div>
     </fieldset>
 
-    <button id="submitRequest" type="button" class="btn btn-primary">Submit</button>
+    <button id="submitRequest" type="submit" class="btn btn-primary">Submit</button>
 </form>
   {% endblock %}

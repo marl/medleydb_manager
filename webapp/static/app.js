@@ -37,7 +37,7 @@ function getRequestRecordInput(){
 		"&expected_num=" + expected_num +
 		"&genre=" + genre,
 		function(response){
-			window.location = "/uploadform?ticketnumber=" + response;
+			window.location = "/uploadform?ticket_number=" + response;
 		} 
 	);
 
@@ -111,7 +111,6 @@ function getNewMultitrackInput(){
     bouncer_email = $("#bouncer_email").val();
     comments = $("#comments").val();
 	multitrack_name = $("#multitrack_name").val();
-	multitrack_id = $("#multitrack_id").val();
 	artist_name = $("#artist_name").val();
 	start_time = $("#start_time").val();
 	end_time = $("#end_time").val();
@@ -120,7 +119,6 @@ function getNewMultitrackInput(){
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
 		"&multitrack_name=" + multitrack_name + 
-		"&multitrack_id=" + multitrack_id +
 		"&your_name=" + your_name +
 	    "&your_email=" + your_email +
 	    "&status=" + status +
@@ -155,8 +153,9 @@ function getNewMultitrackInput(){
 
 
 function getUpdatedTicketInput(){
-	var ticket_number = getParameterByName('id');
+	var ticket_number = getParameterByName('ticket_number');
 	status = $("#status").val();
+	ticket_name = $("#ticket_name").val();
 	session_date = $("#session_date").val();
 	engineer_name = $("#engineer_name").val();
 	engineer_email = $("#engineer_email").val();
@@ -166,6 +165,7 @@ function getUpdatedTicketInput(){
 
 	// Call api to record information to database
 	$.get("/api/updateticket?status=" + status + 
+		"&ticket_name=" + ticket_name +
 		"&ticket_number=" + ticket_number +
 		"&session_date=" + session_date + 
 		"&engineer_name=" + engineer_name +
@@ -186,10 +186,44 @@ $(document).ready(function() {
 	// add class="active" to certain url path that is clicked
 	var pathname = window.location.pathname;
 	$('.nav > li > a[href="'+pathname+'"]').parent().addClass('active');
-	$("#submitRequest").click(getRequestRecordInput);
-	$("#submitNewTicket").click(getNewTicketInput);
-	$("#nextMultitrack").click(getNewMultitrackInput);
-	$("#submitNewMultitrack").click(getNewMultitrackInput);
+	// $("#submitRequest").click(getRequestRecordInput);
+	// $("#submitNewTicket").click(getNewTicketInput);
+	// $("#nextMultitrack").click(getNewMultitrackInput);
+	// $("#submitNewMultitrack").click(getNewMultitrackInput);
 	$("#updateTicket").click(getUpdatedTicketInput);
 
+	$('#requestrecord').validator().on('submit', function (e) {
+	  if (e.isDefaultPrevented()) {
+	    return false;
+	  } else {
+	    e.preventDefault();
+	    $("#submitRequest").click(getRequestRecordInput);
+	  }
+	});
+
+	$('#newTicket').validator().on('submit', function (e) {
+	  if (e.isDefaultPrevented()) {
+	  	console.log("hi")
+	    return false;
+	  } else {
+	    e.preventDefault();
+	    $("#submitNewTicket").click(getNewTicketInput);
+	  }
+	});
+
+	$('#nextMultitrack').validator().on('submit', function (e) {
+	  if (e.isDefaultPrevented()) {
+	    return false;
+	  } else {
+	    e.preventDefault();
+	    $("#nextMultitrack").click(getNewMultitrackInput);
+	    $("#submitNewMultitrack").click(getNewMultitrackInput);
+	  }
+	});
+
 });
+
+
+
+
+
