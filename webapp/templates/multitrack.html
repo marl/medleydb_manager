@@ -18,8 +18,8 @@
           <tbody>
             {% for row_index in range(multitrack_status['multitrack_id']|count) %}
                 <tr>
-                  {% for col in range(db_multitrack_status_headers |count) %}
-                    <td>{{ multitrack_status[db_multitrack_status_headers[col]][row_index] }}</td>
+                  {% for col in range(multitrack_status_headers |count) %}
+                    <td>{{ multitrack_status[multitrack_status_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}
@@ -40,8 +40,8 @@
           <tbody>
             {% for row_index in range(multitrack_history['multitrack_id']|count) %}
                 <tr>
-                  {% for col in range(db_multitrack_history_headers|count) %}
-                    <td>{{ multitrack_history[db_multitrack_history_headers[col]][row_index] }}</td>
+                  {% for col in range(multitrack_history_headers|count) %}
+                    <td>{{ multitrack_history[multitrack_history_headers[col]][row_index] }}</td>
                   {% endfor %}
                 </tr>
             {% endfor %}

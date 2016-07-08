@@ -45,7 +45,6 @@ function getRequestRecordInput(){
 
 
 function getNewTicketInput(){
-	// do for all id's in newticket.html
 	ticket_name = $("#ticket_name").val();
 	status = $("#status").val();
 	your_name=$("#your_name").val();
@@ -87,19 +86,26 @@ function getNewTicketInput(){
 		"&comments=" + comments +
 		"&num_multitracks=" + num_multitracks, 
 		function(response){
-			console.log($.parseJSON(response)); //for debugging - will print the returned info
+			console.log(response);
+			console.log(response.ticket_number);
+			window.location = "/newticket_multitracks?multitrack_number="+1+
+			"&num_multitracks="+response.num_multitracks+
+			"&ticket_number="+response.ticket_number;
 		} 
 	);
 
 	// Redirect to new multitrack page
-	window.location = "/newticket_multitracks?multitrack_number=1&total_multitracks=" + num_multitracks;
+	
 }
 
 
 
 function getNewMultitrackInput(){
-	// same as above
-	ticket_number = $("#ticket_number").val();
+	var multitrack_number = getParameterByName('multitrack_number');
+	var num_multitracks = getParameterByName('num_multitracks');
+	var ticket_number = getParameterByName('ticket_number');
+	console.log(ticket_number);
+	console.lob(status);
 	your_name = $("#your_name").val();
     your_email = $("#your_email").val();
     status = $("#status").val();
@@ -118,6 +124,8 @@ function getNewMultitrackInput(){
 	num_instruments = $("#genre").val();
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
+		"&multitrack_number=" + multitrack_number +
+		"&num_multitracks=" + num_multitracks +
 		"&multitrack_name=" + multitrack_name + 
 		"&your_name=" + your_name +
 	    "&your_email=" + your_email +
@@ -134,16 +142,21 @@ function getNewMultitrackInput(){
 		"&genre=" + genre +
 		"&comments=" + comments,
 		function(response){
-			console.log($.parseJSON(response));
+			console.log(response);
+			console.log(response.ticket_number);
+			console.log(response.multitrack_id);
 		} 
 	);
 
-	var multitrack_number = getParameterByName('multitrack_number');
-	var total_multitracks = getParameterByName('total_multitracks');
-
-	if (multitrack_number != total_multitracks) {
+	if (multitrack_number != num_multitracks) {
+		console.log(multitrack_number);
 		multitrack_number = (parseInt(multitrack_number)+1).toString();
-		window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+"&total_multitracks="+total_multitracks;
+		console.log(multitrack_number);
+		test = window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+
+			"&num_multitracks="+num_multitracks+
+			"&ticket_number="+ticket_number;
+		console.log(test)
+		window.location = test;
 	}
 	else {
 		window.location = "/thankyou";
@@ -164,7 +177,8 @@ function getUpdatedTicketInput(){
 	comments = $("#comments").val();
 
 	// Call api to record information to database
-	$.get("/api/updateticket?status=" + status + 
+	$.get("/api/updateticket?ticket_number=" + ticket_number +
+		"&status=" + status + 
 		"&ticket_name=" + ticket_name +
 		"&ticket_number=" + ticket_number +
 		"&session_date=" + session_date + 
@@ -174,7 +188,8 @@ function getUpdatedTicketInput(){
 		"&assignee_email=" + assignee_email +
 		"&comments=" + comments,
 		function(response){
-			console.log($.parseJSON(response)); //for debugging - will print the returned info
+			window.location = "/ticket_update?ticket_number="+ticket_number;
+			// console.log($.parseJSON(response)); //for debugging - will print the returned info
 		} 
 	);
 
@@ -203,7 +218,6 @@ $(document).ready(function() {
 
 	$('#newTicket').validator().on('submit', function (e) {
 	  if (e.isDefaultPrevented()) {
-	  	console.log("hi")
 	    return false;
 	  } else {
 	    e.preventDefault();
@@ -218,6 +232,16 @@ $(document).ready(function() {
 	    e.preventDefault();
 	    $("#nextMultitrack").click(getNewMultitrackInput);
 	    $("#submitNewMultitrack").click(getNewMultitrackInput);
+	  }
+	});
+
+
+	$('#addMultitrack').validator().on('submit', function (e) {
+	  if (e.isDefaultPrevented()) {
+	    return false;
+	  } else {
+	    e.preventDefault();
+	    $("#addMultitrack").click(getNewMultitrackInput);
 	  }
 	});
 

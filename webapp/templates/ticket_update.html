@@ -1,0 +1,59 @@
+<!-- Starts with the template -->
+{% extends "template.html" %}
+
+<!-- Fills in everything below in the empty space -->
+{% block content %}
+
+ <form id='updateTicket' topmargin="50" leftmargin="50" marginheight="50" marginwidth="50">
+      <h1 class="sub-header">Update Ticket {{ ticket_number }} </h1>
+
+      <fieldset class="form-group">
+        <label for="exampleSelect1">Status of ticket</label>
+        <select class="form-control" id="status">
+          <option selected="selected">Requested</option>
+          <option>Scheduled</option>
+          <option>Recorded</option>
+          <option>Mixed</option>
+          <option>Bounced</option>
+          <option>Processed</option>
+          <option>Complete</option>
+        </select>
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputDate1">Ticket Name</label>
+        <input type="text" class="form-control" id="ticket_name" placeholder="Ticket Name">
+      </fieldset>
+      <fieldset>
+        <label for="exampleInputDate1">Session date</label>
+        <input type="date" class="form-control" id="session_date" placeholder="MM/DD/YY">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Engineer's Name</label>
+        <input type="name" class="form-control" id="engineer_name" placeholder="Engineer's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Engineer's Email Address</label>
+        <input type="email" class="form-control" id="engineer_email" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputFirstName1">Assignee's Name</label>
+        <input type="name" class="form-control" id="assignee_name" placeholder="Assignee's name">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="exampleInputEmail1">Assignee's Email Address</label>
+        <input type="email" class="form-control" id="assignee_email" placeholder="Enter email">
+      </fieldset>
+      <fieldset class="form-group">
+          <label for="exampleTextarea">Additional Comments</label>
+          <textarea class="form-control" id="comments" rows="3"></textarea>
+      </fieldset>
+      
+  <body>
+    <button id="updateTicket" type="button" class="btn btn-primary">Update</button>
+  </body>
+
+</form>
+
+
+
+{% endblock %}

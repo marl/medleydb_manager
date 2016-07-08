@@ -2,10 +2,10 @@
 
 {% block content %}
 
-<form data-toggle="validator" role="form" id='nextMultitrack'>
-<h1> Multitrack Information </h1>
 
-<h3 class="sub-header">Multitrack {{ multitrack_number }}</h3>
+<form data-toggle="validator" role="form" id='addMultitrack'>
+<h1> Add a Multitrack </h1>
+
       <fieldset class="form-group">
         <label for="exampleInputNames1">Name of Multitrack</label>
         <input type="text" class="form-control" id="multitrack_name" placeholder="Name of multitrack" required>
@@ -37,14 +37,9 @@
         <div class="help-block with-errors"></div>
       </fieldset>
 
-
-{% if multitrack_number != num_multitracks %}
-    <button id="nextMultitrack" type="submit" class="btn btn-primary">Next Multitrack</button>
-
-{% else %}
-    <button id="submitNewMultitrack" type="submit" class="btn btn-primary">Submit New Ticket</button>
-{% endif %}
-
+  <body>
+    <button id="addMultitrack" type="submit" class="btn btn-primary">Add Multitrack</button>
+  </body>
 </form>
 
-{% endblock %}
+ {% endblock %}

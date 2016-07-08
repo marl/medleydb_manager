@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1> Thank you for signing up for a new ticket!</h1>
+<h1> Thank you for signing up for a new ticket or multitrack!</h1>
 <h3 class='text-muted'>You will recieve a confirmation email.</h3>
 
 <img src="/static/check.jpg" alt="check" style="width:300px;height:300px;">
@@ -10,7 +10,11 @@
 <form action="/viewtickets">
     <input type="submit" value="See Your Ticket" class="btn btn-primary">
 </form>
+</br>
+<form action="/newticket">
+    <input type="submit" value="Create a New Ticket" class="btn btn-primary">
+</form>
 
 
 
-  {% endblock %}
+{% endblock %}
