@@ -28,28 +28,5 @@
 
       </div>
 
-      <div class="table-responsive">
-        <h3>Multitrack History</h3>
-
-        <table class="table">
-          <thead>
-            {% for col in range(formatted_multitrack_history_headers|count) %}
-                <th>{{ formatted_multitrack_history_headers[col] }}</th>
-            {% endfor %}
-          </thead>
-          <tbody>
-            {% for row_index in range(multitrack_history['multitrack_id']|count) %}
-                <tr>
-                  {% for col in range(multitrack_history_headers|count) %}
-                    <td>{{ multitrack_history[multitrack_history_headers[col]][row_index] }}</td>
-                  {% endfor %}
-                </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-
-      </div>
-
-
 
 {% endblock %}

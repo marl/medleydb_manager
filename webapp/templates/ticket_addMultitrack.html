@@ -6,6 +6,20 @@
 <form data-toggle="validator" role="form" id='addMultitrack'>
 <h1> Add a Multitrack to Ticket {{ ticket_number }} </h1>
       <fieldset class="form-group">
+        <label for="exampleSelect1">Status of Multitrack</label>
+        <select class="form-control" id="status" required>
+          <option value="" disabled selected>Select your option</option>
+          <option>Requested</option>
+          <option>Scheduled</option>
+          <option>Recorded</option>
+          <option>Mixed</option>
+          <option>Bounced</option>
+          <option>Processed</option>
+          <option>Complete</option>
+        </select>
+        <div class="help-block with-errors"></div>
+      </fieldset>
+      <fieldset class="form-group">
         <label for="exampleInputName1">Title</label>
         <input type="text" class="form-control" id="title" placeholder="Multitrack title" required>
         <div class="help-block with-errors"></div>
@@ -31,67 +45,9 @@
         <div class="help-block with-errors"></div>
       </fieldset>
       <fieldset class="form-group">
-        <label for="exampleSelect1">Status of Multitrack</label>
-        <select class="form-control" id="status" required>
-          <option value="" disabled selected>Select your option</option>
-          <option>Requested</option>
-          <option>Scheduled</option>
-          <option>Recorded</option>
-          <option>Mixed</option>
-          <option>Bounced</option>
-          <option>Processed</option>
-          <option>Complete</option>
-        </select>
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
         <label for="exampleInputEmail1">Number of Instruments</label>
         <input type="text" class="form-control" id="num_instruments" placeholder="Number of Instruments" required>
         <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputFirstName1">Creator's Name</label>
-        <input type="text" class="form-control" id="creator_name" placeholder="Creator's name" required>
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputEmail1">Creator's Email Address</label>
-        <input type="email" class="form-control" id="creator_email" placeholder="Enter email" required>
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputFirstName1">Engineer's Name</label>
-        <input type="text" class="form-control" id="engineer_name" placeholder="Engineer's name" required>
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputEmail1">Engineer's Email Address</label>
-        <input type="email" class="form-control" id="engineer_email" placeholder="Enter email" required>
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputFirstName1">Mixing Engineer's Name</label>
-        <input type="text" class="form-control" id="mixer_name" placeholder="Engineer's name">
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputEmail1">Mixing Engineer's Email Address</label>
-        <input type="email" class="form-control" id="mixer_email" placeholder="Enter email">
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputFirstName1">Bouncing's Name</label>
-        <input type="text" class="form-control" id="bouncer_name" placeholder="Bouncer's name">
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label for="exampleInputEmail1">Bouncer's Email Address</label>
-        <input type="email" class="form-control" id="bouncer_email" placeholder="Enter email">
-        <div class="help-block with-errors"></div>
-      </fieldset>
-      <fieldset class="form-group">
-          <label for="exampleTextarea">Additional Comments</label>
-          <textarea class="form-control" id="comments" rows="3"></textarea>
       </fieldset>
 
 

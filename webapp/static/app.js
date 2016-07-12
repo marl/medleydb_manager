@@ -163,6 +163,7 @@ function getNewMultitrackInput(){
 function getUpdatedTicketInput(){
 	console.log("called getUpdatedTicketInput");
 	var ticket_number = getParameterByName('ticket_number');
+	var ticket_revision_id = getParameterByName('ticket_revision_id');
 	status = $("#status").val();
 	ticket_name = $("#ticket_name").val();
 	session_date = $("#session_date").val();
@@ -174,6 +175,7 @@ function getUpdatedTicketInput(){
 
 	// Call api to record information to database
 	$.get("/api/updateticket?ticket_number=" + ticket_number +
+		"&ticket_revision_id=" + ticket_revision_id +
 		"&status=" + status + 
 		"&ticket_name=" + ticket_name +
 		"&session_date=" + session_date + 
@@ -184,7 +186,7 @@ function getUpdatedTicketInput(){
 		"&comments=" + comments,
 		function(response){
 			console.log("called updatetickt api");
-			window.location = "/viewtickets";
+			window.location = "/ticket?ticket_number="+ticket_number;
 		} 
 	);
 
@@ -194,6 +196,7 @@ function getUpdatedTicketInput(){
 
 function getAddMultitrackInput(){
 	var ticket_number = getParameterByName('ticket_number');
+	var ticket_revision_id = getParameterByName('ticket_revision_id')
 	var num_multitracks = getParameterByName('num_multitracks');
 	var multitrack_id = getParameterByName('multitrack_id');
 	console.log(multitrack_id);
@@ -215,6 +218,7 @@ function getAddMultitrackInput(){
 	num_instruments = $("#genre").val();
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
+		"&ticket_revision_id=" + ticket_revision_id +
 		"&multitrack_id=" + multitrack_id +
 		"&num_multitracks=" + num_multitracks +
 		"&title=" + title + 
@@ -233,7 +237,7 @@ function getAddMultitrackInput(){
 		"&genre=" + genre +
 		"&comments=" + comments,
 		function(response){
-			window.location = "/viewtickets";
+			window.location = "/ticket?ticket_number="+ticket_number;
 		} 
 	);
 
