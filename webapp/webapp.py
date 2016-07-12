@@ -167,14 +167,6 @@ def newmultitrack_api():
     db_connection = connect_db(APP)
     ticket_number = request.args.get('ticket_number')
 
-    num_multitracks_cursor = db_connection.execute(
-        "select number_of_tracks from tickets where ticket_number={}".format(ticket_number))
-    num_multitracks_list = [int(t[0]) for t in num_multitracks_cursor]
-    if len(num_multitracks_list) == 0:
-        num_multitracks = 0
-    else:
-        num_multitracks = numpy.max(num_multitracks_list) + 1
-
     multitrack_id_cursor = db_connection.execute(
         "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
     )
@@ -225,9 +217,20 @@ def newmultitrack_api():
             mixer_name, mixer_email, bouncer_name, bouncer_email, comments)
     )
 
+    num_multitracks_cursor = db_connection.execute(
+        "select * from multitracks where ticket_number={}".format(ticket_number))
+    num_multitracks_list = [t[0] for t in num_multitracks_cursor]
+    num_multitracks = len(num_multitracks_list)
+
     db_connection.execute('update tickets set number_of_tracks = "{}" where ticket_number = {}'.format(str(num_multitracks), ticket_number))
-    db_connection.execute('update ticket_history set number_of_tracks = "{}" where ticket_number = {}'.format(str(num_multitracks), ticket_number))
-        
+    
+
+    # db_connection.execute(
+    #     'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+    #         ticket_number, status, ticket_name,
+    #         date_opened, date_updated, session_date, engineer_name,
+    #         engineer_email, creator_name, creator_email, assignee_name,
+    #         assignee_email, genre, num_multitracks, comments))
 
     db_connection.commit()
 
@@ -287,7 +290,7 @@ def view_tickets():
             tickets[name].append(item)
         tickets['url'].append('/ticket?ticket_number={}'.format(row[0]))
         tickets['delete'].append(
-            '/api/deleteticket?ticket_number={}&num_multitracks={}'.format(row[0], row[13])
+            '/api/deleteticket?ticket_number={}'.format(row[0])
         )
 
 
@@ -331,26 +334,27 @@ def ticket():
     db_connection = connect_db(APP)
 
     ticket_number = request.args.get('ticket_number')
-    multitrack_id = request.args.get('multitrack_id')
-    # multitrack_id_cursor = db_connection.execute(
-    #     "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
-    # )
-    # multitrack_ids_strings = [t[0].split("-")[1] for t in multitrack_id_cursor]
-    # multitrack_ids = [int(t) for t in multitrack_ids_strings]
-    # if len(multitrack_ids) == 0:
-    #     multitrack_id = "{}-1".format(ticket_number)
-    # else:    
-    #     multitrack_number = multitrack_ids.pop()
-    #     multitrack_id = "{}-{}".format(ticket_number, multitrack_number)
+    # multitrack_id = request.args.get('multitrack_id')
+
+    multitrack_id_cursor = db_connection.execute(
+        "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
+    )
+    multitrack_ids_strings = [t[0].split("-")[1] for t in multitrack_id_cursor]
+    multitrack_ids = [int(t) for t in multitrack_ids_strings]
+    if len(multitrack_ids) == 0:
+        multitrack_id = "{}-1".format(ticket_number)
+    else:    
+        multitrack_number = multitrack_ids.pop()
+        multitrack_id = "{}-{}".format(ticket_number, multitrack_number)
 
     num_multitracks = request.args.get('num_multitracks')
-    # num_multitracks_cursor = db_connection.execute(
-    #     "select number_of_tracks from tickets where ticket_number={}".format(ticket_number))
-    # num_multitracks_list = [int(t[0]) for t in num_multitracks_cursor]
-    # if len(num_multitracks_list) == 0:
-    #     num_multitracks = 0
-    # else:
-    #     num_multitracks = num_multitracks_list[0]
+    num_multitracks_cursor = db_connection.execute(
+        "select number_of_tracks from tickets where ticket_number={}".format(ticket_number))
+    num_multitracks_list = [int(t[0]) for t in num_multitracks_cursor]
+    if len(num_multitracks_list) == 0:
+        num_multitracks = 0
+    else:
+        num_multitracks = num_multitracks_list[0]
     
     ticket_status_headers = get_header(APP, 'tickets')
     ticket_history_headers = get_header(APP, 'ticket_history')
@@ -392,8 +396,7 @@ def ticket():
     for row in multitracks_cursor:
         multitracks['url'].append('/multitrack?multitrack_id={}&ticket_number={}'.format(multitrack_id, ticket_number))
         multitracks['delete'].append(
-            '/api/deletemultitrack?multitrack_id={}'.format(multitrack_id)
-        )
+            '/api/deletemultitrack?multitrack_id={}&ticket_number={}'.format(row[2], ticket_number))
 
     return render_template(
         'ticket.html', ticket_number=ticket_number,
@@ -467,36 +470,37 @@ def updateticket_api():
 
     if status is not None:
         db_connection.execute('update tickets set status = "{}" where ticket_number = {}'.format(status, ticket_number))
-        db_connection.execute('update ticket_history set status = "{}" where ticket_number = {}'.format(status, ticket_number))
         db_connection.execute('update multitracks set status = "{}" where ticket_number = {}'.format(status, ticket_number))
         db_connection.execute('update multitrack_history set status = "{}" where ticket_number = {}'.format(status, ticket_number))
     if ticket_name is not None:
         db_connection.execute('update tickets set ticket_name = "{}" where ticket_number = {}'.format(ticket_name, ticket_number))
-        db_connection.execute('update ticket_history set ticket_name = "{}" where ticket_number = {}'.format(ticket_name, ticket_number))
     if session_date is not None:
         db_connection.execute('update tickets set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
-        db_connection.execute('update ticket_history set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
     if engineer_name is not None:
         db_connection.execute('update tickets set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
-        db_connection.execute('update ticket_history set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
         db_connection.execute('update multitracks set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
         db_connection.execute('update multitrack_history set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
     if engineer_email is not None:
         db_connection.execute('update tickets set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
-        db_connection.execute('update ticket_history set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
         db_connection.execute('update multitracks set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
         db_connection.execute('update multitrack_history set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
     if assignee_name is not None:
         db_connection.execute('update tickets set assignee_name = "{}" where ticket_number = {}'.format(assignee_name, ticket_number))
-        db_connection.execute('update ticket_history set assignee_name = "{}" where ticket_number = {}'.format(assignee_name, ticket_number))
     if assignee_email is not None:
         db_connection.execute('update tickets set assignee_email = "{}" where ticket_number = {}'.format(assignee_email, ticket_number))
-        db_connection.execute('update ticket_history set assignee_email = "{}" where ticket_number = {}'.format(assignee_email, ticket_number))
     if comments is not None:
         db_connection.execute('update tickets set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
-        db_connection.execute('update ticket_history set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
         db_connection.execute('update multitracks set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
         db_connection.execute('update multitrack_history set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
+
+
+    # db_connection.execute(
+    #     'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+    #         ticket_number, status, ticket_name,
+    #         date_opened, date_updated, session_date, engineer_name,
+    #         engineer_email, creator_name, creator_email, assignee_name,
+    #         assignee_email, genre, num_multitracks, comments))
+
     db_connection.commit()
 
 
@@ -607,35 +611,41 @@ def deletemultitrack_api():
 
     db_connection = connect_db(APP)
     ticket_number = request.args.get('ticket_number')
-    multitrack_number = request.args.get('multitrack_number')
+    multitrack_id = request.args.get('multitrack_id')
 
     # multitrack_id_cursor = db_connection.execute(
     #     "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
     # )
     # multitrack_id = [t[0] for t in multitrack_id_cursor][0]
 
+
+    
+    db_connection.execute(
+        # 'delete from multitracks where multitrack_id={} and ticket_number={}'.format(multitrack_id, ticket_number))
+         'delete from multitracks where multitrack_id="{}"'.format(multitrack_id))
+    db_connection.execute(
+        # 'delete from multitrack_history where multitrack_id={} and ticket_number={}'.format(multitrack_id, ticket_number))
+        'delete from multitrack_history where multitrack_id="{}"'.format(multitrack_id))
+
     num_multitracks_cursor = db_connection.execute(
-        "select number_of_tracks from tickets where ticket_number={}".format(ticket_number))
-    num_multitracks_list = [int(t[0]) for t in num_multitracks_cursor]
-    if len(num_multitracks_list) == 0:
-        num_multitracks = 0
-    else:
-        num_multitracks = numpy.max(num_multitracks_list) - 1
+        "select * from multitracks where ticket_number={}".format(ticket_number))
+    num_multitracks_list = [t[0] for t in num_multitracks_cursor]
+    num_multitracks = len(num_multitracks_list)
 
-    
-    db_connection.execute(
-        'delete from multitracks where multitrack_number="{}" and ticket_number="{}"'.format(multitrack_number, ticket_number)
-        )
-    db_connection.execute(
-        'delete from multitrack_history where multitrack_number="{}"" and ticket_number="{}"'.format(multitrack_number, ticket_number)
-        )
+    db_connection.execute('update tickets set number_of_tracks = {} where ticket_number = {}'.format(str(int(num_multitracks)), ticket_number))
 
-    db_connection.execute('update tickets set number_of_tracks = "{}" where ticket_number = "{}"'.format(str(num_multitracks), ticket_number))
-    db_connection.execute('update ticket_history set number_of_tracks = "{}" where ticket_number = {}'.format(str(num_multitracks), ticket_number))
-    
+    # db_connection.execute(
+    #     'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
+    #         ticket_number, status, ticket_name,
+    #         date_opened, date_updated, session_date, engineer_name,
+    #         engineer_email, creator_name, creator_email, assignee_name,
+    #         assignee_email, genre, num_multitracks, comments))
+
     db_connection.commit()
 
-    return redirect("/ticket?ticket_number={}".format(ticket_number))
+    return redirect(url_for("view_tickets")
+        # "/ticket?ticket_number={}".format(ticket_number)
+        )
 
 
 @APP.route('/thankyou')
