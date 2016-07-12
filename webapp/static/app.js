@@ -1,5 +1,6 @@
 
 function getParameterByName(name, url) {
+	console.log("called getParamterByName");
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -11,7 +12,7 @@ function getParameterByName(name, url) {
 
 
 function getRequestRecordInput(){
-	
+	console.log("called getRequestRecordInput");
 	your_name=$("#your_name").val();
 	your_email=$("#your_email").val();
 	you=$("#you").val();
@@ -37,6 +38,7 @@ function getRequestRecordInput(){
 		"&expected_num=" + expected_num +
 		"&genre=" + genre,
 		function(response){
+			console.log("called requestrecord api");
 			window.location = "/uploadform?ticket_number=" + response;
 		} 
 	);
@@ -45,6 +47,7 @@ function getRequestRecordInput(){
 
 
 function getNewTicketInput(){
+	console.log("called getNewTicketInput");
 	ticket_name = $("#ticket_name").val();
 	status = $("#status").val();
 	your_name=$("#your_name").val();
@@ -86,26 +89,21 @@ function getNewTicketInput(){
 		"&comments=" + comments +
 		"&num_multitracks=" + num_multitracks, 
 		function(response){
-			console.log(response);
-			console.log(response.ticket_number);
+			console.log("called newticket api");
 			window.location = "/newticket_multitracks?multitrack_number="+1+
 			"&num_multitracks="+response.num_multitracks+
 			"&ticket_number="+response.ticket_number;
 		} 
 	);
-
-	// Redirect to new multitrack page
 	
 }
 
 
-
 function getNewMultitrackInput(){
+	console.log("called getNewMultitrackInput");
 	var multitrack_number = getParameterByName('multitrack_number');
 	var num_multitracks = getParameterByName('num_multitracks');
 	var ticket_number = getParameterByName('ticket_number');
-	console.log(ticket_number);
-	console.lob(status);
 	your_name = $("#your_name").val();
     your_email = $("#your_email").val();
     status = $("#status").val();
@@ -116,7 +114,7 @@ function getNewMultitrackInput(){
     bouncer_name = $("#bouncer_name").val();
     bouncer_email = $("#bouncer_email").val();
     comments = $("#comments").val();
-	multitrack_name = $("#multitrack_name").val();
+	title = $("#title").val();
 	artist_name = $("#artist_name").val();
 	start_time = $("#start_time").val();
 	end_time = $("#end_time").val();
@@ -126,7 +124,7 @@ function getNewMultitrackInput(){
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
 		"&multitrack_number=" + multitrack_number +
 		"&num_multitracks=" + num_multitracks +
-		"&multitrack_name=" + multitrack_name + 
+		"&title=" + title + 
 		"&your_name=" + your_name +
 	    "&your_email=" + your_email +
 	    "&status=" + status +
@@ -142,21 +140,18 @@ function getNewMultitrackInput(){
 		"&genre=" + genre +
 		"&comments=" + comments,
 		function(response){
+			console.log("called newmultitrack api");
 			console.log(response);
-			console.log(response.ticket_number);
-			console.log(response.multitrack_id);
+
 		} 
 	);
 
 	if (multitrack_number != num_multitracks) {
-		console.log(multitrack_number);
 		multitrack_number = (parseInt(multitrack_number)+1).toString();
-		console.log(multitrack_number);
-		test = window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+
+		window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+
 			"&num_multitracks="+num_multitracks+
 			"&ticket_number="+ticket_number;
-		console.log(test)
-		window.location = test;
+		
 	}
 	else {
 		window.location = "/thankyou";
@@ -166,6 +161,7 @@ function getNewMultitrackInput(){
 
 
 function getUpdatedTicketInput(){
+	console.log("called getUpdatedTicketInput");
 	var ticket_number = getParameterByName('ticket_number');
 	status = $("#status").val();
 	ticket_name = $("#ticket_name").val();
@@ -180,7 +176,6 @@ function getUpdatedTicketInput(){
 	$.get("/api/updateticket?ticket_number=" + ticket_number +
 		"&status=" + status + 
 		"&ticket_name=" + ticket_name +
-		"&ticket_number=" + ticket_number +
 		"&session_date=" + session_date + 
 		"&engineer_name=" + engineer_name +
 		"&engineer_email=" + engineer_email +
@@ -188,12 +183,60 @@ function getUpdatedTicketInput(){
 		"&assignee_email=" + assignee_email +
 		"&comments=" + comments,
 		function(response){
-			window.location = "/ticket_update?ticket_number="+ticket_number;
-			// console.log($.parseJSON(response)); //for debugging - will print the returned info
+			console.log("called updatetickt api");
+			window.location = "/viewtickets";
 		} 
 	);
 
-	window.location = "/viewtickets";
+}
+
+
+
+function getAddMultitrackInput(){
+	var ticket_number = getParameterByName('ticket_number');
+	var num_multitracks = getParameterByName('num_multitracks');
+	var multitrack_id = getParameterByName('multitrack_id');
+	console.log(multitrack_id);
+	your_name = $("#your_name").val();
+    your_email = $("#your_email").val();
+    status = $("#status").val();
+    engineer_name = $("#engineer_name").val();
+    engineer_email = $("#engineer_email").val();
+    mixer_name = $("#mixer_name").val();
+    mixer_email = $("#mixer_email").val();
+    bouncer_name = $("#bouncer_name").val();
+    bouncer_email = $("#bouncer_email").val();
+    comments = $("#comments").val();
+	title = $("#title").val();
+	artist_name = $("#artist_name").val();
+	start_time = $("#start_time").val();
+	end_time = $("#end_time").val();
+	genre = $("#genre").val();
+	num_instruments = $("#genre").val();
+
+	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
+		"&multitrack_id=" + multitrack_id +
+		"&num_multitracks=" + num_multitracks +
+		"&title=" + title + 
+		"&your_name=" + your_name +
+	    "&your_email=" + your_email +
+	    "&status=" + status +
+	    "&engineer_name=" + engineer_name +
+	    "&engineer_email=" + engineer_email +
+	    "&mixer_name=" + mixer_name +
+	    "&mixer_email=" + mixer_email +
+	    "&bouncer_name=" + bouncer_name +
+	    "&bouncer_email=" + bouncer_email +
+		"&artist_name=" + artist_name +
+		"&start_time=" + start_time +
+		"&end_time=" + end_time +
+		"&genre=" + genre +
+		"&comments=" + comments,
+		function(response){
+			window.location = "/viewtickets";
+		} 
+	);
+
 }
 
 
@@ -205,7 +248,8 @@ $(document).ready(function() {
 	// $("#submitNewTicket").click(getNewTicketInput);
 	// $("#nextMultitrack").click(getNewMultitrackInput);
 	// $("#submitNewMultitrack").click(getNewMultitrackInput);
-	$("#updateTicket").click(getUpdatedTicketInput);
+	$("#updateTicketSubmit").click(getUpdatedTicketInput);
+
 
 	$('#requestrecord').validator().on('submit', function (e) {
 	  if (e.isDefaultPrevented()) {
@@ -235,13 +279,12 @@ $(document).ready(function() {
 	  }
 	});
 
-
 	$('#addMultitrack').validator().on('submit', function (e) {
 	  if (e.isDefaultPrevented()) {
 	    return false;
 	  } else {
 	    e.preventDefault();
-	    $("#addMultitrack").click(getNewMultitrackInput);
+	    $("#addMultitrack").click(getAddMultitrackInput);
 	  }
 	});
 

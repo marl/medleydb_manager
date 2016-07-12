@@ -18,8 +18,8 @@
             {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
                     <td><a href="{{ tickets["url"][row_index] }}">View Ticket</a></td>
-                  {% for col in range(db_tickets_headers|count) %}
-                    <td>{{ tickets[db_tickets_headers[col]][row_index] }}</td>
+                  {% for col in range(tickets_headers|count) %}
+                    <td>{{ tickets[tickets_headers[col]][row_index] }}</td>
                   {% endfor %}
                     <td><a href="{{ tickets["delete"][row_index] }}">Delete Ticket</a></td>
                 </tr>
