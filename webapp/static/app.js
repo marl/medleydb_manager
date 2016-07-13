@@ -22,8 +22,9 @@ function getRequestRecordInput(){
 	record_date2=$("#record_date2").val();
 	record_date3=$("#record_date3").val();
 	hours_needed=$("#hours_needed").val();
-	expected_num=$("#expected_num").val();
+	num_multitracks=$("#num_multitracks").val();
 	genre=$("#genre").val();
+	comments=$("#comments").val();
 
 	// Call api to record information to database
 	$.get("/api/requestrecord?your_name=" + your_name +
@@ -35,8 +36,9 @@ function getRequestRecordInput(){
 		"&record_date2=" + record_date2 +
 		"&record_date3=" + record_date3 +
 		"&hours_needed=" + hours_needed +
-		"&expected_num=" + expected_num +
-		"&genre=" + genre,
+		"&num_multitracks=" + num_multitracks +
+		"&genre=" + genre +
+		"&comments=" + commnets,
 		function(response){
 			console.log("called requestrecord api");
 			window.location = "/uploadform?ticket_number=" + response;
@@ -52,6 +54,9 @@ function getNewTicketInput(){
 	status = $("#status").val();
 	your_name=$("#your_name").val();
 	your_email=$("#your_email").val();
+	you=$("#you").val();
+	contact_name=$("#contact_name").val();
+	contact_email=$("#contact_email").val();
 	session_date = $("#session_date").val();
 	engineer_name = $("#engineer_name").val();
 	engineer_email = $("#engineer_email").val();
@@ -61,9 +66,12 @@ function getNewTicketInput(){
 	assignee_email = $("#assignee_email").val();
 	mixer_name = $("#mixer_name").val();
 	mixer_email = $("#mixer_email").val();
+    bouncer_name = $("#bouncer_name").val();
+    bouncer_email = $("#bouncer_email").val();
 	mixed_date = $("#mixed_date").val();
 	location_mixed = $("#location_mixed").val();
 	location_exported = $("#location_exported").val();
+	running_name = $("#running_name").val();
 	genre = $("#genre").val();
 	comments = $("#comments").val();
 	num_multitracks = $("#num_multitracks").val();
@@ -73,6 +81,9 @@ function getNewTicketInput(){
 		"&status=" + status + 
 		"&your_name=" + your_name + 
 		"&your_email=" + your_email + 
+		"&you=" + you +
+		"&contact_name=" + contact_name +
+		"&contact_email=" + contact_email +
 		"&session_date=" + session_date + 
 		"&engineer_name=" + engineer_name +
 		"&engineer_email=" + engineer_email +
@@ -82,9 +93,12 @@ function getNewTicketInput(){
 		"&assignee_email=" + assignee_email +
 		"&mixer_name=" + mixer_name +
 		"&mixer_email=" + mixer_email +
+		"&bouncer_name=" + bouncer_name +
+		"&bouncer_email=" + bouncer_email +
 		"&mixed_date=" + mixed_date +
 		"&location_mixed=" + location_mixed +
 		"&location_exported=" + location_exported +
+		"&running_name=" + running_name +
 		"&genre=" + genre +
 		"&comments=" + comments +
 		"&num_multitracks=" + num_multitracks, 
@@ -104,41 +118,22 @@ function getNewMultitrackInput(){
 	var multitrack_number = getParameterByName('multitrack_number');
 	var num_multitracks = getParameterByName('num_multitracks');
 	var ticket_number = getParameterByName('ticket_number');
-	your_name = $("#your_name").val();
-    your_email = $("#your_email").val();
-    status = $("#status").val();
-    engineer_name = $("#engineer_name").val();
-    engineer_email = $("#engineer_email").val();
-    mixer_name = $("#mixer_name").val();
-    mixer_email = $("#mixer_email").val();
-    bouncer_name = $("#bouncer_name").val();
-    bouncer_email = $("#bouncer_email").val();
-    comments = $("#comments").val();
 	title = $("#title").val();
 	artist_name = $("#artist_name").val();
 	start_time = $("#start_time").val();
 	end_time = $("#end_time").val();
 	genre = $("#genre").val();
-	num_instruments = $("#genre").val();
+	num_instruments = $("#num_instruments").val();
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
 		"&multitrack_number=" + multitrack_number +
 		"&num_multitracks=" + num_multitracks +
 		"&title=" + title + 
-		"&your_name=" + your_name +
-	    "&your_email=" + your_email +
-	    "&status=" + status +
-	    "&engineer_name=" + engineer_name +
-	    "&engineer_email=" + engineer_email +
-	    "&mixer_name=" + mixer_name +
-	    "&mixer_email=" + mixer_email +
-	    "&bouncer_name=" + bouncer_name +
-	    "&bouncer_email=" + bouncer_email +
 		"&artist_name=" + artist_name +
 		"&start_time=" + start_time +
 		"&end_time=" + end_time +
 		"&genre=" + genre +
-		"&comments=" + comments,
+		"&num_instruments=" + num_instruments,
 		function(response){
 			console.log("called newmultitrack api");
 			console.log(response);
@@ -171,6 +166,10 @@ function getUpdatedTicketInput(){
 	engineer_email = $("#engineer_email").val();
 	assignee_name = $("#assignee_name").val();
 	assignee_email = $("#assignee_email").val();
+	mixer_name = $("#mixer_name").val();
+	mixer_email = $("#mixer_email").val();
+    bouncer_name = $("#bouncer_name").val();
+    bouncer_email = $("#bouncer_email").val();
 	comments = $("#comments").val();
 
 	// Call api to record information to database
@@ -183,6 +182,10 @@ function getUpdatedTicketInput(){
 		"&engineer_email=" + engineer_email +
 		"&assignee_name=" + assignee_name +
 		"&assignee_email=" + assignee_email +
+		"&mixer_name=" + mixer_name +
+		"&mixer_email=" + mixer_email +
+		"&bouncer_name=" + bouncer_name +
+		"&bouncer_email=" + bouncer_email +
 		"&comments=" + comments,
 		function(response){
 			console.log("called updatetickt api");
@@ -192,50 +195,28 @@ function getUpdatedTicketInput(){
 
 }
 
-
-
 function getAddMultitrackInput(){
 	var ticket_number = getParameterByName('ticket_number');
 	var ticket_revision_id = getParameterByName('ticket_revision_id')
 	var num_multitracks = getParameterByName('num_multitracks');
 	var multitrack_id = getParameterByName('multitrack_id');
-	console.log(multitrack_id);
-	your_name = $("#your_name").val();
-    your_email = $("#your_email").val();
-    status = $("#status").val();
-    engineer_name = $("#engineer_name").val();
-    engineer_email = $("#engineer_email").val();
-    mixer_name = $("#mixer_name").val();
-    mixer_email = $("#mixer_email").val();
-    bouncer_name = $("#bouncer_name").val();
-    bouncer_email = $("#bouncer_email").val();
-    comments = $("#comments").val();
 	title = $("#title").val();
 	artist_name = $("#artist_name").val();
 	start_time = $("#start_time").val();
 	end_time = $("#end_time").val();
 	genre = $("#genre").val();
-	num_instruments = $("#genre").val();
+	num_instruments = $("#num_instruments").val();
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
 		"&ticket_revision_id=" + ticket_revision_id +
 		"&multitrack_id=" + multitrack_id +
 		"&num_multitracks=" + num_multitracks +
 		"&title=" + title + 
-		"&your_name=" + your_name +
-	    "&your_email=" + your_email +
-	    "&status=" + status +
-	    "&engineer_name=" + engineer_name +
-	    "&engineer_email=" + engineer_email +
-	    "&mixer_name=" + mixer_name +
-	    "&mixer_email=" + mixer_email +
-	    "&bouncer_name=" + bouncer_name +
-	    "&bouncer_email=" + bouncer_email +
 		"&artist_name=" + artist_name +
 		"&start_time=" + start_time +
 		"&end_time=" + end_time +
 		"&genre=" + genre +
-		"&comments=" + comments,
+		"&num_instruments=" + num_instruments,
 		function(response){
 			window.location = "/ticket?ticket_number="+ticket_number;
 		} 

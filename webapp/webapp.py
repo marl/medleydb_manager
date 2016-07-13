@@ -6,10 +6,8 @@ import os
 import time
 import argparse
 import numpy
-from flask import Flask, jsonify, render_template, request, flash, redirect
-from flask import url_for
+from flask import Flask, jsonify, render_template, request, flash, redirect, url_for
 from flask_mail import Mail
-
 from utils import connect_db, get_header, send_mail
 from utils import fill_table, format_headers, allowed_file
 from request_record_email import BODY as request_record_body
@@ -58,7 +56,7 @@ def request_record():
 def requestrecord_api():
     """
     API for requestrecord.html.
-    Inserts info retrieved from requestrecord.html form into tickets and ticket-history tables.
+    Inserts info retrieved from requestrecord.html form into tickets and ticket_history tables.
     Sends automated conformition emails.
 
     Returns
@@ -76,8 +74,9 @@ def requestrecord_api():
     record_date2 = request.args.get('record_date2')
     record_date3 = request.args.get('record_date3')
     hours_needed = request.args.get('hours_needed')
-    expected_num = request.args.get('expected_num')
+    num_multitracks = request.args.get('num_multitracks')
     genre = request.args.get('genre')
+    comments = request.args.get('comments')
 
     # add code to add row to tickets and ticket_history tables
     db_connection = connect_db(APP)
@@ -98,16 +97,16 @@ def requestrecord_api():
 
     db_connection.execute(
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-            ticket_number, "Requested", None, date_opened, date_updated, None,
-            None, None, your_name, your_email, "Julia Caruso",
-            "julia.caruso@nyu.edu", None,None,None,None, None,None,None,None, genre, expected_num, None)
+            ticket_number, "Requested", None, date_opened, date_updated, "TBD",
+            "TBD", "TBD", your_name, your_email, "Julia Caruso",
+            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD", genre, "0", comments)
     )
 
     db_connection.execute(
         'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-            ticket_number, ticket_revision_id, "Requested", None, date_opened, date_updated, None,
-            None, None, your_name, your_email, "Julia Caruso",
-            "julia.caruso@nyu.edu", None, None, None, None, None,None,None,None, genre, expected_num, None)
+            ticket_number, ticket_revision_id, "Requested", None, date_opened, date_updated, "TBD",
+            "TBD", "TBD", your_name, your_email, "Julia Caruso",
+            "julia.caruso@nyu.edu", "TBD", "TBD", "TBD", "TBD", genre, "0", comments)
     )
     db_connection.commit()
 
@@ -129,7 +128,7 @@ def requestrecord_api():
         "Request to Record | MedleyDB Manger",
         request_record_body.format(
             your_name, your_email, contact_name, contact_email, record_date1,
-            record_date2, record_date3, hours_needed, expected_num
+            record_date2, record_date3, hours_needed, num_multitracks
         ),
         attachment=None
     )
@@ -171,10 +170,20 @@ def new_multitrack():
 def newmultitrack_api():
     """
     API for newticket_multitrack.html
+    Adds 1 to num_multitracks, adds a multitrack to the multitracks table, changes date updated
+
+    Returns
+    -------
+    ticket_number: string
+    num_multitracks: string 
+    multitrack_id: string
+    ticket_revision_id: string
+    date_updated: string
     """
     
     db_connection = connect_db(APP)
     ticket_number = request.args.get('ticket_number')
+    date_updated = time.strftime("%c")
 
     multitrack_id_cursor = db_connection.execute(
         "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
@@ -200,11 +209,6 @@ def newmultitrack_api():
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
-    ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
-    row = ticket_history_cursor.next()
-    row = list(row)
-    row[1] = ticket_revision_id
-
     
     status = request.args.get('status')
     date_opened = time.strftime("%c")
@@ -215,23 +219,32 @@ def newmultitrack_api():
     genre = request.args.get('genre')
     num_instruments = request.args.get('num_instruments')
 
-    # code to add row to multitracks and multitrack_history tables in database
+    num_multitracks_cursor = db_connection.execute(
+        "select * from multitracks where ticket_number={}".format(ticket_number))
+    num_multitracks_list = [t[0] for t in num_multitracks_cursor]
+    num_multitracks = len(num_multitracks_list) + 1
 
+    print ("num_multitracks = " + str(num_multitracks))
+
+    # code to add row to multitracks
     db_connection.execute(
         'insert into multitracks values("{}","{}","{}","{}","{}","{}","{}")'.format(
             ticket_number, multitrack_id, date_opened,
             artist_name, title, genre, num_instruments)
     )
 
-    num_multitracks_cursor = db_connection.execute(
-        "select * from multitracks where ticket_number={}".format(ticket_number))
-    num_multitracks_list = [t[0] for t in num_multitracks_cursor]
-    num_multitracks = len(num_multitracks_list)
+    ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
+    row = ticket_history_cursor.next()
+    row = list(row)
 
-    db_connection.execute('update tickets set number_of_tracks = "{}" where ticket_number = {}'.format(str(num_multitracks), ticket_number))
-    
+    row[1] = ticket_revision_id
+    if date_updated is not None:
+        row[5] = date_updated
+        db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
+
     if num_multitracks is not None:
         row[18] = str(num_multitracks)
+        db_connection.execute('update tickets set number_of_tracks = "{}" where ticket_number = {}'.format(str(num_multitracks), ticket_number))
 
     row = [r if r is not None else u"" for r in row]
 
@@ -242,7 +255,11 @@ def newmultitrack_api():
 
     db_connection.commit()
 
-    return jsonify(ticket_number=ticket_number, num_multitracks=num_multitracks, multitrack_id=multitrack_id, ticket_revision_id=ticket_revision_id)
+    return jsonify(ticket_number=ticket_number, 
+        num_multitracks=num_multitracks, 
+        multitrack_id=multitrack_id, 
+        ticket_revision_id=ticket_revision_id, 
+        date_updated=date_updated)
     # jsonify(
     #     ticket_number=ticket_number,
     #     your_name=your_name,
@@ -275,7 +292,7 @@ def view_tickets():
     'viewtickets.html': renders to a template
     tickets: dictionary
         empty entrys in the tickets table
-    db_tickets_headers: list
+    tickets_headers: list
         headers from the tickets table
     formatted_tickets_headers: list
         formatted headers from tickets table
@@ -319,15 +336,15 @@ def ticket():
     'ticket.html': rendered template
     ticket_number: int
         requested by the user
-    db_ticket_status_headers: list
+    ticket_status_headers: list
         headers of ticket status table
     formatted_ticket_status_headers: list
         formatted headers of ticket status table
-    db_ticket_history_headers: list
+    ticket_history_headers: list
         headers of ticket history table
     formatted_ticket_history_headers: list
         formatted headers of ticket history table
-    db_multitracks_headers: list
+    multitracks_headers: list
         headers of multitracks in ticket table
     formatted_multitracks_headers: list
         formatted headers of multitracks in ticket tabls
@@ -337,11 +354,15 @@ def ticket():
         contents in ticket history table
     multitracks: dictionary
         contents in multitracks in ticket table
+    update_ticket_url: string url
+    add_multitrack_url: string url
+
 
     """
     db_connection = connect_db(APP)
 
     ticket_number = request.args.get('ticket_number')
+    num_multitracks = request.args.get('num_multitracks')
     # multitrack_id = request.args.get('multitrack_id')
 
     multitrack_id_cursor = db_connection.execute(
@@ -355,14 +376,6 @@ def ticket():
         multitrack_number = multitrack_ids.pop()
         multitrack_id = "{}-{}".format(ticket_number, multitrack_number)
 
-    num_multitracks = request.args.get('num_multitracks')
-    num_multitracks_cursor = db_connection.execute(
-        "select number_of_tracks from tickets where ticket_number={}".format(ticket_number))
-    num_multitracks_list = [int(t[0]) for t in num_multitracks_cursor]
-    if len(num_multitracks_list) == 0:
-        num_multitracks = 0
-    else:
-        num_multitracks = num_multitracks_list[0]
     
     ticket_status_headers = get_header(APP, 'tickets')
     ticket_history_headers = get_header(APP, 'ticket_history')
@@ -463,8 +476,31 @@ def ticket_update():
 @APP.route('/api/updateticket')
 def updateticket_api():
 
+    """
+    API for updating ticket
+    Updates value in tickets table, add entry to ticket_history
+
+    Returns
+    -------
+    ticket_number: string
+    status: string
+    ticket_name: string
+    date_updated: string
+    session_date: string
+    engineer_name: string
+    engineer_email: string
+    assignee_name: string
+    assignee_email: string
+    mixer_name: string
+    mixer_email: string
+    bouncer_name: string
+    bouncer_email: string
+    comments: string
+    """
+
     status = request.args.get('status')
     ticket_name = request.args.get('ticket_name')
+    date_updated = time.strftime("%c")
     session_date = request.args.get('session_date')
     engineer_name = request.args.get('engineer_name')
     engineer_email = request.args.get('engineer_email')
@@ -485,24 +521,35 @@ def updateticket_api():
     )
     ticket_revision_ids_strings = [t[0].split("-")[1] for t in ticket_revision_id_cursor]
     ticket_revision_ids = [int(t) for t in ticket_revision_ids_strings]
-
     if len(ticket_revision_ids_strings) == 0:
         ticket_revision_id = "{}-1".format(ticket_number)
     else:    
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
-    ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
+    temp_cursor = db_connection.execute('select * from tickets where ticket_number={}'.format(ticket_number))
+    temp_row = list(temp_cursor.next())
+    print(temp_row)
+
+    ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated asc'.format(ticket_number))
     row = ticket_history_cursor.next()
     row = list(row)
+
+    print(row)
+
+
+
     row[1] = ticket_revision_id
-    
+    row[2] = status
     if status is not None:
-        row[2] = status
+        
         db_connection.execute('update tickets set status = "{}" where ticket_number = {}'.format(status, ticket_number))
     if ticket_name is not None:
         row[3] = ticket_name
         db_connection.execute('update tickets set ticket_name = "{}" where ticket_number = {}'.format(ticket_name, ticket_number))
+    if date_updated is not None:
+        row[5] = date_updated
+        db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
     if session_date is not None:
         row[6] = session_date
         db_connection.execute('update tickets set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
@@ -533,9 +580,10 @@ def updateticket_api():
     if comments is not None:
         row[19] = comments
         db_connection.execute('update tickets set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
-    print row
-    row = [r if r is not None else u"" for r in row]
 
+    print row 
+    #This print statement has blanks.
+    row = [r if r is not None else u"test" for r in row]
     print row
   
     insert_vals = '","'.join(row)
@@ -549,6 +597,7 @@ def updateticket_api():
         ticket_number=ticket_number,
         status=status,
         ticket_name=ticket_name,
+        date_updated=date_updated,
         session_date=session_date,
         engineer_name=engineer_name,
         engineer_email=engineer_email,
@@ -565,24 +614,33 @@ def updateticket_api():
 @APP.route('/ticket_addMultitrack')
 def ticket_addMultitrack():
     """
-    Renders  bandnames.html template
+    Renders  tickets_addMultitrack.html template
 
     Returns
     -------
-    'bandnames.html': template
+    'ticket_addMultitrack.html': template
+    ticket_number: string
+    num_multitracks: string
+    ticket_revision_id: string
+    date_updated: string
+
     """
     ticket_number = request.args.get("ticket_number")
     num_multitracks = request.args.get("num_multitracks")
     ticket_revision_id = request.args.get("ticket_revision_id")
-    return render_template('ticket_addMultitrack.html', ticket_number=ticket_number, num_multitracks=num_multitracks, ticket_revision_id=ticket_revision_id)
+    date_updated = time.strftime("%c")
+    return render_template('ticket_addMultitrack.html', 
+        ticket_number=ticket_number, 
+        num_multitracks=num_multitracks, 
+        ticket_revision_id=ticket_revision_id, 
+        date_updated=date_updated)
 
 
 @APP.route('/multitrack')
 def multitrack():
     """
-    Views more information about a single multitrack within
-     a ticket given a multitrack ID.
-    Gives info on status of multitrack and its history.
+    Views more information about a single multitrack within a ticket given a multitrack ID.
+    Gives info on status of multitrack.
 
     Return
     ------
@@ -593,12 +651,6 @@ def multitrack():
         headers of ticket status table
     formatted_ticket_status_headers: list
         formatted headers of ticket status table
-    multitrack_history_headers: list
-        headers of multitrack history table
-    formatted_multitrack_history_headers: list
-        formatted headers of multitrack history table
-    multitrack_history: dictionary
-        contents in multitrack history table
     multitrack_status: dictionary
         contents in multitrack status table
 
@@ -634,13 +686,15 @@ def multitrack():
 @APP.route('/api/deletemultitrack')
 def deletemultitrack_api():
     """
-    Deletes a multitrack from the multitracks and multitrack_history table
+    Deletes a multitrack from the multitracks, adds entry to ticket_history
 
     Returns
     -------
+    Redirects page to ticket info
     """
 
     db_connection = connect_db(APP)
+    date_updated = time.strftime("%c")
     ticket_number = request.args.get('ticket_number')
     multitrack_id = request.args.get('multitrack_id')
 
@@ -670,6 +724,11 @@ def deletemultitrack_api():
     num_multitracks = len(num_multitracks_list)
 
     db_connection.execute('update tickets set number_of_tracks = {} where ticket_number = {}'.format(str(int(num_multitracks)), ticket_number))
+
+
+    if date_updated is not None:
+        row[5] = date_updated
+        db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
 
     if num_multitracks is not None:
         row[18] = str(num_multitracks)
@@ -763,7 +822,10 @@ def newticket_api():
         "select ticket_number from tickets"
     )
     ticket_numbers = [int(t[0]) for t in ticket_number_cursor]
-    ticket_number = numpy.max(ticket_numbers) + 1
+    if len(ticket_numbers) == 0:
+        ticket_number=1
+    else:
+        ticket_number = numpy.max(ticket_numbers) + 1
 
     ticket_revision_id_cursor = db_connection.execute(
     "select ticket_revision_id from ticket_history where ticket_number={}".format(ticket_number)
@@ -781,7 +843,8 @@ def newticket_api():
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
             ticket_number, status, ticket_name, date_opened, date_updated,
             session_date, engineer_name, engineer_email, your_name, your_email,
-            assignee_name, assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, genre, num_multitracks, comments)
+            assignee_name, assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
+            genre, num_multitracks, comments)
     )
 
     db_connection.execute(
@@ -789,11 +852,11 @@ def newticket_api():
             ticket_number, ticket_revision_id, status, ticket_name,
             date_opened, date_updated, session_date, engineer_name,
             engineer_email, creator_name, creator_email, assignee_name,
-            assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, genre, num_multitracks, comments)
+            assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
+            genre, num_multitracks, comments)
     )
 
     db_connection.commit()
-
 
     send_mail(
         APP, MAIL,

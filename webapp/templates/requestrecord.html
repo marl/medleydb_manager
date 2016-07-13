@@ -40,7 +40,6 @@
       <small class="text-muted">Required for non-NYU people, optional for others.</small>
     </fieldset>
 
-
     <h3 class="sub-header">Recording Session</h3>
     <iframe src="https://calendar.google.com/calendar/embed?showPrint=0&amp;showTabs=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=u6qidgtaac2eitnkgp34hblevo%40group.calendar.google.com&amp;color=%2342104A&amp;ctz=America%2FNew_York" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     <fieldset class="form-group">
@@ -71,8 +70,8 @@
       <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
-      <label for="exampleSelect1">Expected number of songs</label>
-      <select class="form-control" id="expected_num" required>
+      <label for="exampleSelect1">Number of songs recorded to turn into multitracks</label>
+      <select class="form-control" id="num_multitracks" required>
         <option value="" disabled selected>Select your option</option>
         <option>1</option>
         <option>2</option>
@@ -84,7 +83,6 @@
         <option>8</option>
         <option>9</option>
         <option>10</option>
-        <option>10+</option>
       </select>
       <div class="help-block with-errors"></div>
     </fieldset>
@@ -93,6 +91,11 @@
       <input type="text" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz" required>
       <div class="help-block with-errors"></div>
     </fieldset>
+    <fieldset class="form-group">
+        <label for="exampleTextarea">Additional Comments</label>
+        <textarea class="form-control" id="comments" rows="3"></textarea>
+    </fieldset>
+
 
     <button id="submitRequest" type="submit" class="btn btn-primary">Submit</button>
 </form>
