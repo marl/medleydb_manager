@@ -83,7 +83,10 @@ def requestrecord_api():
 
     ticket_number_cursor = db_connection.execute("select ticket_number from tickets")
     ticket_numbers = [int(t[0]) for t in ticket_number_cursor]
-    ticket_number = numpy.max(ticket_numbers) + 1
+    if len(ticket_numbers) == 0:
+        ticket_number = 1
+    else:
+        ticket_number = numpy.max(ticket_numbers) + 1
 
     ticket_revision_id_cursor = db_connection.execute(
         "select ticket_revision_id from ticket_history where ticket_number={}".format(ticket_number))
@@ -812,6 +815,9 @@ def newticket_api():
     else:    
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
+
+    if comments == "":
+        comments = "None"
 
     db_connection.execute(
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
