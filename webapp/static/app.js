@@ -171,6 +171,9 @@ function getUpdatedTicketInput(){
 	mixer_email = $("#mixer_email").val();
     bouncer_name = $("#bouncer_name").val();
     bouncer_email = $("#bouncer_email").val();
+    mixed_date = $("#mixed_date").val();
+	location_mixed = $("#location_mixed").val();
+	location_exported = $("#location_exported").val();
 	comments = $("#comments").val();
 	
 
@@ -188,6 +191,9 @@ function getUpdatedTicketInput(){
 		"&mixer_email=" + mixer_email +
 		"&bouncer_name=" + bouncer_name +
 		"&bouncer_email=" + bouncer_email +
+		"&mixed_date=" + mixed_date +
+		"&location_mixed=" + location_mixed +
+		"&location_exported=" + location_exported +
 		"&comments=" + comments,
 		function(response){
 			console.log("called updatetickt api");

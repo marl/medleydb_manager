@@ -10,7 +10,8 @@ from flask import Flask, jsonify, render_template, request, flash, redirect, url
 from flask_mail import Mail
 from utils import connect_db, get_header, send_mail
 from utils import fill_table, format_headers, allowed_file
-from request_record_email import BODY as request_record_body
+from emails import REQUEST_BODY as request_record_body
+from emails import ASSIGNEE_BODY as assignee_body
 
 APP = Flask(__name__)
 APP.config.update(dict(
@@ -68,6 +69,7 @@ def requestrecord_api():
     date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     your_name = request.args.get('your_name')
     your_email = request.args.get('your_email')
+    you = request.args.get('you')
     contact_name = request.args.get('contact_name')
     contact_email = request.args.get('contact_email')
     record_date1 = request.args.get('record_date1')
@@ -130,7 +132,7 @@ def requestrecord_api():
         #julia.caruso@nyu.edu
         "Request to Record | MedleyDB Manger",
         request_record_body.format(
-            your_name, your_email, contact_name, contact_email, record_date1,
+            your_name, your_email, you, contact_name, contact_email, record_date1,
             record_date2, record_date3, hours_needed, num_multitracks
         ),
         attachment=None
@@ -496,6 +498,9 @@ def updateticket_api():
     bouncer_name = request.args.get('bouncer_name')
     bouncer_email = request.args.get('bouncer_email')
     comments = request.args.get('comments')
+    mixed_date = request.args.get('mixed_date')
+    location_mixed = request.args.get('location_mixed')
+    location_exported = request.args.get('location_exported')
 
     db_connection = connect_db(APP)
     # code to UPDATE row
@@ -543,6 +548,13 @@ def updateticket_api():
     if assignee_email != "":
         row[14] = assignee_email
         db_connection.execute('update tickets set assignee_email = "{}" where ticket_number = {}'.format(assignee_email, ticket_number))
+        send_mail(
+            APP, MAIL,
+            [assignee_email, "rachel.bittner@nyu.edu"],
+            "You are the new Assignee of a Ticket| MedleyDB Manager",
+            assignee_body.format(mixed_date, location_mixed, location_exported, ticket_number),
+            attachment=None
+        )
     if mixer_name != "":
         row[15] = mixer_name
         db_connection.execute('update tickets set mixer_name = "{}" where ticket_number = {}'.format(mixer_name, ticket_number))
@@ -583,6 +595,9 @@ def updateticket_api():
         mixer_email=mixer_email,
         bouncer_name=bouncer_name,
         bouncer_email=bouncer_email,
+        mixed_date=mixed_date,
+        location_mixed=location_mixed,
+        location_exported=location_exported,
         comments=comments
         )
 
@@ -913,8 +928,9 @@ def upload():
             requested_file.save(file_save_path)
 
             send_mail(
-                APP, MAIL, "hmyip1@gmail.com",
-                "Creative Commons Consent Form | MeldeyDB Manager",
+                APP, MAIL, 
+                "medleydbaccess@gmail.com",
+                "[form upload] Creative Commons Consent Form | MeldeyDB Manager",
                 " ",
                 attachment=file_save_path
             )
