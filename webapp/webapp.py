@@ -3,7 +3,7 @@ Main webapp.py function
 """
 #!/usr/bin/env python
 import os
-import time
+from time import gmtime, strftime
 import argparse
 import numpy
 from flask import Flask, jsonify, render_template, request, flash, redirect, url_for
@@ -64,8 +64,8 @@ def requestrecord_api():
     str(ticket_number): string
     """
 
-    date_opened = time.strftime("%c")
-    date_updated = time.strftime("%c")
+    date_opened = strftime("%m-%d-%y %H:%M:%S", gmtime())
+    date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     your_name = request.args.get('your_name')
     your_email = request.args.get('your_email')
     contact_name = request.args.get('contact_name')
@@ -97,16 +97,16 @@ def requestrecord_api():
 
     db_connection.execute(
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-            ticket_number, "Requested", None, date_opened, date_updated, "TBD",
-            "TBD", "TBD", your_name, your_email, "Julia Caruso",
-            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD", genre, "0", comments)
+            ticket_number, "Requested", None, date_opened, date_updated, "0", genre, "TBD",
+            your_name, your_email,"TBD", "TBD",  "Julia Caruso",
+            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD",  comments)
     )
 
     db_connection.execute(
         'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-            ticket_number, ticket_revision_id, "Requested", None, date_opened, date_updated, "TBD",
-            "TBD", "TBD", your_name, your_email, "Julia Caruso",
-            "julia.caruso@nyu.edu", "TBD", "TBD", "TBD", "TBD", genre, "0", comments)
+            ticket_number, ticket_revision_id, "Requested", None, date_opened, date_updated, "0", genre, "TBD",
+            your_name, your_email, "TBD", "TBD",  "Julia Caruso",
+            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD", comments)
     )
     db_connection.commit()
 
@@ -182,8 +182,9 @@ def newmultitrack_api():
     """
     
     db_connection = connect_db(APP)
+    update_ticket_history = bool(request.args.get('update_ticket_history'))
     ticket_number = request.args.get('ticket_number')
-    date_updated = time.strftime("%c")
+    date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
 
     multitrack_id_cursor = db_connection.execute(
         "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
@@ -209,9 +210,7 @@ def newmultitrack_api():
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
-    
-    status = request.args.get('status')
-    date_opened = time.strftime("%c")
+    date_opened = strftime("%m-%d-%y %H:%M:%S", gmtime())
     title = request.args.get('title')
     artist_name = request.args.get('artist_name')
     start_time = request.args.get('start_time')
@@ -219,39 +218,41 @@ def newmultitrack_api():
     genre = request.args.get('genre')
     num_instruments = request.args.get('num_instruments')
 
-    num_multitracks_cursor = db_connection.execute(
-        "select * from multitracks where ticket_number={}".format(ticket_number))
-    num_multitracks_list = [t[0] for t in num_multitracks_cursor]
-    num_multitracks = len(num_multitracks_list) + 1
-
-    print ("num_multitracks = " + str(num_multitracks))
 
     # code to add row to multitracks
     db_connection.execute(
         'insert into multitracks values("{}","{}","{}","{}","{}","{}","{}")'.format(
-            ticket_number, multitrack_id, date_opened,
-            artist_name, title, genre, num_instruments)
+            ticket_number, multitrack_id, date_opened, title,
+            artist_name,  genre, num_instruments)
     )
 
+    num_multitracks_cursor = db_connection.execute(
+        "select * from multitracks where ticket_number={}".format(ticket_number))
+    num_multitracks_list = [t[0] for t in num_multitracks_cursor]
+    num_multitracks = len(num_multitracks_list)
+
+
     ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
-    row = ticket_history_cursor.next()
-    row = list(row)
+    rows = [list(t) for t in ticket_history_cursor]
+    row = rows[-1]
 
     row[1] = ticket_revision_id
-    if date_updated is not None:
+    if date_updated != "":
         row[5] = date_updated
         db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
 
-    if num_multitracks is not None:
-        row[18] = str(num_multitracks)
+    if num_multitracks != "":
+        row[6] = str(num_multitracks)
         db_connection.execute('update tickets set number_of_tracks = "{}" where ticket_number = {}'.format(str(num_multitracks), ticket_number))
 
-    row = [r if r is not None else u"" for r in row]
+    row = [str(r) if r != "" else u"" for r in row]
 
     insert_vals = '","'.join(row)
-    db_connection.execute(
-        'insert into ticket_history values("{}");'.format(insert_vals)
-        )
+
+    if update_ticket_history == True:
+        db_connection.execute(
+            'insert into ticket_history values("{}");'.format(insert_vals)
+            )
 
     db_connection.commit()
 
@@ -260,26 +261,7 @@ def newmultitrack_api():
         multitrack_id=multitrack_id, 
         ticket_revision_id=ticket_revision_id, 
         date_updated=date_updated)
-    # jsonify(
-    #     ticket_number=ticket_number,
-    #     your_name=your_name,
-    #     your_email=your_email,
-    #     status=status,
-    #     engineer_name=engineer_name,
-    #     engineer_email=engineer_email,
-    #     mixer_name=mixer_name,
-    #     mixer_email=mixer_email,
-    #     bouncer_name=bouncer_name,
-    #     bouncer_email=bouncer_email,
-    #     comments=comments,
-    #     date_opened=date_opened,
-    #     date_updated=date_updated,
-    #     title=title,
-    #     artist_name=artist_name,
-    #     start_time=start_time,
-    #     end_time=end_time,
-    #     genre=genre,
-    #     num_instruments=num_instruments)
+   
 
 
 @APP.route('/viewtickets')
@@ -500,7 +482,7 @@ def updateticket_api():
 
     status = request.args.get('status')
     ticket_name = request.args.get('ticket_name')
-    date_updated = time.strftime("%c")
+    date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     session_date = request.args.get('session_date')
     engineer_name = request.args.get('engineer_name')
     engineer_email = request.args.get('engineer_email')
@@ -527,69 +509,60 @@ def updateticket_api():
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
-    temp_cursor = db_connection.execute('select * from tickets where ticket_number={}'.format(ticket_number))
-    temp_row = list(temp_cursor.next())
-    print(temp_row)
 
-    ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated asc'.format(ticket_number))
-    row = ticket_history_cursor.next()
-    row = list(row)
-
-    print(row)
-
-
+    ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
+    rows = [list(t) for t in ticket_history_cursor]
+    row = rows[-1]
 
     row[1] = ticket_revision_id
-    row[2] = status
-    if status is not None:
-        
+    
+    if status != "null":
+        row[2] = status
         db_connection.execute('update tickets set status = "{}" where ticket_number = {}'.format(status, ticket_number))
-    if ticket_name is not None:
+    if ticket_name != "":
         row[3] = ticket_name
         db_connection.execute('update tickets set ticket_name = "{}" where ticket_number = {}'.format(ticket_name, ticket_number))
-    if date_updated is not None:
+    if date_updated != "":
         row[5] = date_updated
         db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
-    if session_date is not None:
-        row[6] = session_date
+    if session_date!= "":
+        row[8] = session_date
         db_connection.execute('update tickets set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
-    if engineer_name is not None:
-        row[7] = engineer_name
+    if engineer_name != "":
+        row[11] = engineer_name
         db_connection.execute('update tickets set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
-    if engineer_email is not None:
-        row[8] = engineer_email
+    if engineer_email != "":
+        row[12] = engineer_email
         db_connection.execute('update tickets set engineer_email = "{}" where ticket_number = {}'.format(engineer_email, ticket_number))
-    if assignee_name is not None:
-        row[11] = assignee_name
+    if assignee_name != "":
+        row[13] = assignee_name
         db_connection.execute('update tickets set assignee_name = "{}" where ticket_number = {}'.format(assignee_name, ticket_number))
-    if assignee_email is not None:
-        row[12] = assignee_email
+    if assignee_email != "":
+        row[14] = assignee_email
         db_connection.execute('update tickets set assignee_email = "{}" where ticket_number = {}'.format(assignee_email, ticket_number))
-    if mixer_name is not None:
-        row[13] = mixer_name
+    if mixer_name != "":
+        row[15] = mixer_name
         db_connection.execute('update tickets set mixer_name = "{}" where ticket_number = {}'.format(mixer_name, ticket_number))
-    if mixer_email is not None:
-        row[14] = mixer_email
+    if mixer_email != "":
+        row[16] = mixer_email
         db_connection.execute('update tickets set mixer_email = "{}" where ticket_number = {}'.format(mixer_email, ticket_number))
-    if bouncer_name is not None:
-        row[15] = bouncer_name
+    if bouncer_name != "":
+        row[17] = bouncer_name
         db_connection.execute('update tickets set bouncer_name = "{}" where ticket_number = {}'.format(bouncer_name, ticket_number))
-    if bouncer_email is not None:
-        row[16] = bouncer_email
+    if bouncer_email != "":
+        row[18] = bouncer_email
         db_connection.execute('update tickets set bouncer_email = "{}" where ticket_number = {}'.format(bouncer_email, ticket_number))
-    if comments is not None:
+    if comments != "":
         row[19] = comments
         db_connection.execute('update tickets set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
 
-    print row 
-    #This print statement has blanks.
-    row = [r if r is not None else u"test" for r in row]
-    print row
-  
+    row = [str(r) if r != "" else u"test" for r in row]
     insert_vals = '","'.join(row)
+
     db_connection.execute(
-        'insert into ticket_history values("{}");'.format(insert_vals)
-        )
+            'insert into ticket_history values("{}");'.format(insert_vals)
+            )
+    
     db_connection.commit()
 
 
@@ -628,7 +601,8 @@ def ticket_addMultitrack():
     ticket_number = request.args.get("ticket_number")
     num_multitracks = request.args.get("num_multitracks")
     ticket_revision_id = request.args.get("ticket_revision_id")
-    date_updated = time.strftime("%c")
+    date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
+
     return render_template('ticket_addMultitrack.html', 
         ticket_number=ticket_number, 
         num_multitracks=num_multitracks, 
@@ -694,47 +668,47 @@ def deletemultitrack_api():
     """
 
     db_connection = connect_db(APP)
-    date_updated = time.strftime("%c")
+    date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     ticket_number = request.args.get('ticket_number')
     multitrack_id = request.args.get('multitrack_id')
-
+    
     ticket_revision_id_cursor = db_connection.execute(
-    "select ticket_revision_id from ticket_history where ticket_number={}".format(ticket_number)
-    )
+    "select ticket_revision_id from ticket_history where ticket_number={}".format(ticket_number))
     ticket_revision_ids_strings = [t[0].split("-")[1] for t in ticket_revision_id_cursor]
     ticket_revision_ids = [int(t) for t in ticket_revision_ids_strings]
-
     if len(ticket_revision_ids_strings) == 0:
         ticket_revision_id = "{}-1".format(ticket_number)
     else:    
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
+    temp_cursor = db_connection.execute('select * from tickets where ticket_number={} order by date_updated asc'.format(ticket_number))
+    temp_row = list(temp_cursor.next())
+
     ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
-    row = ticket_history_cursor.next()
-    row = list(row)
-    row[1] = ticket_revision_id
+    rows = [list(t) for t in ticket_history_cursor]
+    row = rows[-1]
 
     db_connection.execute(
-         'delete from multitracks where multitrack_id="{}"'.format(multitrack_id))
+             'delete from multitracks where multitrack_id="{}"'.format(multitrack_id))
 
     num_multitracks_cursor = db_connection.execute(
         "select * from multitracks where ticket_number={}".format(ticket_number))
     num_multitracks_list = [t[0] for t in num_multitracks_cursor]
-    num_multitracks = len(num_multitracks_list)
+    num_multitracks = str(len(num_multitracks_list))
 
-    db_connection.execute('update tickets set number_of_tracks = {} where ticket_number = {}'.format(str(int(num_multitracks)), ticket_number))
+    row[1] = ticket_revision_id
 
-
-    if date_updated is not None:
+    if date_updated != "":
         row[5] = date_updated
         db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
 
-    if num_multitracks is not None:
-        row[18] = str(num_multitracks)
+    if num_multitracks != "":
+        row[6] = str(num_multitracks)
+        db_connection.execute('update tickets set number_of_tracks = {} where ticket_number = {}'.format(num_multitracks, ticket_number))
 
-    row = [r if r is not None else u"" for r in row]
-
+    row = [str(r) if r != "" else u"" for r in row]
+    
     insert_vals = '","'.join(row)
     db_connection.execute(
         'insert into ticket_history values("{}");'.format(insert_vals)
@@ -791,8 +765,8 @@ def newticket_api():
     All variables passed.
 
     """
-    date_opened = time.strftime("%c")
-    date_updated = time.strftime("%c")
+    date_opened = strftime("%m-%d-%y %H:%M:%S", gmtime())
+    date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     ticket_name = request.args.get('ticket_name')
     status = request.args.get('status')
     your_name = request.args.get('your_name')
@@ -841,19 +815,18 @@ def newticket_api():
 
     db_connection.execute(
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-            ticket_number, status, ticket_name, date_opened, date_updated,
-            session_date, engineer_name, engineer_email, your_name, your_email,
+            ticket_number, status, ticket_name, date_opened, date_updated, num_multitracks, genre, 
+            session_date, your_name, your_email, engineer_name, engineer_email, 
             assignee_name, assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
-            genre, num_multitracks, comments)
+             comments)
     )
 
     db_connection.execute(
         'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-            ticket_number, ticket_revision_id, status, ticket_name,
-            date_opened, date_updated, session_date, engineer_name,
-            engineer_email, creator_name, creator_email, assignee_name,
-            assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
-            genre, num_multitracks, comments)
+            ticket_number, ticket_revision_id, status, ticket_name, date_opened, date_updated, num_multitracks, genre, 
+            session_date, your_name, your_email, engineer_name, engineer_email, 
+            assignee_name, assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
+             comments)
     )
 
     db_connection.commit()

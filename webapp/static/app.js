@@ -38,7 +38,7 @@ function getRequestRecordInput(){
 		"&hours_needed=" + hours_needed +
 		"&num_multitracks=" + num_multitracks +
 		"&genre=" + genre +
-		"&comments=" + commnets,
+		"&comments=" + comments,
 		function(response){
 			console.log("called requestrecord api");
 			window.location = "/uploadform?ticket_number=" + response;
@@ -124,6 +124,7 @@ function getNewMultitrackInput(){
 	end_time = $("#end_time").val();
 	genre = $("#genre").val();
 	num_instruments = $("#num_instruments").val();
+	update_ticket_history = false;
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
 		"&multitrack_number=" + multitrack_number +
@@ -133,7 +134,8 @@ function getNewMultitrackInput(){
 		"&start_time=" + start_time +
 		"&end_time=" + end_time +
 		"&genre=" + genre +
-		"&num_instruments=" + num_instruments,
+		"&num_instruments=" + num_instruments +
+		"&update_ticket_history=" + update_ticket_history,
 		function(response){
 			console.log("called newmultitrack api");
 			console.log(response);
@@ -145,8 +147,7 @@ function getNewMultitrackInput(){
 		multitrack_number = (parseInt(multitrack_number)+1).toString();
 		window.location = "/newticket_multitracks?multitrack_number="+multitrack_number+
 			"&num_multitracks="+num_multitracks+
-			"&ticket_number="+ticket_number;
-		
+			"&ticket_number="+ticket_number;		
 	}
 	else {
 		window.location = "/thankyou";
@@ -171,6 +172,7 @@ function getUpdatedTicketInput(){
     bouncer_name = $("#bouncer_name").val();
     bouncer_email = $("#bouncer_email").val();
 	comments = $("#comments").val();
+	
 
 	// Call api to record information to database
 	$.get("/api/updateticket?ticket_number=" + ticket_number +
@@ -206,6 +208,7 @@ function getAddMultitrackInput(){
 	end_time = $("#end_time").val();
 	genre = $("#genre").val();
 	num_instruments = $("#num_instruments").val();
+	update_ticket_history = true;
 
 	$.get("/api/newmultitrack?ticket_number=" + ticket_number +
 		"&ticket_revision_id=" + ticket_revision_id +
@@ -216,7 +219,8 @@ function getAddMultitrackInput(){
 		"&start_time=" + start_time +
 		"&end_time=" + end_time +
 		"&genre=" + genre +
-		"&num_instruments=" + num_instruments,
+		"&num_instruments=" + num_instruments +
+		"&update_ticket_history=" + update_ticket_history,
 		function(response){
 			window.location = "/ticket?ticket_number="+ticket_number;
 		} 
