@@ -76,7 +76,6 @@ function getNewTicketInput(){
 	comments = $("#comments").val();
 	num_multitracks = $("#num_multitracks").val();
 
-	// Call api to record information to database
 	$.get("/api/newticket?ticket_name=" + ticket_name +
 		"&status=" + status + 
 		"&your_name=" + your_name + 
@@ -176,8 +175,6 @@ function getUpdatedTicketInput(){
 	location_exported = $("#location_exported").val();
 	comments = $("#comments").val();
 	
-
-	// Call api to record information to database
 	$.get("/api/updateticket?ticket_number=" + ticket_number +
 		"&ticket_revision_id=" + ticket_revision_id +
 		"&status=" + status + 
@@ -234,17 +231,37 @@ function getAddMultitrackInput(){
 
 }
 
+function getUpdatedMultitrackInput(){
+	console.log("called getUpdatedMultitrackInput");
+	var ticket_number = getParameterByName('ticket_number');
+	var multitrack_id = getParameterByName('multitrack_id');
+	title = $("#title").val();
+	artist_name = $("#artist_name").val();
+	start_time = $("#start_time").val();
+	end_time = $("#end_time").val();
+	genre = $("#genre").val();
+	num_instruments = $("#num_instruments").val();
+
+	$.get("/api/updatemultitrack?multitrack_id=" + multitrack_id +
+		"&ticket_number=" + ticket_number +
+		"&title=" + title + 
+		"&artist_name=" + artist_name +
+		"&start_time=" + start_time +
+		"&end_time=" + end_time +
+		"&genre=" + genre +
+		"&num_instruments=" + num_instruments,
+		function(response){
+			window.location = "/ticket?ticket_number="+ticket_number;
+		} 
+	);
+
+}
 
 $(document).ready(function() {
-	// add class="active" to certain url path that is clicked
 	var pathname = window.location.pathname;
 	$('.nav > li > a[href="'+pathname+'"]').parent().addClass('active');
-	// $("#submitRequest").click(getRequestRecordInput);
-	// $("#submitNewTicket").click(getNewTicketInput);
-	// $("#nextMultitrack").click(getNewMultitrackInput);
-	// $("#submitNewMultitrack").click(getNewMultitrackInput);
 	$("#updateTicketSubmit").click(getUpdatedTicketInput);
-
+	$("#updateMultitrackSubmit").click(getUpdatedMultitrackInput);
 
 	$('#requestrecord').validator().on('submit', function (e) {
 	  if (e.isDefaultPrevented()) {

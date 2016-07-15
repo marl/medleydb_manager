@@ -96,15 +96,15 @@ def requestrecord_api():
     ticket_revision_ids = [int(t) for t in ticket_revision_ids_strings]
     if len(ticket_revision_ids_strings) == 0:
         ticket_revision_id = "{}-1".format(ticket_number)
-    else:    
+    else:
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
     db_connection.execute(
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
             ticket_number, "Requested", None, date_opened, date_updated, "0", genre, "TBD",
-            your_name, your_email,"TBD", "TBD",  "Julia Caruso",
-            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD",  comments)
+            your_name, your_email, "TBD", "TBD", "Julia Caruso", 
+            "julia.caruso@nyu.edu", "TBD", "TBD", "TBD", "TBD", comments)
     )
 
     db_connection.execute(
@@ -143,7 +143,7 @@ def requestrecord_api():
 @APP.route('/newticket')
 def new_ticket():
     """
-    Renders  newticket.html template
+    Renders newticket.html template
 
     Returns
     -------
@@ -187,7 +187,12 @@ def newmultitrack_api():
     """
     
     db_connection = connect_db(APP)
-    update_ticket_history = bool(request.args.get('update_ticket_history'))
+    temp = request.args.get('update_ticket_history')
+    if temp == "true":
+        update_ticket_history = True
+    elif temp == "false":
+        update_ticket_history = False
+    print update_ticket_history
     ticket_number = request.args.get('ticket_number')
     date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
 
@@ -226,9 +231,9 @@ def newmultitrack_api():
 
     # code to add row to multitracks
     db_connection.execute(
-        'insert into multitracks values("{}","{}","{}","{}","{}","{}","{}")'.format(
+        'insert into multitracks values("{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
             ticket_number, multitrack_id, date_opened, title,
-            artist_name,  genre, num_instruments)
+            artist_name,  genre, start_time, end_time, num_instruments)
     )
 
     num_multitracks_cursor = db_connection.execute(
@@ -449,11 +454,11 @@ def deleteticket_api():
 @APP.route('/ticket_update')
 def ticket_update():
     """
-    Renders  bandnames.html template
+    Renders ticket_update.html template
 
     Returns
     -------
-    'bandnames.html': template
+    'tickat_update.html': template
     """
     ticket_number = request.args.get('ticket_number')
     ticket_revision_id = request.args.get('ticket_revision_id')
@@ -513,7 +518,7 @@ def updateticket_api():
     ticket_revision_ids = [int(t) for t in ticket_revision_ids_strings]
     if len(ticket_revision_ids_strings) == 0:
         ticket_revision_id = "{}-1".format(ticket_number)
-    else:    
+    else:
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
@@ -605,7 +610,7 @@ def updateticket_api():
 @APP.route('/ticket_addMultitrack')
 def ticket_addMultitrack():
     """
-    Renders  tickets_addMultitrack.html template
+    Renders tickets_addMultitrack.html template
 
     Returns
     -------
@@ -649,6 +654,7 @@ def multitrack():
     """
     ticket_number = request.args.get('ticket_number')
     multitrack_id = request.args.get('multitrack_id')
+    print multitrack_id
     db_connection = connect_db(APP)
 
     multitrack_status_headers = get_header(APP, 'multitracks')
@@ -666,12 +672,15 @@ def multitrack():
         multitrack_status_headers, multitrack_status_cursor
     )
 
+    update_multitrack_url = "/multitrack_update?multitrack_id={}&ticket_number={}".format(str(multitrack_id),ticket_number)
+
     return render_template(
         'multitrack.html', multitrack_id=multitrack_id,
         ticket_number=ticket_number,
         multitrack_status_headers=multitrack_status_headers,
         formatted_multitrack_status_headers=formatted_multitrack_status_headers,
-        multitrack_status=multitrack_status
+        multitrack_status=multitrack_status,
+        update_multitrack_url=update_multitrack_url
     )
 
 
@@ -737,6 +746,73 @@ def deletemultitrack_api():
     return redirect("/ticket?ticket_number={}".format(ticket_number))
 
 
+@APP.route('/multitrack_update')
+def multitrack_update():
+    """
+    Renders multitrack_update.html template
+
+    Returns
+    -------
+    'multitrack_update.html': template
+    """
+    ticket_number = request.args.get('ticket_number')
+    multitrack_id = request.args.get('multitrack_id')
+    return render_template('multitrack_update.html', ticket_number=ticket_number, multitrack_id=multitrack_id)
+
+
+@APP.route('/api/updatemultitrack')
+def updatemultitrack_api():
+
+    """
+    API for updating multitrack
+    Updates value in multitracks table
+
+    Returns
+    -------
+   
+    """
+
+    title = request.args.get('title')
+    artist_name = request.args.get('artist_name')
+    start_time = request.args.get('start_time')
+    end_time = request.args.get('end_time')
+    genre = request.args.get('genre')
+    num_instruments = request.args.get('num_instruments')
+
+    db_connection = connect_db(APP)
+    # code to UPDATE row
+    ticket_number = request.args.get('ticket_number')
+    multitrack_id = request.args.get('multitrack_id')
+    print ticket_number
+    print multitrack_id
+
+    if title != "":
+        db_connection.execute('update multitracks set title = "{}" where multitrack_id  = "{}"'.format(title, multitrack_id))
+    if artist_name != "":
+        db_connection.execute('update multitracks set artist_name = "{}" where multitrack_id  = "{}"'.format(artist_name, multitrack_id))
+    if start_time != "":
+        db_connection.execute('update multitracks set start_time = "{}" where multitrack_id  = "{}"'.format(start_time, multitrack_id))
+    if end_time != "":
+        db_connection.execute('update multitracks set end_time = "{}" where multitrack_id  = "{}"'.format(end_time, multitrack_id))
+    if genre != "":
+        db_connection.execute('update multitracks set genre = "{}" where multitrack_id  = "{}"'.format(genre, multitrack_id))
+    if num_instruments != "":
+        db_connection.execute('update multitracks set number_of_instruments = "{}" where multitrack_id  = "{}"'.format(num_instruments, multitrack_id))
+    
+    db_connection.commit()
+
+    return jsonify(
+        multitrack_id=multitrack_id,
+        ticket_number=ticket_number,
+        title=title,
+        artist_name=artist_name,
+        start_time=start_time,
+        end_time=end_time,
+        genre=genre,
+        num_instruments=num_instruments
+        )
+
+
 @APP.route('/thankyou')
 def thankyou():
     """
@@ -752,7 +828,7 @@ def thankyou():
 @APP.route('/instructions')
 def instructions():
     """
-    Renders  instructions.html template
+    Renders instructions.html template
 
     Returns
     -------

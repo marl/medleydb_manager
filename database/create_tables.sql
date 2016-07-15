@@ -50,5 +50,7 @@ CREATE TABLE multitracks
   title varchar(20),
   artist varchar(20),
   genre varchar(20),
+  start_time time,
+  end_time time,
   number_of_instruments varchar(20)
 );
