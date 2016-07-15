@@ -576,7 +576,7 @@ def updateticket_api():
         row[19] = comments
         db_connection.execute('update tickets set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
 
-    row = [str(r) if r != "" else u"test" for r in row]
+    row = [str(r) if r != "" else u"" for r in row]
     insert_vals = '","'.join(row)
 
     db_connection.execute(
