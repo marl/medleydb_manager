@@ -4,9 +4,10 @@ REQUEST_BODY = """{} ({}) has requested a recording session.
 \nIt is expected to take {} hours for the {} multitrack(s) he/she wants to record in Dolan.
 """
 
-ASSIGNEE_BODY = """Hello! You have been assigned to a new multitrack ticket. 
+ASSIGNEE_BODY = """Hello! 
+\nYou have been assigned to a new multitrack ticket. 
 \nDates tracks were mixed: {}
 \nLocation of track post-mixing: {}
-\nlocation of track post-exporting: {}
+\nLocation of track post-exporting: {}
 \nSee your ticket here: http://marl.smusic.nyu.edu:5080/ticket?ticket_number={}.
 """

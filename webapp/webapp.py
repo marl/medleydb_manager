@@ -551,7 +551,7 @@ def updateticket_api():
         send_mail(
             APP, MAIL,
             [assignee_email, "rachel.bittner@nyu.edu"],
-            "You are the new Assignee of a Ticket| MedleyDB Manager",
+            "You are the new Assignee of a Ticket | MedleyDB Manager",
             assignee_body.format(mixed_date, location_mixed, location_exported, ticket_number),
             attachment=None
         )
