@@ -868,8 +868,6 @@ def newticket_api():
     session_date = request.args.get('session_date')
     engineer_name = request.args.get('engineer_name')
     engineer_email = request.args.get('engineer_email')
-    creator_name = request.args.get('creator_name')
-    creator_email = request.args.get('creator_email')
     assignee_name = request.args.get('assignee_name')
     assignee_email = request.args.get('assignee_email')
     mixer_name = request.args.get('mixer_name')
@@ -949,8 +947,6 @@ def newticket_api():
         session_date=session_date,
         engineer_name=engineer_name,
         engineer_email=engineer_email,
-        creator_name=creator_name,
-        creator_email=creator_email,
         assignee_name=assignee_name,
         assignee_email=assignee_email,
         mixer_name=mixer_name,

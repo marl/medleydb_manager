@@ -60,8 +60,6 @@ function getNewTicketInput(){
 	session_date = $("#session_date").val();
 	engineer_name = $("#engineer_name").val();
 	engineer_email = $("#engineer_email").val();
-	creator_name = $("#creator_name").val();
-	creator_email = $("#creator_email").val();
 	assignee_name = $("#assignee_name").val();
 	assignee_email = $("#assignee_email").val();
 	mixer_name = $("#mixer_name").val();
@@ -86,8 +84,6 @@ function getNewTicketInput(){
 		"&session_date=" + session_date + 
 		"&engineer_name=" + engineer_name +
 		"&engineer_email=" + engineer_email +
-		"&creator_name=" + creator_name +
-		"&creator_email=" + creator_email +
 		"&assignee_name=" + assignee_name +
 		"&assignee_email=" + assignee_email +
 		"&mixer_name=" + mixer_name +
