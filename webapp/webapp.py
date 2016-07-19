@@ -193,7 +193,6 @@ def newmultitrack_api():
         update_ticket_history = True
     elif temp == "false":
         update_ticket_history = False
-    print update_ticket_history
     ticket_number = request.args.get('ticket_number')
     date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
 
@@ -358,19 +357,6 @@ def ticket():
     ticket_name = request.args.get('ticket_name')
     num_multitracks = request.args.get('num_multitracks')
     multitrack_id = request.args.get('multitrack_id')
-    print multitrack_id
-
-    # multitrack_id_cursor = db_connection.execute(
-    #     "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
-    # )
-    # multitrack_ids_strings = [t[0].split("-")[1] for t in multitrack_id_cursor]
-    # multitrack_ids = [int(t) for t in multitrack_ids_strings]
-    # if len(multitrack_ids) == 0:
-    #     multitrack_id = "{}-1".format(ticket_number)
-    # else:    
-    #     multitrack_number = multitrack_ids.pop()
-    #     multitrack_id = "{}-{}".format(ticket_number, multitrack_number)
-
     
     ticket_status_headers = get_header(APP, 'tickets')
     ticket_history_headers = get_header(APP, 'ticket_history')
@@ -533,7 +519,6 @@ def updateticket_api():
 
     ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
     rows = [list(t) for t in ticket_history_cursor]
-    print rows
     row = rows[-1]
 
     row[1] = ticket_revision_id
@@ -664,7 +649,6 @@ def multitrack():
     """
     ticket_number = request.args.get('ticket_number')
     multitrack_id = request.args.get('multitrack_id')
-    print multitrack_id
     db_connection = connect_db(APP)
 
     multitrack_status_headers = get_header(APP, 'multitracks')
@@ -799,7 +783,7 @@ def updatemultitrack_api():
     if title != "":
         db_connection.execute('update multitracks set title = "{}" where multitrack_id  = "{}"'.format(title, multitrack_id))
     if artist_name != "":
-        db_connection.execute('update multitracks set artist_name = "{}" where multitrack_id  = "{}"'.format(artist_name, multitrack_id))
+        db_connection.execute('update multitracks set artist = "{}" where multitrack_id  = "{}"'.format(artist_name, multitrack_id))
     if start_time != "":
         db_connection.execute('update multitracks set start_time = "{}" where multitrack_id  = "{}"'.format(start_time, multitrack_id))
     if end_time != "":
