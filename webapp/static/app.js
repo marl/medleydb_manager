@@ -189,7 +189,8 @@ function getUpdatedTicketInput(){
 		"&location_exported=" + location_exported +
 		"&comments=" + comments,
 		function(response){
-			console.log("called updatetickt api");
+			console.log("called updateticket api");
+			console.log(ticket_number);
 			window.location = "/ticket?ticket_number="+ticket_number;
 		} 
 	);
