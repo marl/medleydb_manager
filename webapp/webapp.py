@@ -354,6 +354,7 @@ def ticket():
     db_connection = connect_db(APP)
 
     ticket_number = request.args.get('ticket_number')
+    ticket_name = request.args.get('ticket_name')
     num_multitracks = request.args.get('num_multitracks')
     # multitrack_id = request.args.get('multitrack_id')
 
@@ -413,6 +414,7 @@ def ticket():
 
     return render_template(
         'ticket.html', ticket_number=ticket_number,
+        ticket_name=ticket_name,
         multitrack_id=multitrack_id, 
         num_multitracks=num_multitracks,
         ticket_status_headers=ticket_status_headers,
@@ -462,7 +464,12 @@ def ticket_update():
     """
     ticket_number = request.args.get('ticket_number')
     ticket_revision_id = request.args.get('ticket_revision_id')
-    return render_template('ticket_update.html', ticket_number=ticket_number, ticket_revision_id=ticket_revision_id)
+    ticket_name = request.args.get('ticket_name')
+    print ticket_name
+    return render_template('ticket_update.html',
+        ticket_number=ticket_number,
+        ticket_revision_id=ticket_revision_id,
+        ticket_name=ticket_name)
 
 
 @APP.route('/api/updateticket')
@@ -525,6 +532,7 @@ def updateticket_api():
 
     ticket_history_cursor = db_connection.execute('select * from ticket_history where ticket_number={} order by date_updated'.format(ticket_number))
     rows = [list(t) for t in ticket_history_cursor]
+    print rows
     row = rows[-1]
 
     row[1] = ticket_revision_id
