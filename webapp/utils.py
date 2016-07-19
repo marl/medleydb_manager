@@ -93,6 +93,8 @@ def format_headers(column_name):
     """
     return column_name.replace("_", " ").title()
 
+def format_comments(comments):
+    return comments.replace('"', "'")
 
 def allowed_file(filename):
     file_ext = filename.rsplit('.', 1)[1]
