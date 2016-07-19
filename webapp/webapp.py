@@ -9,7 +9,7 @@ import numpy
 from flask import Flask, jsonify, render_template, request, flash, redirect, url_for
 from flask_mail import Mail
 from utils import connect_db, get_header, send_mail
-from utils import fill_table, format_headers, allowed_file
+from utils import fill_table, format_headers, format_comments, allowed_file
 from emails import REQUEST_BODY as request_record_body
 from emails import ASSIGNEE_BODY as assignee_body
 
@@ -79,6 +79,7 @@ def requestrecord_api():
     num_multitracks = request.args.get('num_multitracks')
     genre = request.args.get('genre')
     comments = request.args.get('comments')
+    formatted_comments = format_comments(comments)
 
     # add code to add row to tickets and ticket_history tables
     db_connection = connect_db(APP)
@@ -104,14 +105,14 @@ def requestrecord_api():
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
             ticket_number, "Requested", None, date_opened, date_updated, "0", genre, "TBD",
             your_name, your_email, "TBD", "TBD", "Julia Caruso", 
-            "julia.caruso@nyu.edu", "TBD", "TBD", "TBD", "TBD", comments)
+            "julia.caruso@nyu.edu", "TBD", "TBD", "TBD", "TBD", formatted_comments)
     )
 
     db_connection.execute(
         'insert into ticket_history values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
             ticket_number, ticket_revision_id, "Requested", None, date_opened, date_updated, "0", genre, "TBD",
             your_name, your_email, "TBD", "TBD",  "Julia Caruso",
-            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD", comments)
+            "julia.caruso@nyu.edu", "TBD","TBD","TBD","TBD", formatted_comments)
     )
     db_connection.commit()
 
@@ -510,6 +511,7 @@ def updateticket_api():
     bouncer_name = request.args.get('bouncer_name')
     bouncer_email = request.args.get('bouncer_email')
     comments = request.args.get('comments')
+    formatted_comments = format_comments(comments)
     mixed_date = request.args.get('mixed_date')
     location_mixed = request.args.get('location_mixed')
     location_exported = request.args.get('location_exported')
@@ -581,8 +583,8 @@ def updateticket_api():
         row[18] = bouncer_email
         db_connection.execute('update tickets set bouncer_email = "{}" where ticket_number = {}'.format(bouncer_email, ticket_number))
     if comments != "":
-        row[19] = comments
-        db_connection.execute('update tickets set comments = "{}" where ticket_number = {}'.format(comments, ticket_number))
+        row[19] = formatted_comments
+        db_connection.execute('update tickets set comments = "{}" where ticket_number = {}'.format(formatted_comments, ticket_number))
 
     row = [str(r) if r != "" else u"" for r in row]
     insert_vals = '","'.join(row)
@@ -611,7 +613,8 @@ def updateticket_api():
         mixed_date=mixed_date,
         location_mixed=location_mixed,
         location_exported=location_exported,
-        comments=comments
+        comments=comments,
+        formatted_comments=formatted_comments
         )
 
 
@@ -887,6 +890,7 @@ def newticket_api():
     location_exported = request.args.get('location_exported')
     genre = request.args.get('genre')
     comments = request.args.get('comments')
+    formatted_comments = format_comments(comments)
     num_multitracks = request.args.get('num_multitracks')
 
     # code to add row to tickets and ticket_history tables in database
@@ -921,7 +925,7 @@ def newticket_api():
             ticket_number, status, ticket_name, date_opened, date_updated, num_multitracks, genre, 
             session_date, your_name, your_email, engineer_name, engineer_email, 
             assignee_name, assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
-             comments)
+             formatted_comments)
     )
 
     db_connection.execute(
@@ -929,7 +933,7 @@ def newticket_api():
             ticket_number, ticket_revision_id, status, ticket_name, date_opened, date_updated, num_multitracks, genre, 
             session_date, your_name, your_email, engineer_name, engineer_email, 
             assignee_name, assignee_email, mixer_name, mixer_email, bouncer_name, bouncer_email, 
-             comments)
+             formatted_comments)
     )
 
     db_connection.commit()
@@ -966,6 +970,7 @@ def newticket_api():
         location_exported=location_exported,
         genre=genre,
         comments=comments,
+        formatted_comments=formatted_comments,
         num_multitracks=num_multitracks
     )
 
