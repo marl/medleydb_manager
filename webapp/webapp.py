@@ -357,18 +357,19 @@ def ticket():
     ticket_number = request.args.get('ticket_number')
     ticket_name = request.args.get('ticket_name')
     num_multitracks = request.args.get('num_multitracks')
-    # multitrack_id = request.args.get('multitrack_id')
+    multitrack_id = request.args.get('multitrack_id')
+    print multitrack_id
 
-    multitrack_id_cursor = db_connection.execute(
-        "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
-    )
-    multitrack_ids_strings = [t[0].split("-")[1] for t in multitrack_id_cursor]
-    multitrack_ids = [int(t) for t in multitrack_ids_strings]
-    if len(multitrack_ids) == 0:
-        multitrack_id = "{}-1".format(ticket_number)
-    else:    
-        multitrack_number = multitrack_ids.pop()
-        multitrack_id = "{}-{}".format(ticket_number, multitrack_number)
+    # multitrack_id_cursor = db_connection.execute(
+    #     "select multitrack_id from multitracks where ticket_number={}".format(ticket_number)
+    # )
+    # multitrack_ids_strings = [t[0].split("-")[1] for t in multitrack_id_cursor]
+    # multitrack_ids = [int(t) for t in multitrack_ids_strings]
+    # if len(multitrack_ids) == 0:
+    #     multitrack_id = "{}-1".format(ticket_number)
+    # else:    
+    #     multitrack_number = multitrack_ids.pop()
+    #     multitrack_id = "{}-{}".format(ticket_number, multitrack_number)
 
     
     ticket_status_headers = get_header(APP, 'tickets')
@@ -409,7 +410,7 @@ def ticket():
     add_multitrack_url = "/ticket_addMultitrack?ticket_number={}&num_multitracks={}".format(ticket_number, num_multitracks)
 
     for row in multitracks_cursor:
-        multitracks['url'].append('/multitrack?multitrack_id={}&ticket_number={}'.format(multitrack_id, ticket_number))
+        multitracks['url'].append('/multitrack?multitrack_id={}&ticket_number={}'.format(row[1], ticket_number))
         multitracks['delete'].append(
             '/api/deletemultitrack?multitrack_id={}&ticket_number={}'.format(row[1], ticket_number))
 
@@ -465,12 +466,10 @@ def ticket_update():
     """
     ticket_number = request.args.get('ticket_number')
     ticket_revision_id = request.args.get('ticket_revision_id')
-    ticket_name = request.args.get('ticket_name')
-    print ticket_name
+
     return render_template('ticket_update.html',
         ticket_number=ticket_number,
-        ticket_revision_id=ticket_revision_id,
-        ticket_name=ticket_name)
+        ticket_revision_id=ticket_revision_id)
 
 
 @APP.route('/api/updateticket')
