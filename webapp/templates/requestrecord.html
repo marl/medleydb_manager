@@ -13,33 +13,9 @@
       <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
-      <label for="exampleInputEmail1">Your Email Address</label>
-      <input type="email" class="form-control" id="your_email" placeholder="Enter email" data-error="Please fill out this field" required>
-      <div class="help-block with-errors"></div>
+      <label for="exampleInputEmail1">Your Email Address (Must be NYU email)</label>
+      <input type="email" pattern="[a-z0-9._%+-]+@nyu.edu$" class="form-control" id="your_email" placeholder="Enter email" data-error="Please fill out this field" required>
     </fieldset>
-    <fieldset class="form-group">
-      <label for="exampleSelect1">Who are you?</label>
-      <select class="form-control" id="you" required>
-        <option value="" disabled selected>Select your option</option>
-        <option>NYU Student</option>
-        <option>NYU Faculty</option>
-        <option>Affiliate</option>
-        <option>External</option>
-      </select>
-      <div class="help-block with-errors"></div>
-    </fieldset>
-    <fieldset class="form-group">
-      <label for="exampleInputName1">Full name of person you are in contact with at NYU</label>
-      <input type="text" class="form-control" id="contact_name" placeholder="Full name" required>
-      <div class="help-block with-errors"></div>
-    </fieldset>
-    <fieldset class="form-group">
-      <label for="exampleInputEmail1">Email address of person you are in contact with at NYU</label>
-      <input type="email" class="form-control" id="contact_email" placeholder="Enter email" required>
-      <div class="help-block with-errors"></div>
-      <small class="text-muted">Required for non-NYU people, optional for others.</small>
-    </fieldset>
-
     <h3 class="sub-header">Recording Session</h3>
     <iframe src="https://calendar.google.com/calendar/embed?showPrint=0&amp;showTabs=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=u6qidgtaac2eitnkgp34hblevo%40group.calendar.google.com&amp;color=%2342104A&amp;ctz=America%2FNew_York" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     <fieldset class="form-group">

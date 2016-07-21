@@ -69,9 +69,6 @@ def requestrecord_api():
     date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     your_name = request.args.get('your_name')
     your_email = request.args.get('your_email')
-    you = request.args.get('you')
-    contact_name = request.args.get('contact_name')
-    contact_email = request.args.get('contact_email')
     record_date1 = request.args.get('record_date1')
     record_date2 = request.args.get('record_date2')
     record_date3 = request.args.get('record_date3')
@@ -133,8 +130,8 @@ def requestrecord_api():
         #julia.caruso@nyu.edu
         "Request to Record | MedleyDB Manger",
         request_record_body.format(
-            your_name, your_email, you, contact_name, contact_email, record_date1,
-            record_date2, record_date3, hours_needed, num_multitracks
+            your_name, your_email, record_date1,
+            record_date2, record_date3, hours_needed, num_multitracks, comments
         ),
         attachment=None
     )

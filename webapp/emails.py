@@ -1,7 +1,7 @@
 REQUEST_BODY = """{} ({}) has requested a recording session.
-\nHe/She is a(n) {} and is in contact with {} ({}) from NYU.
 \nThe three recording session dates requested are: {}, {}, and {}.
 \nIt is expected to take {} hours for the {} multitrack(s) he/she wants to record in Dolan.
+\nComments from him/her: "{}"
 """
 
 ASSIGNEE_BODY = """Hello! 

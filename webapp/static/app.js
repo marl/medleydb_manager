@@ -10,14 +10,10 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-
 function getRequestRecordInput(){
 	console.log("called getRequestRecordInput");
 	your_name=$("#your_name").val();
 	your_email=$("#your_email").val();
-	you=$("#you").val();
-	contact_name=$("#contact_name").val();
-	contact_email=$("#contact_email").val();
 	record_date1=$("#record_date1").val();
 	record_date2=$("#record_date2").val();
 	record_date3=$("#record_date3").val();
@@ -29,9 +25,6 @@ function getRequestRecordInput(){
 	// Call api to record information to database
 	$.get("/api/requestrecord?your_name=" + your_name +
 		"&your_email=" + your_email +
-		"&you=" + you +
-		"&contact_name=" + contact_name +
-		"&contact_email=" + contact_email +
 		"&record_date1=" + record_date1 +
 		"&record_date2=" + record_date2 +
 		"&record_date3=" + record_date3 +
@@ -54,9 +47,6 @@ function getNewTicketInput(){
 	status = $("#status").val();
 	your_name=$("#your_name").val();
 	your_email=$("#your_email").val();
-	you=$("#you").val();
-	contact_name=$("#contact_name").val();
-	contact_email=$("#contact_email").val();
 	session_date = $("#session_date").val();
 	engineer_name = $("#engineer_name").val();
 	engineer_email = $("#engineer_email").val();
@@ -78,9 +68,6 @@ function getNewTicketInput(){
 		"&status=" + status + 
 		"&your_name=" + your_name + 
 		"&your_email=" + your_email + 
-		"&you=" + you +
-		"&contact_name=" + contact_name +
-		"&contact_email=" + contact_email +
 		"&session_date=" + session_date + 
 		"&engineer_name=" + engineer_name +
 		"&engineer_email=" + engineer_email +
