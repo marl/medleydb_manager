@@ -3,43 +3,67 @@
 
 {% block content %}
 		
-    	<h1>NYU MARL Dataset Rendering Instructions for Pro Tools and Mac OSX</h1>
+    	<h1>What To Do At Each Stage</h1>
     		<img src="/static/studio.jpg" alt="mixer" style="width:730px;height:240px;">
-    		<h3 class='text-muted'>Instructions by Mike Tierney</h3>
-    		
-		<h3>A) Selecting the Song's Total Length</h3>
-			<ol>
-				<li>In the edit window (the main one with all of the waveforms), select the eyebeam tool (the one that looks like a waveform being selected). Click in the edit field in a spot just in front of the beginning of the audio. Press the ENTER key (not the return key!!), or if you're using a laptop/small keyboard, press Fn+Return. This creates a marker. Call this marker start. Make a second marker at the end of all audio. Call this End. Clicking the start marker, then shift+clicking the end marker gives the total length of the song, and will also be the length of all stems and raw audio.</li>
-			</ol>
+
+    	<h3>Requested to Scheduled</h3>
+    		<p>
+    		Wait for approval from studio managers
+    		</p>
+
+    	<h3>Scheduled to Recorded</h3>
+    		<p>
+    		James L. Dolan Music Recording Studio (6th floor)</br>
+    		35 West 4th Street</br>
+    		New York, NY 10012</br>
+    		</p>
+    	<h3>Recorded to Mixed</h3>
+    		<p>
+    		Mix the session. Add instructions for mixing here
+    		</p>
+    	<h3>Mixed to Bounced</h3>
+    		<font class="text-muted">NYU MARL Dataset Rendering Instructions for Pro Tools and Mac OSX</font>
+    		</br>
+    		<font class='text-muted'>Instructions by Mike Tierney (m.tierney413@gmail.com)</font>
+			<h5>A) Selecting the Song's Total Length</h5>
+				<ol>
+					<li>In the edit window (the main one with all of the waveforms), select the eyebeam tool (the one that looks like a waveform being selected). Click in the edit field in a spot just in front of the beginning of the audio. Press the ENTER key (not the return key!!), or if you're using a laptop/small keyboard, press Fn+Return. This creates a marker. Call this marker start. Make a second marker at the end of all audio. Call this End. Clicking the start marker, then shift+clicking the end marker gives the total length of the song, and will also be the length of all stems and raw audio.</li>
+				</ol>
+
+			<h5>B) Rendering Raw Audio</h5>
+				<ol>
+					<li>Click on the All group to the left side of the session. Click on the Start marker, then select all tracks. Press the "A" key to trim the audio to the left of the selection. Click on the end marker, then select all tracks. Press the "S" key to trim the audio to the right of the selection.</li>
+					<li>With the All group still selected, and with all tracks still selected, click the start marker, then shift+click the end marker. Press opt+shift+3 to consolidate clips.</li>
+					<li> Press cmd+shift+K. Under File Type, select WAV. Under Format: Select (Multiple) Mono. Under Bit Depth, select 16-bit. Under Sample Rate, select 44.1kHz. Create a new destination directory for all raw audio files.</li>
+				</ol>
+
+			<h5>C) Rendering Stems</h5>
+				<ol>
+					<li>Stems are the raw audio tracks grouped by instrument (i.e, full drum kit, string quartet, etc), exported post-mix processing. Separate instruments may even be grouped together in export (i.e, a horn section) if the engineer feels that the instruments act in one voice/role in the song. Deselect the All group.</li>
+					<li>Make sure the total length of the song is selected via the start and end markers. Solo the tracks involved with an instrument group (shift+s on selected tracks). Make sure all associated Aux tracks are also either soloed or solo-safed. Click cmd+opt+B, or select File>Bounce to>Disk... Under File Type, click WAV. Under format, click Interleaved. Under Bit Depth, click 16-bit. Under Sample Rate, click 44.1 kHz. Create a new directory for the stems, and export the stems to the directory via the Choose button in the bounce to disk menu. Under File Name, name the stem appropriately. Click Bounce.</li>
+					<li>Repeat this step with all instrument groups, making sure to label the file name appropriately.</li>
+				</ol>
+
+			<h5>D) Rendering Mix</h5>
+				<ol>
+					<li>Make sure nothing is soloed or muted and that the song's total length is selected.</li>
+					<li>Bounce to disk (command+option+B or File>Bounce to>Disk…) Under File Type, click WAV. Under format, click Stereo (Interleaved). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Create a new directory for the mix. Title the mix appropriately. Finally, click Bounce.</li>
+				</ol>
+
+    	<h3>Bounced to Processed</h3>
+    		<p>
+    		Process the bounced multitracks using the MedleyDB app.
+    		</p>
+    	<h3>Processed to Complete</h3>
+    		<p>
+    		Move the sessions to NYU Box
+    		</p>
+    	<h3>Complete</h3>
+    		<p>
+    		You're done!
+    		</p>
 
 
-		<h3>B) Rendering Raw Audio</h3>
-			<ol>
-				<li>Click on the All group to the left side of the session. Click on the Start marker, then select all tracks. Press the "A" key to trim the audio to the left of the selection. Click on the end marker, then select all tracks. Press the "S" key to trim the audio to the right of the selection.</li>
-				<li>With the All group still selected, and with all tracks still selected, click the start marker, then shift+click the end marker. Press opt+shift+3 to consolidate clips.</li>
-				<li> Press cmd+shift+K. Under File Type, select WAV. Under Format: Select (Multiple) Mono. Under Bit Depth, select 16-bit. Under Sample Rate, select 44.1kHz. Create a new destination directory for all raw audio files.</li>
-
-			</ol>
-
-
-		<h3>C) Rendering Stems</h3>
-			<ol>
-				<li>Stems are the raw audio tracks grouped by instrument (i.e, full drum kit, string quartet, etc), exported post-mix processing. Separate instruments may even be grouped together in export (i.e, a horn section) if the engineer feels that the instruments act in one voice/role in the song. Deselect the All group.</li>
-				<li>Make sure the total length of the song is selected via the start and end markers. Solo the tracks involved with an instrument group (shift+s on selected tracks). Make sure all associated Aux tracks are also either soloed or solo-safed. Click cmd+opt+B, or select File>Bounce to>Disk... Under File Type, click WAV. Under format, click Interleaved. Under Bit Depth, click 16-bit. Under Sample Rate, click 44.1 kHz. Create a new directory for the stems, and export the stems to the directory via the Choose button in the bounce to disk menu. Under File Name, name the stem appropriately. Click Bounce.</li>
-				<li>Repeat this step with all instrument groups, making sure to label the file name appropriately.</li>
-
-			</ol>
-
-
-		<h3>D) Rendering Mix</h3>
-			<ol>
-				<li>Make sure nothing is soloed or muted and that the song's total length is selected.</li>
-				<li>Bounce to disk (command+option+B or File>Bounce to>Disk…) Under File Type, click WAV. Under format, click Stereo (Interleaved). Under bit depth, select 16-bit. Under bit rate, select 44.1 kHz. Create a new directory for the mix. Title the mix appropriately. Finally, click Bounce.</li>
-
-			</ol>
-
-		<h4>If you have any questions, feel free to contact me directly via email at: m.tierney413@gmail.com</h4>
-
-
+    	
 {% endblock %}
 

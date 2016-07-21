@@ -900,9 +900,6 @@ def newticket_api():
         ticket_revision_number = numpy.max(ticket_revision_ids) + 1
         ticket_revision_id = "{}-{}".format(ticket_number, ticket_revision_number)
 
-    if comments == "":
-        comments = "None"
-
     db_connection.execute(
         'insert into tickets values("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
             ticket_number, status, ticket_name, date_opened, date_updated, num_multitracks, genre, 

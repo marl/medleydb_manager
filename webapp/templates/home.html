@@ -7,12 +7,11 @@
     <h1>MedleyDB Manager</h1> 
     <img src="/static/home.jpg" alt="MedleyDB" style="width:860px;height:500px;">
     
-    <h2>What do we do?</h2>
+    <h2>MedleyDB Manager: Make Tracking Multitracks Easy</h2>
 
         <p> 
-        In the process of transforming a dry recording from the studio into a multitrack, things like requests to record or individual multitracks can easily be lost through miscommunication or long chains of emails. For example, a multitrack may be recorded but not mixed, or mixed but not exported. <br></br> 
-        This website is a manager for all multitracks that are recorded in Dolan and creates a "ticket" for each session to make it easier to view the status and information about a multitrack. Information includes details about the individual session and the people involved, as well as the individual multitracks recorded. Users are able to request a recording session, create a new "ticket", and view all active tickets. 
-        <br></br> 
+        The otherwise messy task of collecting and managing multitracks is simplified by <font color="purple">MedleyDB Manager!</font> This collaborative website creates a "ticket" for each recording session. 
+        </br>
         The lifecycle of a multitrack is as follows:
         <ol>
             <li>Request to record a multitrack</li>
@@ -23,10 +22,22 @@
             <li>Track gets run through multitrack app</li>
             <li>Track is added to database</li>
         </ol>
-        <br></br> 
+        Each ticket includes details about the recording session, the individual multitracks recorded in the session, as well as the people involved at each stage. Users can request a recording session or create a new ticket depending on the status of the multitracks. Existing tickets can be viewed, edited and kept track of on a consolidated table. Appropriate people can be contacted if questions or problems arise. 
+        </br></br>
+        <form action="/viewtickets">
+            <input type="submit" value="View All Tickets" class="btn btn-primary">
+        </form>
+        </br>
+        <form action="/newticket">
+            <input type="submit" value="Create a New Ticket" class="btn btn-primary">
+        </form>
+        </br>
+        <form action="/requestrecord">
+            <input type="submit" value="Request a Recording Session" class="btn btn-primary">
+        </form>
 
-        Website created by: Hanna Yip
-
-
+    <h2>Creators</h2>
+        <p>
+        Website created by Hanna Yip as well as Rachel Bittner (2016)
         </p>
 {% endblock %}
