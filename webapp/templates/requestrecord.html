@@ -63,10 +63,21 @@
       <div class="help-block with-errors"></div>
     </fieldset>
     <fieldset class="form-group">
-      <label for="exampleInputEmail1">List the genres of music you will record</label>
-      <input type="text" class="form-control" id="genre" placeholder="ex: classical, pop, rap, jazz" required>
-      <div class="help-block with-errors"></div>
-    </fieldset>
+        <label for="exampleSelect1">Genre</label>
+        <select class="form-control" id="num_multitracks" required>
+          <option value="" disabled selected>Select your option</option>
+          <option>Singer/songwriter</option>
+          <option>Rock</option>
+          <option>Classical</option>
+          <option>Jazz</option>
+          <option>Electronic/Fusion</option>
+          <option>World/Folk</option>
+          <option>Musical Theatre</option>
+          <option>Rap</option>
+          <option>Pop</option>
+        </select>
+        <div class="help-block with-errors"></div>
+      </fieldset>
     <fieldset class="form-group">
         <label for="exampleTextarea">Additional Comments</label>
         <textarea class="form-control" id="comments" rows="3"></textarea>
