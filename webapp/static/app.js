@@ -156,6 +156,7 @@ function getUpdatedTicketInput(){
     mixed_date = $("#mixed_date").val();
 	location_mixed = $("#location_mixed").val();
 	location_exported = $("#location_exported").val();
+	genre = $("#genre").val();
 	comments = $("#comments").val();
 	
 	$.get("/api/updateticket?ticket_number=" + ticket_number +
@@ -163,6 +164,7 @@ function getUpdatedTicketInput(){
 		"&status=" + status + 
 		"&ticket_name=" + ticket_name +
 		"&session_date=" + session_date + 
+		"&genre=" + genre +
 		"&engineer_name=" + engineer_name +
 		"&engineer_email=" + engineer_email +
 		"&assignee_name=" + assignee_name +

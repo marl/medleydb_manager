@@ -482,6 +482,7 @@ def updateticket_api():
 
     status = request.args.get('status')
     ticket_name = request.args.get('ticket_name')
+    genre = request.args.get('genre')
     date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     session_date = request.args.get('session_date')
     engineer_name = request.args.get('engineer_name')
@@ -526,6 +527,9 @@ def updateticket_api():
     if ticket_name != "":
         row[3] = ticket_name
         db_connection.execute('update tickets set ticket_name = "{}" where ticket_number = {}'.format(ticket_name, ticket_number))
+    if genre != "":
+        row[6] = genre
+        db_connection.execute('update tickets set genre = "{}" where ticket_number  = "{}"'.format(genre, ticket_number))
     if date_updated != "":
         row[5] = date_updated
         db_connection.execute('update tickets set date_updated = "{}" where ticket_number = {}'.format(date_updated, ticket_number))
