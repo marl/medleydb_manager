@@ -1,0 +1,35 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+<a class="btn btn-primary" href="/viewtickets"> <-- Back to All Tickets</a>
+
+<h1 class="sub-header">Completed Tickets</h1>
+      <div class="table-responsive">
+
+        <table class="table" id="completed_tickets">
+          <thead>
+                <th></th>
+            {% for col in range(formatted_completed_tickets_headers|count) %}
+                <th class="nm2">{{ formatted_completed_tickets_headers[col] }}</th>
+            {% endfor %}
+                <th></th>
+          </thead>
+          <tbody>
+            {% for row_index in range(tickets['status']|count) %}
+                <tr>
+                    <td><a href="{{ completed_tickets["url"][row_index] }}">View Ticket</a></td>
+                  {% for col in range(completed_tickets_headers|count) %}
+                    <td>{{ completed_tickets[completed_tickets_headers[col]][row_index] }}</td>
+                  {% endfor %}
+                    <td><a href="{{ completed_tickets["delete"][row_index] }}">Delete Ticket</a></td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+
+
+{% endblock %}

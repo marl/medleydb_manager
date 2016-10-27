@@ -103,3 +103,10 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+
+/*clickable headers*/
+th:hover{
+     cursor:pointer;
+    background:#AAA;
+    
+}

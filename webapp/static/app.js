@@ -144,7 +144,10 @@ function getUpdatedTicketInput(){
 	var ticket_revision_id = getParameterByName('ticket_revision_id');
 	status = $("#status").val();
 	ticket_name = $("#ticket_name").val();
+	genre = $("#genre").val();
 	session_date = $("#session_date").val();
+	your_name=$("#your_name").val();
+	your_email=$("#your_email").val();
 	engineer_name = $("#engineer_name").val();
 	engineer_email = $("#engineer_email").val();
 	assignee_name = $("#assignee_name").val();
@@ -153,10 +156,6 @@ function getUpdatedTicketInput(){
 	mixer_email = $("#mixer_email").val();
     bouncer_name = $("#bouncer_name").val();
     bouncer_email = $("#bouncer_email").val();
-    mixed_date = $("#mixed_date").val();
-	location_mixed = $("#location_mixed").val();
-	location_exported = $("#location_exported").val();
-	genre = $("#genre").val();
 	comments = $("#comments").val();
 	
 	$.get("/api/updateticket?ticket_number=" + ticket_number +
@@ -165,6 +164,8 @@ function getUpdatedTicketInput(){
 		"&ticket_name=" + ticket_name +
 		"&session_date=" + session_date + 
 		"&genre=" + genre +
+		"&your_name=" + your_name + 
+		"&your_email=" + your_email + 
 		"&engineer_name=" + engineer_name +
 		"&engineer_email=" + engineer_email +
 		"&assignee_name=" + assignee_name +
@@ -173,9 +174,6 @@ function getUpdatedTicketInput(){
 		"&mixer_email=" + mixer_email +
 		"&bouncer_name=" + bouncer_name +
 		"&bouncer_email=" + bouncer_email +
-		"&mixed_date=" + mixed_date +
-		"&location_mixed=" + location_mixed +
-		"&location_exported=" + location_exported +
 		"&comments=" + comments,
 		function(response){
 			console.log("called updateticket api");
@@ -237,11 +235,63 @@ function getUpdatedMultitrackInput(){
 		"&genre=" + genre +
 		"&num_instruments=" + num_instruments,
 		function(response){
-			window.location = "/ticket?ticket_number="+ticket_number;
+			window.location = "/multitrack?multitrack_id="+multitrack_id+"&ticket_number="+ticket_number;
 		} 
 	);
 
 }
+
+function sortTable(f,n){
+    var rows = $('#tickets tbody  tr').get();
+    rows.sort(function(a, b) {
+
+        var A = getVal(a);
+        var B = getVal(b);
+
+        if(A < B) {
+            return -1*f;
+        }
+        if(A > B) {
+            return 1*f;
+        }
+        return 0;
+    });
+
+    var rows2 = $('#completed_tickets tbody  tr').get();
+    rows2.sort(function(a, b) {
+
+        var A = getVal(a);
+        var B = getVal(b);
+
+        if(A < B) {
+            return -1*f;
+        }
+        if(A > B) {
+            return 1*f;
+        }
+        return 0;
+    });
+
+    function getVal(elm){
+        var v = $(elm).children('td').eq(n).text().toUpperCase();
+        if($.isNumeric(v)){
+            v = parseInt(v,10);
+        }
+        return v;
+    }
+
+    $.each(rows, function(index, row) {
+        $('#tickets').children('tbody').append(row);
+    });
+    $.each(rows2, function(index, row) {
+        $('#completed_tickets').children('tbody').append(row);
+    });
+}
+
+
+
+
+
 
 $(document).ready(function() {
 	var pathname = window.location.pathname;
@@ -286,9 +336,23 @@ $(document).ready(function() {
 	  }
 	});
 
+	var f_nm = 1; // flag to toggle the sorting order
+	$(".nm").click(function(){
+	    f_nm *= -1; // toggle the sorting order
+	    var n = $(this).prevAll().length;
+	    sortTable(f_nm,n);
+	});
+		console.log("hi");
+
+	var f_nm2 = 1;
+	$(".nm2").click(function(){
+	    f_nm2 *= -1; // toggle the sorting order
+	    var n = $(this).prevAll().length;
+	    sortTable(f_nm2,n);
+	    console.log("hello");
+	});
+	
 });
-
-
 
 
 

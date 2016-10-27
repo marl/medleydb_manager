@@ -6,11 +6,11 @@
 <h1 class="sub-header">All Tickets</h1>
       <div class="table-responsive">
 
-        <table class="table">
+        <table class="table" id="tickets">
           <thead>
                 <th></th>
             {% for col in range(formatted_tickets_headers|count) %}
-                <th>{{ formatted_tickets_headers[col] }}</th>
+                <th class="nm">{{ formatted_tickets_headers[col] }}</th>
             {% endfor %}
                 <th></th>
           </thead>
@@ -28,5 +28,7 @@
         </table>
 
       </div>
+
+      <a class="btn btn-primary" href="/completedtickets">See Completed Tickets</a>
 
 {% endblock %}
