@@ -6,9 +6,10 @@
 
 <h1 class="sub-header">More Information About Multitrack {{ multitrack_id }} </h1>
 
+    <a class="btn btn-primary" href="{{ ticket_url }}"><-- Back to Ticket</a>
+
       <div class="table-responsive">
         <h3>Multitrack Current Status</h3>
-
         <table class="table">
           <thead>
             {% for col in range(formatted_multitrack_status_headers|count) %}
@@ -26,11 +27,53 @@
           </tbody>
         </table>
 
-      </div>
+        <h3>Update Multitrack</h3>
+        <table class="table">
+          <thead>
+            {% for col in range(formatted_multitrack_status_headers|count) %}
+                <th>{{ formatted_multitrack_status_headers[col] }}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for row_index in range(multitrack_status['multitrack_id']|count) %}
+                <tr>
+                    <td>{{ multitrack_status[multitrack_status_headers[0]][row_index] }}</td>
+                    <td>{{ multitrack_status[multitrack_status_headers[1]][row_index] }}</td>
+                    <td>{{ multitrack_status[multitrack_status_headers[2]][row_index] }}</td>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="title">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="artist_name">
+                    </TD>
+                    <TD class = "select">
+                      <select class="form-control" id="genre">
+                            <option value="" disabled selected>Select your option</option>
+                            <option>Singer/songwriter</option>
+                            <option>Rock</option>
+                            <option>Classical</option>
+                            <option>Jazz</option>
+                            <option>Electronic/Fusion</option>
+                            <option>World/Folk</option>
+                            <option>Musical Theatre</option>
+                            <option>Rap</option>
+                            <option>Pop</option>
+                      </select>
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="start_time">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="end_time">
+                    </TD>
+                      </select>
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="num_instruments">
+                    </TD>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-    </br>
-    <a class="btn btn-primary" href="{{ update_multitrack_url }}">Update Multitrack</a>
-    </br></br>
+            <button id="updateMultitrackSubmit" type="submit" class="btn btn-success">Submit Update</button>
+
+      </div>
 
 
 {% endblock %}

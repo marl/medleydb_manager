@@ -4,6 +4,9 @@
 <!-- Fills in everything below in the empty space -->
 {% block content %}
 <h1 class="sub-header">More Information About Ticket {{ ticket_number }} </h1>
+
+      <a class="btn btn-primary" href="/viewtickets"> <-- Back to All Tickets</a>
+
       <div class="table-responsive">
         <h3>Ticket Status</h3>
 
@@ -27,25 +30,83 @@
       </div>
 
       <div class="table-responsive">
-        <h3>Ticket History</h3>
+        <h3>Update Ticket</h3>
+
         <table class="table">
           <thead>
-            {% for col in range(formatted_ticket_history_headers|count) %}
-                <th>{{ formatted_ticket_history_headers[col] }}</th>
+            {% for col in range(formatted_ticket_status_headers|count) %}
+                <th>{{ formatted_ticket_status_headers[col] }}</th>
             {% endfor %}
           </thead>
           <tbody>
-            {% for row_index in range(ticket_history['ticket_number']|count) %}
+            {% for row_index in range(tickets['ticket_number']|count) %}
                 <tr>
-                  {% for col in range(ticket_history_headers|count) %}
-                    <td>{{ ticket_history[ticket_history_headers[col]][row_index] }}</td>
-                  {% endfor %}
+                    <td>{{ tickets[ticket_status_headers[0]][row_index] }}</td>
+                    <TD class = "select">
+                        <select class="form-control" id="status">
+                            <option value="" disabled selected>Select your option</option>
+                            <option>Requested</option>
+                            <option>Scheduled</option>
+                            <option>Recorded</option>
+                            <option>Mixed</option>
+                            <option>Bounced</option>
+                            <option>Processed</option>
+                            <option>Complete</option>
+                        </select>
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="ticket_name">
+                    </TD>
+                    <td>{{ tickets[ticket_status_headers[3]][row_index] }}</td>
+                    <td>{{ tickets[ticket_status_headers[4]][row_index] }}</td>
+                    <td>{{ tickets[ticket_status_headers[5]][row_index] }}</td>
+                    <TD class = "select">
+                      <select class="form-control" id="genre">
+                            <option value="" disabled selected>Select your option</option>
+                            <option>Singer/songwriter</option>
+                            <option>Rock</option>
+                            <option>Classical</option>
+                            <option>Jazz</option>
+                            <option>Electronic/Fusion</option>
+                            <option>World/Folk</option>
+                            <option>Musical Theatre</option>
+                            <option>Rap</option>
+                            <option>Pop</option>
+                      </select>
+                    </TD>
+                    <TD ALIGN="left"><input type="date" SIZE="10" id="session_date" placeholder="MM/DD/YY">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="your_name">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="your_email">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="engineer_name">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="engineer_email">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="assignee_name">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="assignee_email">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="mixer_name">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="mixer_email">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="bouncer_name">
+                    </TD>
+                    <TD ALIGN="left"><INPUT TYPE="text" SIZE="15" id="bouncer_email">
+                    </TD>
+                    <TD ALIGN="left"><textarea class="form-control" id="comments" rows="3"></textarea>
+                    </TD>
                 </tr>
+
             {% endfor %}
           </tbody>
         </table>
 
+          <button id="updateTicketSubmit" type="submit" class="btn btn-success">Submit Update</button>
+
       </div>
+
 
       <div class="table-responsive">
         <h3>Multitracks in Ticket</h3>
@@ -69,21 +130,28 @@
             {% endfor %}
           </tbody>
         </table>
-
+        <a class="btn btn-primary" href="{{ add_multitrack_url }}">Add Multitrack</a>
       </div>
 
+      <div class="table-responsive">
+        <h3>Ticket History</h3>
+        <table class="table">
+          <thead>
+            {% for col in range(formatted_ticket_history_headers|count) %}
+                <th>{{ formatted_ticket_history_headers[col] }}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for row_index in range(ticket_history['ticket_number']|count) %}
+                <tr>
+                  {% for col in range(ticket_history_headers|count) %}
+                    <td>{{ ticket_history[ticket_history_headers[col]][row_index] }}</td>
+                  {% endfor %}
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-    </br>
-    <a class="btn btn-primary" href="{{ update_ticket_url }}">Update Ticket</a>
-    </br></br>
-
-    <a class="btn btn-primary" href="{{ add_multitrack_url }}">Add Multitrack</a>
-
-<!--     <form action="/ticket_addMultitrack">
-      <input type="submit" value="Add a Multitrack" class="btn btn-primary">
-    </form> -->
-
-
-
+      </div>
 
 {% endblock %}

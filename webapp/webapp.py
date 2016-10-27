@@ -300,6 +300,8 @@ def view_tickets():
     tickets['delete'] = []
 
     for row in cursor:
+        if row[1]=="Complete":
+            continue
         for name, item in zip(tickets_headers, row):
             tickets[name].append(item)
         tickets['url'].append('/ticket?ticket_number={}'.format(row[0]))
@@ -313,6 +315,45 @@ def view_tickets():
         tickets_headers=tickets_headers,
         formatted_tickets_headers=formatted_tickets_headers
     )
+
+
+
+@APP.route('/completedtickets')
+def completed_tickets():
+    db_connection = connect_db(APP)
+    completed_tickets_cursor = db_connection.execute(
+        'select * from tickets where status="Complete"')
+
+    print completed_tickets_cursor
+
+    completed_tickets_headers = get_header(APP, 'tickets')
+    formatted_completed_tickets_headers = [
+        format_headers(h) for h in completed_tickets_headers]
+
+    completed_tickets = {}
+    for name in completed_tickets_headers:
+        completed_tickets[name] = []
+
+    completed_tickets['url'] = []
+    completed_tickets['delete'] = []
+
+    for row in completed_tickets_cursor:
+        for name, item in zip(completed_tickets_headers, row):
+            completed_tickets[name].append(item)
+        completed_tickets['url'].append('/ticket?ticket_number={}'.format(row[0]))
+        completed_tickets['delete'].append(
+            '/api/deleteticket?ticket_number={}'.format(row[0])
+        )
+
+    
+    return render_template(
+        'completedtickets.html',
+        tickets=completed_tickets,
+        completed_tickets=completed_tickets,
+        completed_tickets_headers=completed_tickets_headers,
+        formatted_completed_tickets_headers=formatted_completed_tickets_headers
+    )
+
 
 @APP.route('/ticket')
 def ticket():
@@ -485,6 +526,8 @@ def updateticket_api():
     genre = request.args.get('genre')
     date_updated = strftime("%m-%d-%y %H:%M:%S", gmtime())
     session_date = request.args.get('session_date')
+    your_name = request.args.get('your_name')
+    your_email = request.args.get('your_email')
     engineer_name = request.args.get('engineer_name')
     engineer_email = request.args.get('engineer_email')
     assignee_name = request.args.get('assignee_name')
@@ -527,7 +570,7 @@ def updateticket_api():
     if ticket_name != "":
         row[3] = ticket_name
         db_connection.execute('update tickets set ticket_name = "{}" where ticket_number = {}'.format(ticket_name, ticket_number))
-    if genre != "":
+    if genre != "null":
         row[6] = genre
         db_connection.execute('update tickets set genre = "{}" where ticket_number  = "{}"'.format(genre, ticket_number))
     if date_updated != "":
@@ -536,6 +579,12 @@ def updateticket_api():
     if session_date!= "":
         row[8] = session_date
         db_connection.execute('update tickets set session_date = "{}" where ticket_number = {}'.format(session_date, ticket_number))
+    if your_name != "":
+        row[9] = your_name
+        db_connection.execute('update tickets set creator_name = "{}" where ticket_number = {}'.format(your_name, ticket_number))
+    if your_email != "":
+        row[10] = your_email
+        db_connection.execute('update tickets set creator_email = "{}" where ticket_number = {}'.format(your_email, ticket_number))
     if engineer_name != "":
         row[11] = engineer_name
         db_connection.execute('update tickets set engineer_name = "{}" where ticket_number = {}'.format(engineer_name, ticket_number))
@@ -586,7 +635,10 @@ def updateticket_api():
         status=status,
         ticket_name=ticket_name,
         date_updated=date_updated,
+        genre=genre,
         session_date=session_date,
+        your_name=your_name,
+        your_email=your_email,
         engineer_name=engineer_name,
         engineer_email=engineer_email,
         assignee_name=assignee_name,
@@ -668,14 +720,15 @@ def multitrack():
     )
 
     update_multitrack_url = "/multitrack_update?multitrack_id={}&ticket_number={}".format(str(multitrack_id),ticket_number)
-
+    ticket_url = "/ticket?ticket_number={}".format(ticket_number)
     return render_template(
         'multitrack.html', multitrack_id=multitrack_id,
         ticket_number=ticket_number,
         multitrack_status_headers=multitrack_status_headers,
         formatted_multitrack_status_headers=formatted_multitrack_status_headers,
         multitrack_status=multitrack_status,
-        update_multitrack_url=update_multitrack_url
+        update_multitrack_url=update_multitrack_url,
+        ticket_url=ticket_url
     )
 
 
@@ -778,8 +831,6 @@ def updatemultitrack_api():
     # code to UPDATE row
     ticket_number = request.args.get('ticket_number')
     multitrack_id = request.args.get('multitrack_id')
-    print ticket_number
-    print multitrack_id
 
     if title != "":
         db_connection.execute('update multitracks set title = "{}" where multitrack_id  = "{}"'.format(title, multitrack_id))
@@ -789,7 +840,7 @@ def updatemultitrack_api():
         db_connection.execute('update multitracks set start_time = "{}" where multitrack_id  = "{}"'.format(start_time, multitrack_id))
     if end_time != "":
         db_connection.execute('update multitracks set end_time = "{}" where multitrack_id  = "{}"'.format(end_time, multitrack_id))
-    if genre != "":
+    if genre != "null":
         db_connection.execute('update multitracks set genre = "{}" where multitrack_id  = "{}"'.format(genre, multitrack_id))
     if num_instruments != "":
         db_connection.execute('update multitracks set number_of_instruments = "{}" where multitrack_id  = "{}"'.format(num_instruments, multitrack_id))
