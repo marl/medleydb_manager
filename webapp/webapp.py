@@ -6,12 +6,25 @@ import os
 from time import gmtime, strftime
 import argparse
 import numpy
-from flask import Flask, jsonify, render_template, request, flash, redirect, url_for
+from flask import Flask, jsonify, render_template, request, Response, flash, redirect, url_for
 from flask_mail import Mail
 from utils import connect_db, get_header, send_mail
 from utils import fill_table, format_headers, format_comments, allowed_file
 from emails import REQUEST_BODY as request_record_body
 from emails import ASSIGNEE_BODY as assignee_body
+from functools import wraps
+import csv
+
+AUTH_INFO = ".auth_info"
+def load_auth_info():
+    with open(AUTH_INFO) as fhandle:
+        reader=csv.reader(fhandle, delimiter = ",")
+        for line in reader:
+            username, password = line
+            break
+    return username, password
+
+USERNAME, PASSWORD = load_auth_info()
 
 APP = Flask(__name__)
 APP.config.update(dict(
@@ -26,6 +39,29 @@ APP.config.update(dict(
     DATABASE=os.path.join(APP.root_path, 'static', 'ticketmanager.db'),
     UPLOAD_FOLDER="uploads"
 ))
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == USERNAME and password == PASSWORD
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
 
 
 # TEMPLATE NAVIGATION----------------------
@@ -272,6 +308,7 @@ def newmultitrack_api():
 
 
 @APP.route('/viewtickets')
+@requires_auth
 def view_tickets():
     """
     Renders viewtickets.html template

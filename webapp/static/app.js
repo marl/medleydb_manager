@@ -291,8 +291,6 @@ function sortTable(f,n){
 
 
 
-
-
 $(document).ready(function() {
 	var pathname = window.location.pathname;
 	$('.nav > li > a[href="'+pathname+'"]').parent().addClass('active');
@@ -342,14 +340,12 @@ $(document).ready(function() {
 	    var n = $(this).prevAll().length;
 	    sortTable(f_nm,n);
 	});
-		console.log("hi");
 
 	var f_nm2 = 1;
 	$(".nm2").click(function(){
 	    f_nm2 *= -1; // toggle the sorting order
 	    var n = $(this).prevAll().length;
 	    sortTable(f_nm2,n);
-	    console.log("hello");
 	});
 	
 });
